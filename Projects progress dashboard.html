@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة الأداء التنفيذي للمشاريع - النظام المتكامل</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --gold-primary: #D4AF37;
+            --gold-dark: #B49020;
+            --gold-light: #FDFBF7;
+            --gold-track: rgba(212, 175, 55, 0.25);
+            --charcoal-900: #111827;
+            --charcoal-700: #374151;
+            --charcoal-500: #6B7280;
+            --charcoal-300: #D1D5DB;
+            --charcoal-100: #F3F4F6;
+            --bg-color: #FFFFFF;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #E5E7EB;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .dashboard-container {
+            width: 1600px;
+            height: 900px;
+            background-color: var(--bg-color);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header-strip {
+            height: 6px;
+            background: linear-gradient(90deg, var(--gold-dark) 0%, #E5C354 50%, var(--gold-dark) 100%);
+        }
+
+        .main-header {
+            height: 72px; 
+            padding: 0 40px;
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: 1.8fr 2.6fr 1.6fr 2.0fr 1.1fr 2.1fr;
+            gap: 0px;
+            align-items: stretch;
+        }
+
+        .table-header {
+            background: linear-gradient(180deg, #C29B22 0%, var(--gold-dark) 100%);
+            color: #FFFFFF;
+            border-radius: 6px;
+            margin-bottom: 2px;
+            min-height: 48px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .table-header > div {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-left: 1px solid rgba(255,255,255,0.2);
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .row-item {
+            border-bottom: 1px solid var(--charcoal-100);
+            height: 53px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .row-item::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; bottom: 0;
+            width: 4px;
+            background-color: var(--gold-primary);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+            transform-origin: center;
+        }
+
+        .row-item:hover::before {
+            transform: scaleY(1);
+        }
+
+        .row-item:hover { 
+            background-color: #FAFAFA; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+            z-index: 10;
+        }
+
+        .section-title {
+            color: var(--charcoal-900);
+            font-size: 0.85rem;
+            font-weight: 800;
+            padding: 0 20px;
+            background: linear-gradient(to left, #F9FAFB, #FFFFFF);
+            border-right: 4px solid var(--gold-primary);
+            display: flex;
+            align-items: center;
+            height: 28px;
+            margin-top: 0px;
+        }
+
+        .progress-track {
+            background-color: var(--charcoal-100);
+            height: 5px;
+            width: 100%;
+            border-radius: 3px;
+            position: relative;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            position: absolute;
+            top: 0;
+            right: 0; 
+            background-color: var(--gold-primary); 
+            transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .weight-donut {
+            width: 26px; height: 26px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            position: relative;
+        }
+        .weight-donut::before {
+            content: ''; position: absolute; width: 18px; height: 18px;
+            border-radius: 50%; background-color: var(--bg-color);
+        }
+
+        .sub-col {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-left: 1px dashed var(--charcoal-100);
+            height: 100%;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--charcoal-900);
+            text-align: center;
+        }
+        .sub-col:last-child { border-left: none; }
+
+        .font-numbers { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; letter-spacing: 0.2px; }
+
+        .editable-name {
+            cursor: pointer;
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+        .editable-name:hover { color: var(--gold-dark); }
+        .editable-name .edit-icon { opacity: 0; font-size: 10px; transition: opacity 0.2s; }
+        .editable-name:hover .edit-icon { opacity: 1; }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        @media print {
+            @page { size: 1600px 900px; margin: 0; }
+            .dashboard-container { box-shadow: none; width: 100%; height: 100%; }
+            * { -webkit-print-color-adjust: exact !important; }
+            .editable-name .edit-icon { display: none !important; }
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <div class="header-strip"></div>
+
+        <header class="main-header flex justify-between items-center bg-white shrink-0 border-b border-gray-100">
+            <div class="flex items-center gap-4">
+                <img src="Alrajhi Logo Presentation.png" alt="Alrajhi Logo" class="h-12 object-contain" onerror="this.src='https://via.placeholder.com/150x50?text=Alrajhi+Logo'">
+                <div>
+                    <h1 class="text-xl font-bold text-[var(--charcoal-900)] leading-tight mb-0.5">لوحة الأداء التنفيذي للمشاريع</h1>
+                    <div class="flex items-center gap-2">
+                        <p class="text-[12px] text-[var(--gold-dark)] font-bold" id="display-period"></p>
+                        <button onclick="openPeriodModal()" class="text-gray-400 hover:text-[var(--gold-dark)] transition no-print" title="تعديل الفترة">
+                            <i class="fa-solid fa-pen text-[10px]"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex gap-8">
+                <!-- إجمالي مساحات المشاريع -->
+                <div class="flex flex-col text-left border-l border-[var(--charcoal-100)] pl-6 pr-4 py-1 hover:bg-gray-50 rounded-r-lg transition duration-300">
+                    <span class="text-[10px] text-[var(--charcoal-500)] font-bold mb-0.5">إجمالي مساحات المشاريع</span>
+                    <span class="text-xl font-bold text-[var(--charcoal-900)] font-numbers leading-none" id="total-area-top">0 <span class="text-[10px] text-[var(--gold-primary)] font-normal">مليون م²</span></span>
+                </div>
+                <!-- إجمالي ميزانيات المشاريع -->
+                <div class="flex flex-col text-left border-l border-[var(--charcoal-100)] pl-6 pr-4 py-1 hover:bg-gray-50 transition duration-300">
+                    <span class="text-[10px] text-[var(--charcoal-500)] font-bold mb-0.5">إجمالي ميزانيات المشاريع</span>
+                    <span class="text-xl font-bold text-[var(--charcoal-900)] font-numbers leading-none" id="total-project-budget">0 <span class="text-[10px] text-[var(--gold-primary)] font-normal">مليار SAR</span></span>
+                </div>
+                <!-- إجمالي عدد الوحدات -->
+                <div class="flex flex-col text-left pl-2 pr-4 py-1 hover:bg-gray-50 rounded-l-lg transition duration-300">
+                    <span class="text-[10px] text-[var(--charcoal-500)] font-bold mb-0.5">إجمالي عدد الوحدات</span>
+                    <span class="text-xl font-bold text-[var(--charcoal-900)] font-numbers leading-none" id="total-units">0 <span class="text-[10px] text-[var(--gold-primary)] font-normal">وحدة</span></span>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 flex flex-col w-full px-6 py-2 overflow-hidden">
+            <div class="data-grid table-header shrink-0 mx-0">
+                <div class="text-right pr-4">هوية المشروع</div>
+                
+                <div class="flex flex-col p-0">
+                    <div class="h-[40%] w-full flex items-center justify-center border-b border-[rgba(255,255,255,0.2)] text-[10px] font-bold">المساحات والوحدات التفصيلية</div>
+                    <div class="h-[60%] w-full grid grid-cols-5 text-[8.5px]">
+                        <span class="flex items-center justify-center border-l border-[rgba(255,255,255,0.2)]">م. الأرض</span>
+                        <span class="flex items-center justify-center border-l border-[rgba(255,255,255,0.2)]">المساحة المبنية</span>
+                        <span class="flex items-center justify-center border-l border-[rgba(255,255,255,0.2)]">المساحة البيعية</span>
+                        <span class="flex items-center justify-center border-l border-[rgba(255,255,255,0.2)]">عدد الوحدات</span>
+                        <span class="flex items-center justify-center">قيمة الأرض</span>
+                    </div>
+                </div>
+
+                <div class="flex flex-col p-0 border-l border-[rgba(255,255,255,0.2)]">
+                    <div class="h-full w-full flex items-center justify-center text-[10px] font-bold">الجدول الزمني وعمر المشروع</div>
+                </div>
+
+                <div class="flex flex-col p-0">
+                    <div class="h-[40%] w-full flex items-center justify-center border-b border-[rgba(255,255,255,0.2)] text-[10px] font-bold">الميزانية والمصروف</div>
+                    <div class="h-[60%] w-full grid grid-cols-3 text-[9px]">
+                        <span class="flex items-center justify-center border-l border-[rgba(255,255,255,0.2)]">التكاليف التقديرية</span>
+                        <span class="flex items-center justify-center border-l border-[rgba(255,255,255,0.2)]">الميزانية</span>
+                        <span class="flex items-center justify-center">المصروف</span>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col p-0">
+                    <div class="h-[40%] w-full flex items-center justify-center border-b border-[rgba(255,255,255,0.2)] text-[10px] font-bold">العوائد المالية المتوقعة</div>
+                    <div class="h-[60%] w-full grid grid-cols-2 text-[9px]">
+                        <span class="flex items-center justify-center border-l border-[rgba(255,255,255,0.2)]">المبيعات</span>
+                        <span class="flex items-center justify-center">الإيجارات</span>
+                    </div>
+                </div>
+
+                <div class="flex flex-col p-0 border-l-0">
+                    <div class="h-[40%] w-full flex items-center justify-center border-b border-[rgba(255,255,255,0.2)] text-[10px] font-bold">مؤشرات الإنجاز</div>
+                    <div class="h-[60%] w-full grid grid-cols-[1fr_1.6fr_1fr] text-[9px]">
+                        <span class="flex items-center justify-center border-l border-[rgba(255,255,255,0.2)]">وزن المشروع</span>
+                        <span class="flex items-center justify-center border-l border-[rgba(255,255,255,0.2)]">الإنجاز</span>
+                        <span class="flex items-center justify-center">الحالة</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="projects-container" class="flex flex-col w-full flex-1 bg-white border border-[var(--charcoal-100)] rounded-b-md overflow-hidden pb-1">
+                <div class="section-title"><i class="fa-solid fa-road text-[var(--gold-dark)] ml-2 text-xs"></i> مشاريع البنية التحتية</div>
+                <div id="infra-projects" class="flex flex-col shrink-0"></div>
+
+                <div class="section-title"><i class="fa-solid fa-building text-[var(--gold-dark)] ml-2 text-xs"></i> مشاريع البنية الفوقية</div>
+                <div id="super-projects" class="flex flex-col shrink-0"></div>
+            </div>
+        </main>
+
+        <footer class="px-10 flex justify-between items-center text-[11px] text-[var(--charcoal-500)] bg-white border-t border-[var(--charcoal-100)] h-[40px] shrink-0 font-bold">
+            <div class="flex items-center gap-2">
+                <span id="display-footer-text"></span>
+                <button onclick="openFooterModal()" class="text-gray-400 hover:text-[var(--gold-dark)] transition no-print" title="تعديل النص">
+                    <i class="fa-solid fa-pen text-[10px]"></i>
+                </button>
+            </div>
+            
+            <button onclick="window.print()" class="no-print flex items-center gap-2 bg-[var(--gold-dark)] text-white px-4 py-1.5 rounded-md text-[10px] font-bold hover:bg-[var(--gold-primary)] transition shadow-sm hover:shadow" title="حفظ اللوحة كملف PDF للطباعة">
+                <i class="fa-solid fa-file-pdf text-[11px]"></i> حفظ كملف PDF
+            </button>
+
+            <div>
+                شركة اتحاد الراجحي
+            </div>
+        </footer>
+
+        <!-- نافذة طلب كلمة المرور -->
+        <div id="password-modal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-[150] hidden justify-center items-center transition-all">
+            <div class="bg-white rounded-xl shadow-2xl w-[400px] flex flex-col overflow-hidden border-t-4 border-[var(--gold-primary)] font-sans" dir="rtl">
+                <div class="px-6 py-4 border-b border-gray-200 flex items-center gap-3 bg-gray-50">
+                    <div class="w-8 h-8 rounded-full bg-amber-100 text-[var(--gold-dark)] flex items-center justify-center">
+                        <i class="fa-solid fa-lock text-sm"></i>
+                    </div>
+                    <h2 class="text-lg font-bold text-gray-900 font-['Tajawal']">المصادقة مطلوبة</h2>
+                </div>
+                <div class="p-6">
+                    <label class="block text-sm font-bold text-gray-600 mb-2 font-['Tajawal']">الرجاء إدخال كلمة المرور لتعديل المشروع</label>
+                    <input type="password" id="auth-password" placeholder="كلمة المرور..." class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 focus:ring-1 focus:ring-[var(--gold-primary)] outline-none font-['Tajawal'] text-left" dir="ltr">
+                    <p id="password-error" class="text-xs text-red-500 mt-2 font-bold hidden font-['Tajawal']"><i class="fa-solid fa-circle-exclamation ml-1"></i>كلمة المرور غير صحيحة، يرجى المحاولة مجدداً.</p>
+                </div>
+                <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-3">
+                    <button type="button" onclick="closePasswordModal()" class="px-6 py-2 rounded-md font-bold text-gray-600 bg-white border border-gray-300 hover:bg-gray-100 transition font-['Tajawal']">إلغاء</button>
+                    <button type="button" onclick="verifyPassword()" class="px-8 py-2 rounded-md font-bold text-white bg-[var(--gold-dark)] hover:bg-[var(--gold-primary)] shadow-md hover:shadow-lg transition font-['Tajawal']">دخول</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- نافذة تعديل نص التذييل -->
+        <div id="footer-modal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-[110] hidden justify-center items-center">
+            <div class="bg-white rounded-xl shadow-2xl w-[400px] flex flex-col overflow-hidden border-t-4 border-[var(--gold-primary)] font-sans" dir="rtl">
+                <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-gray-50">
+                    <h2 class="text-lg font-bold text-gray-900 font-['Tajawal']">تعديل تذييل اللوحة</h2>
+                    <button onclick="closeFooterModal()" class="text-gray-400 hover:text-red-600 transition w-8 h-8 rounded-full hover:bg-red-50 flex items-center justify-center">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+                <div class="p-6">
+                    <label class="block text-sm font-bold text-gray-600 mb-2 font-['Tajawal']">النص المعروض في الأسفل</label>
+                    <input type="text" id="m-footer" placeholder="مثال: اجتماع مجلس الإدارة..." class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 focus:ring-1 focus:ring-[var(--gold-primary)] outline-none font-['Tajawal']">
+                </div>
+                <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-3">
+                    <button onclick="closeFooterModal()" class="px-6 py-2 rounded-md font-bold text-gray-600 bg-white border border-gray-300 hover:bg-gray-100 transition font-['Tajawal']">إلغاء الأمر</button>
+                    <button onclick="saveFooter()" class="px-8 py-2 rounded-md font-bold text-white bg-[var(--gold-dark)] hover:bg-[var(--gold-primary)] shadow-md hover:shadow-lg transition font-['Tajawal']">حفظ التعديل</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- نافذة تعديل الفترة -->
+        <div id="period-modal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-[110] hidden justify-center items-center">
+            <div class="bg-white rounded-xl shadow-2xl w-[400px] flex flex-col overflow-hidden border-t-4 border-[var(--gold-primary)] font-sans" dir="rtl">
+                <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-gray-50">
+                    <h2 class="text-lg font-bold text-gray-900 font-['Tajawal']">تعديل فترة التقرير</h2>
+                    <button onclick="closePeriodModal()" class="text-gray-400 hover:text-red-600 transition w-8 h-8 rounded-full hover:bg-red-50 flex items-center justify-center">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+                <div class="p-6">
+                    <label class="block text-sm font-bold text-gray-600 mb-2 font-['Tajawal']">الفترة الزمنية للوحة</label>
+                    <input type="text" id="m-period" placeholder="مثال: الربع الأول 2026" class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 focus:ring-1 focus:ring-[var(--gold-primary)] outline-none font-['Tajawal']">
+                </div>
+                <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-3">
+                    <button onclick="closePeriodModal()" class="px-6 py-2 rounded-md font-bold text-gray-600 bg-white border border-gray-300 hover:bg-gray-100 transition font-['Tajawal']">إلغاء الأمر</button>
+                    <button onclick="savePeriod()" class="px-8 py-2 rounded-md font-bold text-white bg-[var(--gold-dark)] hover:bg-[var(--gold-primary)] shadow-md hover:shadow-lg transition font-['Tajawal']">حفظ الفترة</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- رسالة تأكيد فك القفل -->
+        <div id="confirm-modal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-[120] hidden justify-center items-center">
+            <div class="bg-white rounded-xl shadow-2xl w-[400px] flex flex-col overflow-hidden border-t-4 border-[var(--gold-primary)] font-sans" dir="rtl">
+                <div class="px-6 py-4 border-b border-gray-200 flex items-center gap-3 bg-gray-50">
+                    <div class="w-8 h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center">
+                        <i class="fa-solid fa-lock-open text-sm"></i>
+                    </div>
+                    <h2 class="text-lg font-bold text-gray-900 font-['Tajawal']">تأكيد فك القفل</h2>
+                </div>
+                <div class="p-6">
+                    <p class="text-sm font-bold text-gray-600 font-['Tajawal'] leading-relaxed">أنت على وشك فك قفل هذه الخلية لتصبح قابلة لإدخال القيم الصفرية أو الرقمية، ولن يتم عرض "لا ينطبق".<br><br>هل ترغب في المتابعة؟</p>
+                </div>
+                <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-3">
+                    <button type="button" onclick="closeConfirmModal()" class="px-6 py-2 rounded-md font-bold text-gray-600 bg-white border border-gray-300 hover:bg-gray-100 transition font-['Tajawal']">إلغاء الأمر</button>
+                    <button type="button" onclick="confirmUnlock()" class="px-8 py-2 rounded-md font-bold text-white bg-[var(--gold-dark)] hover:bg-[var(--gold-primary)] shadow-md hover:shadow-lg transition font-['Tajawal']">نعم، فك القفل</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- رسالة تأكيد حذف المشروع -->
+        <div id="delete-confirm-modal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-[130] hidden justify-center items-center">
+            <div class="bg-white rounded-xl shadow-2xl w-[400px] flex flex-col overflow-hidden border-t-4 border-red-600 font-sans" dir="rtl">
+                <div class="px-6 py-4 border-b border-gray-200 flex items-center gap-3 bg-gray-50">
+                    <div class="w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center">
+                        <i class="fa-solid fa-triangle-exclamation text-sm"></i>
+                    </div>
+                    <h2 class="text-lg font-bold text-gray-900 font-['Tajawal']">تأكيد الحذف</h2>
+                </div>
+                <div class="p-6">
+                    <p class="text-sm font-bold text-gray-600 font-['Tajawal'] leading-relaxed">أنت على وشك حذف هذا المشروع بالكامل من اللوحة. لا يمكن التراجع عن هذا الإجراء.<br><br>هل أنت متأكد من رغبتك في الحذف؟</p>
+                </div>
+                <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-3">
+                    <button type="button" onclick="closeDeleteConfirmModal()" class="px-6 py-2 rounded-md font-bold text-gray-600 bg-white border border-gray-300 hover:bg-gray-100 transition font-['Tajawal']">إلغاء</button>
+                    <button type="button" onclick="executeDeleteProject()" class="px-8 py-2 rounded-md font-bold text-white bg-red-600 hover:bg-red-700 shadow-md hover:shadow-lg transition font-['Tajawal']">نعم، احذف المشروع</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- نافذة التعديل للمشاريع (Modal) الذكية -->
+        <div id="edit-modal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-[100] hidden justify-center items-center">
+            <div class="bg-white rounded-xl shadow-2xl w-[1000px] max-h-[90vh] flex flex-col overflow-hidden border-t-4 border-[var(--gold-primary)] font-sans" dir="rtl">
+                <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-gray-50">
+                    <div>
+                        <h2 class="text-lg font-bold text-gray-900 font-['Tajawal']" id="modal-project-name">تعديل المشروع</h2>
+                        <p class="text-xs text-emerald-600 font-['Tajawal'] mt-1 font-bold"><i class="fa-solid fa-wand-magic-sparkles"></i> يتم حساب المؤشرات العليا وحالة الإنجاز ووزن التكلفة تلقائياً</p>
+                    </div>
+                    <button onclick="closeModal()" class="text-gray-400 hover:text-red-600 transition w-8 h-8 rounded-full hover:bg-red-50 flex items-center justify-center">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+
+                <div class="p-6 overflow-y-auto flex-1 custom-scrollbar">
+                    <form id="edit-form" class="space-y-6">
+                        <input type="hidden" id="edit-index">
+                        
+                        <!-- الهوية والحالة التنظيمية -->
+                        <div>
+                            <h3 class="text-sm font-bold text-gray-800 mb-3 border-b pb-1 border-[var(--gold-track)] font-['Tajawal']">الهوية والحالة التنظيمية</h3>
+                            <div class="grid grid-cols-4 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">اسم المشروع</label>
+                                    <input type="text" id="m-name" class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 focus:ring-1 focus:ring-[var(--gold-primary)] outline-none font-['Tajawal'] text-[var(--charcoal-900)]">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">طبيعة المشروع (قائمة)</label>
+                                    <select id="m-nature" class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 focus:ring-1 focus:ring-[var(--gold-primary)] outline-none font-['Tajawal'] text-[var(--charcoal-900)]">
+                                        <option value="أراضي سكنية وتجارية">أراضي سكنية وتجارية</option>
+                                        <option value="تجاري">تجاري</option>
+                                        <option value="مكتبي">مكتبي</option>
+                                        <option value="تعليمي">تعليمي</option>
+                                        <option value="شقق سكنية">شقق سكنية</option>
+                                        <option value="فلل سكنية">فلل سكنية</option>
+                                        <option value="ضيافة">ضيافة</option>
+                                        <option value="طبي">طبي</option>
+                                        <option value="متعدد الاستخدامات">متعدد الاستخدامات</option>
+                                        <option value="أخرى">أخرى</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">المدينة / الموقع</label>
+                                    <select id="m-location" class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 focus:ring-1 focus:ring-[var(--gold-primary)] outline-none font-['Tajawal'] text-[var(--charcoal-900)]">
+                                        <option value="أبها">أبها</option>
+                                        <option value="بريده">بريده</option>
+                                        <option value="الخبر">الخبر</option>
+                                        <option value="الدمام">الدمام</option>
+                                        <option value="الرياض">الرياض</option>
+                                        <option value="جدة">جدة</option>
+                                        <option value="المدينة المنورة">المدينة المنورة</option>
+                                        <option value="مكة المكرمة">مكة المكرمة</option>
+                                        <option value="تبوك">تبوك</option>
+                                        <option value="نيوم">نيوم</option>
+                                        <option value="أخرى">أخرى</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">حالة الاعتماد</label>
+                                    <select id="m-approval" class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 focus:ring-1 focus:ring-[var(--gold-primary)] outline-none font-['Tajawal'] text-[var(--charcoal-900)]">
+                                        <option value="معتمد">معتمد</option>
+                                        <option value="جاري الاعتماد">جاري الاعتماد</option>
+                                        <option value="قيد المراجعة">قيد المراجعة</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- المساحات والجدول الزمني -->
+                        <div>
+                            <h3 class="text-sm font-bold text-gray-800 mb-3 border-b pb-1 border-[var(--gold-track)] font-['Tajawal']">المساحات والجدول الزمني</h3>
+                            <div class="grid grid-cols-5 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">مساحة الأرض</label>
+                                    <input type="text" id="m-landArea" oninput="formatNumberInput(event)" class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 outline-none font-numbers text-left text-[var(--charcoal-900)]" dir="ltr">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">المساحة المبنية</label>
+                                    <div class="relative">
+                                        <input type="text" id="m-bua" oninput="formatNumberInput(event)" class="w-full text-sm rounded-md border border-gray-300 pl-8 pr-3 py-2 outline-none font-numbers text-left transition-colors text-[var(--charcoal-900)]" dir="ltr">
+                                        <button type="button" class="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-[var(--gold-dark)] transition z-10" onclick="toggleLock('m-bua')" title="فك/قفل الخلية">
+                                            <i class="fa-solid fa-lock-open" id="icon-m-bua"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">المساحة البيعية</label>
+                                    <input type="text" id="m-sellArea" oninput="formatNumberInput(event)" class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 outline-none font-numbers text-left text-[var(--charcoal-900)]" dir="ltr">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">عدد الوحدات</label>
+                                    <input type="text" id="m-units" oninput="formatNumberInput(event)" class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 outline-none font-numbers text-left text-[var(--charcoal-900)]" dir="ltr">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">قيمة الأرض</label>
+                                    <div class="relative">
+                                        <input type="text" id="m-landValue" oninput="formatNumberInput(event)" class="w-full text-sm rounded-md border border-gray-300 pl-8 pr-3 py-2 outline-none font-numbers text-left transition-colors text-[var(--charcoal-900)]" dir="ltr">
+                                        <button type="button" class="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-[var(--gold-dark)] transition z-10" onclick="toggleLock('m-landValue')" title="فك/قفل الخلية">
+                                            <i class="fa-solid fa-lock-open" id="icon-m-landValue"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-3 gap-4 mt-4 bg-gray-50 p-3 rounded border border-gray-200">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">تاريخ البداية</label>
+                                    <input type="date" id="m-startDate" onchange="calculateModalDuration(); updateModalProgStatus();" class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 outline-none font-numbers text-[var(--charcoal-900)]">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">تاريخ النهاية</label>
+                                    <input type="date" id="m-endDate" onchange="calculateModalDuration()" class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 outline-none font-numbers text-[var(--charcoal-900)]">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']"><i class="fa-solid fa-calculator text-[var(--gold-dark)] mr-1"></i>المدة التلقائية (شهر)</label>
+                                    <input type="text" id="m-duration" readonly class="w-full text-sm rounded-md border border-gray-200 bg-gray-100 px-3 py-2 outline-none font-numbers text-center font-bold text-[var(--charcoal-900)] cursor-not-allowed">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- البيانات المالية ومؤشرات الإنجاز -->
+                        <div>
+                            <h3 class="text-sm font-bold text-gray-800 mb-3 border-b pb-1 border-[var(--gold-track)] font-['Tajawal']">البيانات المالية ومؤشرات الإنجاز</h3>
+                            <div class="grid grid-cols-5 gap-4 mb-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">التكاليف التقديرية</label>
+                                    <div class="relative">
+                                        <input type="text" id="m-estCosts" oninput="formatNumberInput(event); updateModalWeight();" class="w-full text-sm rounded-md border border-gray-300 pl-8 pr-3 py-2 outline-none font-numbers text-left transition-colors text-[var(--charcoal-900)]" dir="ltr">
+                                        <button type="button" class="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-[var(--gold-dark)] transition z-10" onclick="toggleLock('m-estCosts')" title="فك/قفل الخلية">
+                                            <i class="fa-solid fa-lock-open" id="icon-m-estCosts"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">الميزانية</label>
+                                    <input type="text" id="m-budget" oninput="formatNumberInput(event);" class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 outline-none font-numbers text-left text-[var(--charcoal-900)]" dir="ltr">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-[var(--gold-dark)] mb-1 font-['Tajawal']"><i class="fa-solid fa-pen-to-square mr-1"></i>المصروف الفعلي</label>
+                                    <input type="text" id="m-expenses" oninput="formatNumberInput(event)" class="w-full text-sm rounded-md border border-[var(--gold-primary)] px-3 py-2 outline-none font-numbers text-left text-[var(--charcoal-900)] shadow-sm focus:ring-1 focus:ring-[var(--gold-primary)]" dir="ltr">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">المبيعات المتوقعة</label>
+                                    <input type="text" id="m-sales" oninput="formatNumberInput(event)" class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 outline-none font-numbers text-left text-[var(--charcoal-900)]" dir="ltr">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">الإيجارات المتوقعة</label>
+                                    <div class="relative">
+                                        <input type="text" id="m-rent" oninput="formatNumberInput(event)" class="w-full text-sm rounded-md border border-gray-300 pl-8 pr-3 py-2 outline-none font-numbers text-left transition-colors bg-gray-100 text-gray-500 cursor-not-allowed" dir="ltr" readonly>
+                                        <button type="button" class="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-[var(--gold-dark)] transition z-10" onclick="toggleLock('m-rent')" title="فك/قفل الخلية">
+                                            <i class="fa-solid fa-lock" id="icon-m-rent"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-6 gap-3 bg-gray-50 p-4 rounded-lg border border-gray-200 items-end">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']"><i class="fa-solid fa-calculator text-[var(--gold-dark)] mr-1"></i>الوزن (%)</label>
+                                    <input type="text" id="m-weight" readonly class="w-full text-sm rounded-md border border-gray-200 bg-gray-100 px-2 py-2 outline-none font-numbers text-center font-bold text-[var(--charcoal-900)] cursor-not-allowed">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-[var(--gold-dark)] mb-1 font-['Tajawal']"><i class="fa-solid fa-pen-to-square mr-1"></i>المخطط (%)</label>
+                                    <input type="text" id="m-plannedProg" oninput="formatNumberInput(event); updateModalProgStatus();" class="w-full text-sm rounded-md border border-[var(--gold-primary)] px-2 py-2 outline-none font-numbers text-center text-[var(--charcoal-900)] font-bold shadow-sm focus:ring-1 focus:ring-[var(--gold-primary)]" dir="ltr">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-[var(--gold-dark)] mb-1 font-['Tajawal']"><i class="fa-solid fa-pen-to-square mr-1"></i>الفعلي (%)</label>
+                                    <input type="text" id="m-actualProg" oninput="formatNumberInput(event); updateModalProgStatus();" class="w-full text-sm rounded-md border border-[var(--gold-primary)] px-2 py-2 outline-none font-numbers text-center text-[var(--charcoal-900)] font-bold shadow-sm focus:ring-1 focus:ring-[var(--gold-primary)]" dir="ltr">
+                                </div>
+                                <div class="col-span-2">
+                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']"><i class="fa-solid fa-calculator text-[var(--gold-dark)] mr-1"></i>الحالة (تلقائي)</label>
+                                    <select id="m-progStatus" disabled class="w-full text-sm rounded-md border border-gray-200 bg-gray-100 px-2 py-2 outline-none font-['Tajawal'] font-bold text-[var(--charcoal-900)] cursor-not-allowed">
+                                        <option value="متقدم">متقدم (Ahead)</option>
+                                        <option value="في الوقت">في الوقت (On Track)</option>
+                                        <option value="متأخر">متأخر (Delayed)</option>
+                                        <option value="منتهي">منتهي (Finished)</option>
+                                        <option value="مستقبلي">مستقبلي (Future)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-[var(--gold-dark)] mb-1 font-['Tajawal']"><i class="fa-solid fa-pen-to-square mr-1"></i>المرحلة</label>
+                                    <select id="m-status" class="w-full text-sm rounded-md border border-[var(--gold-primary)] px-2 py-2 outline-none font-['Tajawal'] text-[var(--charcoal-900)] shadow-sm focus:ring-1 focus:ring-[var(--gold-primary)]">
+                                        <option value="تحت التنفيذ">تحت التنفيذ</option>
+                                        <option value="مرحلة التصميم">مرحلة التصميم</option>
+                                        <option value="تحت الدراسة">تحت الدراسة</option>
+                                        <option value="منتهي">منتهي</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-between gap-3">
+                    <button type="button" onclick="confirmDeleteProject()" class="px-4 py-2 rounded-md font-bold text-red-600 bg-red-50 border border-red-200 hover:bg-red-100 transition font-['Tajawal'] flex items-center gap-1.5">
+                        <i class="fa-solid fa-trash-can"></i> حذف المشروع
+                    </button>
+                    <div class="flex gap-3">
+                        <button type="button" onclick="closeModal()" class="px-6 py-2 rounded-md font-bold text-gray-600 bg-white border border-gray-300 hover:bg-gray-100 transition font-['Tajawal']">إلغاء الأمر</button>
+                        <button type="button" onclick="saveProject()" class="px-8 py-2 rounded-md font-bold text-white bg-[var(--gold-dark)] hover:bg-[var(--gold-primary)] shadow-md hover:shadow-lg transition font-['Tajawal']">تحديث البيانات</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* // =========================================================================
+        // 🚀 إعدادات ربط قواعد بيانات Firebase (للاستخدام لاحقاً عند الرفع على GitHub)
+        // =========================================================================
+        // لربط اللوحة بقاعدة بيانات حقيقية بدلاً من الحفظ المحلي، قم بإزالة التعليقات
+        // عن الكود أدناه واستبدال بيانات firebaseConfig ببيانات مشروعك من منصة Firebase.
+        
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getFirestore, collection, getDocs, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // const app = initializeApp(firebaseConfig);
+        // const db = getFirestore(app);
+        // =========================================================================
+        */
+
+        let dashboardPeriod = "الربع الأول 2026";
+        let dashboardFooter = "اجتماع مجلس الإدارة السابع عشر";
+
+        // المصفوفة الأساسية للبيانات
+        let projectsData = [
+          {
+                    "name": "مخطط الرابية",
+                    "type": "بنية تحتية",
+                    "nature": "أراضي سكنية وتجارية",
+                    "location": "أبها",
+                    "status": "منتهي",
+                    "approval": "معتمد",
+                    "units": 171,
+                    "startDate": "08-09-2024",
+                    "endDate": "04-08-2025",
+                    "landArea": 124234,
+                    "sellableArea": 75556,
+                    "bua": "N/A",
+                    "landValue": 50525000,
+                    "budget": 12423400,
+                    "estCosts": 13294376,
+                    "expenses": 10831220.932,
+                    "expRent": "N/A",
+                    "expSales": 81978260,
+                    "plannedProg": 100,
+                    "actualProg": 100,
+                    "progStatus": "منتهي"
+          },
+          {
+                    "name": "مخطط النوايف",
+                    "type": "بنية تحتية",
+                    "nature": "أراضي سكنية وتجارية",
+                    "location": "بريده",
+                    "status": "تحت التنفيذ",
+                    "approval": "معتمد",
+                    "units": 2179,
+                    "startDate": "01-01-2025",
+                    "endDate": "01-04-2027",
+                    "landArea": 2519020.94,
+                    "sellableArea": 1183360,
+                    "bua": "N/A",
+                    "landValue": 224192864,
+                    "budget": 188926500,
+                    "estCosts": 186426500,
+                    "expenses": 34627495.012,
+                    "expRent": "N/A",
+                    "expSales": 616620600,
+                    "plannedProg": 9.3,
+                    "actualProg": 16.17,
+                    "progStatus": "متقدم"
+          },
+          {
+                    "name": "مشروع مسار",
+                    "type": "بنية فوقية",
+                    "nature": "ضيافة",
+                    "location": "مكة المكرمة",
+                    "status": "مرحلة التصميم",
+                    "approval": "جاري الاعتماد",
+                    "units": 1082,
+                    "startDate": "01-01-2026",
+                    "endDate": "26-01-2027",
+                    "landArea": 6215,
+                    "sellableArea": 62410,
+                    "bua": 120000,
+                    "landValue": 276711377,
+                    "budget": 1450068377,
+                    "estCosts": 1173357000,
+                    "expenses": 2555076.73,
+                    "expRent": 102664400,
+                    "expSales": 1561694000,
+                    "plannedProg": 15,
+                    "actualProg": 10,
+                    "progStatus": "متأخر"
+          },
+          {
+                    "name": "بساتين الغروب",
+                    "type": "بنية فوقية",
+                    "nature": "فلل سكنية",
+                    "location": "المدينة المنورة",
+                    "status": "مرحلة التصميم",
+                    "approval": "جاري الاعتماد",
+                    "units": 1085,
+                    "startDate": "01-09-2025",
+                    "endDate": "25-12-2025",
+                    "landArea": 278877,
+                    "sellableArea": 273607.83,
+                    "bua": 252533,
+                    "landValue": "N/A",
+                    "budget": 18935225,
+                    "estCosts": 807615324.92,
+                    "expenses": 17973765.58,
+                    "expRent": "N/A",
+                    "expSales": 878192193,
+                    "plannedProg": 100,
+                    "actualProg": 99,
+                    "progStatus": "في الوقت"
+          },
+          {
+                    "name": "مساكن الروضة (6)",
+                    "type": "بنية فوقية",
+                    "nature": "شقق سكنية",
+                    "location": "المدينة المنورة",
+                    "status": "منتهي",
+                    "approval": "معتمد",
+                    "units": 48,
+                    "startDate": "06-01-2022",
+                    "endDate": "02-06-2025",
+                    "landArea": 2464,
+                    "sellableArea": 9048,
+                    "bua": 11566,
+                    "landValue": 6413818,
+                    "budget": 18935225,
+                    "estCosts": 19069233,
+                    "expenses": 17973765.58,
+                    "expRent": "N/A",
+                    "expSales": 30763200,
+                    "plannedProg": 100,
+                    "actualProg": 100,
+                    "progStatus": "منتهي"
+          },
+          {
+                    "name": "مساكن الروضة (7)",
+                    "type": "بنية فوقية",
+                    "nature": "شقق سكنية",
+                    "location": "المدينة المنورة",
+                    "status": "تحت التنفيذ",
+                    "approval": "معتمد",
+                    "units": 64,
+                    "startDate": "04-02-2024",
+                    "endDate": "31-03-2026",
+                    "landArea": 3031,
+                    "sellableArea": 12450,
+                    "bua": 16057,
+                    "landValue": 8305652,
+                    "budget": 29375042,
+                    "estCosts": 25669233,
+                    "expenses": 22097182.473,
+                    "expRent": "N/A",
+                    "expSales": 45195797,
+                    "plannedProg": 97.04,
+                    "actualProg": 95.17,
+                    "progStatus": "في الوقت"
+          },
+          {
+                    "name": "مساكن الروضة (18)",
+                    "type": "بنية فوقية",
+                    "nature": "شقق سكنية",
+                    "location": "المدينة المنورة",
+                    "status": "مرحلة التصميم",
+                    "approval": "جاري الاعتماد",
+                    "units": 46,
+                    "startDate": "01-06-2026",
+                    "endDate": "02-01-2028",
+                    "landArea": 2146,
+                    "sellableArea": 8134,
+                    "bua": 10224,
+                    "landValue": 7275844,
+                    "budget": 24090492,
+                    "estCosts": 24085205,
+                    "expenses": 0,
+                    "expRent": "N/A",
+                    "expSales": 36920139,
+                    "plannedProg": "0",
+                    "actualProg": "0",
+                    "progStatus": "مستقبلي"
+          },
+          {
+                    "name": "مساكن الروضة (10)",
+                    "type": "بنية فوقية",
+                    "nature": "شقق سكنية",
+                    "location": "المدينة المنورة",
+                    "status": "مرحلة التصميم",
+                    "approval": "جاري الاعتماد",
+                    "units": 34,
+                    "startDate": "01-06-2026",
+                    "endDate": "01-02-2028",
+                    "landArea": 1425,
+                    "sellableArea": 5503,
+                    "bua": 6891,
+                    "landValue": 4902860,
+                    "budget": 16233485,
+                    "estCosts": 16233485,
+                    "expenses": "0",
+                    "expRent": "N/A",
+                    "expSales": 24878800,
+                    "plannedProg": "0",
+                    "actualProg": "0",
+                    "progStatus": "مستقبلي"
+          },
+          {
+                    "name": "مجمع ورف التجاري",
+                    "type": "بنية فوقية",
+                    "nature": "تجاري",
+                    "location": "الخبر",
+                    "status": "منتهي",
+                    "approval": "معتمد",
+                    "units": 15,
+                    "startDate": "05-01-2024",
+                    "endDate": "14-07-2025",
+                    "landArea": 4921,
+                    "sellableArea": "N/A",
+                    "bua": 3189.54,
+                    "landValue": 18911200,
+                    "budget": 12436760,
+                    "estCosts": 11771853,
+                    "expenses": 10337358.82,
+                    "expRent": 10266440,
+                    "expSales": 69804536,
+                    "plannedProg": 100,
+                    "actualProg": 100,
+                    "progStatus": "منتهي"
+          },
+          {
+                    "name": "مجمع جاديت المكتبي",
+                    "type": "بنية فوقية",
+                    "nature": "مكتبي",
+                    "location": "الخبر",
+                    "status": "تحت التنفيذ",
+                    "approval": "معتمد",
+                    "units": 89,
+                    "startDate": "01-01-2025",
+                    "endDate": "25-08-2026",
+                    "landArea": 22531,
+                    "sellableArea": 16740,
+                    "bua": 38954,
+                    "landValue": 49568200,
+                    "budget": 112411778,
+                    "estCosts": 112411778,
+                    "expenses": 58843974,
+                    "expRent": "N/A",
+                    "expSales": 331800583,
+                    "plannedProg": 68.37,
+                    "actualProg": 61.18,
+                    "progStatus": "متأخر"
+          },
+          {
+                    "name": "مدارس الروضة (البنين)",
+                    "type": "بنية فوقية",
+                    "nature": "تعليمي",
+                    "location": "المدينة المنورة",
+                    "status": "تحت التنفيذ",
+                    "approval": "معتمد",
+                    "units": 50,
+                    "startDate": "01-08-2024",
+                    "endDate": "04-03-2026",
+                    "landArea": 5854,
+                    "sellableArea": "N/A",
+                    "bua": 19052,
+                    "landValue": 29375042,
+                    "budget": 43060004,
+                    "estCosts": 42177101,
+                    "expenses": 23752820,
+                    "expRent": 5041226,
+                    "expSales": 63015327,
+                    "plannedProg": 85.06,
+                    "actualProg": 83.66,
+                    "progStatus": "في الوقت"
+          },
+          {
+                    "name": "مدارس الروضة (البنات)",
+                    "type": "بنية فوقية",
+                    "nature": "تعليمي",
+                    "location": "المدينة المنورة",
+                    "status": "تحت التنفيذ",
+                    "approval": "معتمد",
+                    "units": 55,
+                    "startDate": "01-07-2024",
+                    "endDate": "30-04-2026",
+                    "landArea": 6189,
+                    "sellableArea": "N/A",
+                    "bua": 19802,
+                    "landValue": 9031995,
+                    "budget": 43869158,
+                    "estCosts": 42177101,
+                    "expenses": 26373255,
+                    "expRent": 5189027,
+                    "expSales": 64862838,
+                    "plannedProg": 96.61,
+                    "actualProg": 39.21,
+                    "progStatus": "متأخر"
+          }
+        ];
+
+        const calcProjectMonths = (startStr, endStr) => {
+            if (!startStr || !endStr || startStr === "N/A" || endStr === "N/A") return 0;
+            const sParts = startStr.split('-');
+            const eParts = endStr.split('-');
+            if(sParts.length !== 3 || eParts.length !== 3) return 0;
+            const s = new Date(sParts[2], sParts[1]-1, sParts[0]);
+            const e = new Date(eParts[2], eParts[1]-1, eParts[0]);
+            let months = (e.getFullYear() - s.getFullYear()) * 12;
+            months -= s.getMonth();
+            months += e.getMonth();
+            return months <= 0 ? 0 : months;
+        };
+
+        const calculateTimeProgress = (startStr, endStr, status) => {
+            if (status.includes("منتهي") || status.includes("مكتمل")) return 100;
+            if (!startStr || !endStr || startStr === "N/A" || endStr === "N/A") return 0;
+            const parseDate = (dStr) => {
+                const parts = dStr.split('-');
+                if(parts.length === 3) return new Date(parts[2], parts[1]-1, parts[0]).getTime();
+                return 0;
+            };
+            const s = parseDate(startStr);
+            const e = parseDate(endStr);
+            const current = new Date(2026, 2, 15).getTime(); 
+            
+            if (current <= s) return 0;
+            if (current >= e) return 100;
+            let perc = ((current - s) / (e - s)) * 100;
+            return Math.max(0, Math.min(100, perc));
+        };
+
+        const getAutoProgStatus = (actualProg, plannedProg, startDateStr) => {
+            const a = parseFloat(actualProg) || 0;
+            const p = parseFloat(plannedProg) || 0;
+
+            if (a >= 100) return "منتهي";
+
+            if (startDateStr && startDateStr !== "N/A" && startDateStr !== "لا ينطبق") {
+                const parts = startDateStr.split('-');
+                if(parts.length === 3) {
+                    const s = new Date(parts[2], parts[1]-1, parts[0]).getTime();
+                    const current = new Date(2026, 2, 15).getTime();
+                    if (current < s) return "مستقبلي";
+                }
+            }
+
+            const diff = a - p;
+            if (diff <= -3) return "متأخر";
+            if (diff < 0) return "في الوقت";
+            if (diff === 0) return "في الوقت";
+            return "متقدم";
+        };
+
+        const isNA = (val) => val === "N/A" || val === undefined || val === "" || val === "لا ينطبق";
+
+        const fVal = (num) => {
+            if (isNA(num)) return '<span class="text-[var(--charcoal-300)] font-numbers">لا ينطبق</span>';
+            if (num === 0 || num === "0" || num === "0.00") return '<span class="font-numbers text-[var(--charcoal-900)]">0.00</span>';
+            const val = parseFloat(num);
+            if (isNaN(val)) return '<span class="text-[var(--charcoal-300)] font-numbers">0.00</span>';
+            if (val >= 1000000) return `<span class="font-numbers text-[var(--charcoal-900)]">${(val / 1000000).toFixed(2)}M</span>`;
+            if (val >= 1000) return `<span class="font-numbers text-[var(--charcoal-900)]">${(val / 1000).toFixed(2)}K</span>`;
+            return `<span class="font-numbers text-[var(--charcoal-900)]">${val.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>`;
+        };
+
+        const getStatusTagStyle = (status) => {
+            let base = "color: white; border-radius: 4px; padding: 3px 6px; font-weight: bold; border: 1px solid transparent;";
+            if (status === "متقدم") return base + "background-color: #047857; border-color: #064E3B;"; 
+            if (status === "في الوقت") return base + "background-color: #65A30D; border-color: #4D7C0F;"; 
+            if (status === "منتهي") return base + "background-color: #0284C7; border-color: #0369A1;"; 
+            if (status === "متأخر") return base + "background-color: #DC2626; border-color: #991B1B;"; 
+            return base + "background-color: #64748B; border-color: #475569;"; 
+        };
+
+        const getProjectStatusTag = (status) => {
+            if (status.includes("تحت التنفيذ")) return `background-color: #E0F2FE; color: #0369A1; border: 1px solid #BAE6FD;`;
+            if (status.includes("تصميم")) return `background-color: #F3F4F6; color: #4B5563; border: 1px solid #D1D5DB;`;
+            if (status.includes("دراسة")) return `background-color: #FEF3C7; color: #B45309; border: 1px solid #FDE68A;`;
+            if (status.includes("منتهي")) return `background-color: #DCFCE7; color: #15803D; border: 1px solid #BBF7D0;`;
+            return `background-color: #F3F4F6; color: #374151; border: 1px solid #E5E7EB;`;
+        };
+
+        const getNatureTagStyle = (nature) => {
+            if(nature.includes("تجاري")) return 'bg-[#EFF6FF] text-[#1D4ED8] border-[#BFDBFE]'; 
+            if(nature.includes("مكتبي")) return 'bg-[#F5F3FF] text-[#6D28D9] border-[#DDD6FE]'; 
+            if(nature.includes("تعليمي")) return 'bg-[#FFF7ED] text-[#C2410C] border-[#FED7AA]'; 
+            if(nature.includes("سكني") || nature.includes("فلل") || nature.includes("شقق")) return 'bg-[#F0FDF4] text-[#15803D] border-[#BBF7D0]'; 
+            if(nature.includes("ضيافة")) return 'bg-[#FFF1F2] text-[#BE123C] border-[#FECDD3]'; 
+            return 'bg-[#F3F4F6] text-[#374151] border-[#E5E7EB]'; 
+        };
+
+        const getNatureIcon = (nature) => {
+            if(nature.includes("تجاري")) return '<i class="fa-solid fa-store ml-1"></i>';
+            if(nature.includes("مكتبي")) return '<i class="fa-solid fa-briefcase ml-1"></i>';
+            if(nature.includes("تعليمي")) return '<i class="fa-solid fa-graduation-cap ml-1"></i>';
+            if(nature.includes("سكني") || nature.includes("فلل") || nature.includes("شقق")) return '<i class="fa-solid fa-house ml-1"></i>';
+            if(nature.includes("ضيافة")) return '<i class="fa-solid fa-hotel ml-1"></i>';
+            return '<i class="fa-solid fa-map-location-dot ml-1"></i>';
+        };
+
+        const dateToInput = (dStr) => {
+            if(!dStr || dStr === "N/A" || dStr === "لا ينطبق") return '';
+            const parts = dStr.split('-');
+            if(parts.length === 3) return `${parts[2]}-${parts[1]}-${parts[0]}`;
+            return '';
+        };
+        const inputToDate = (iStr) => {
+            if(!iStr) return '';
+            const parts = iStr.split('-');
+            if(parts.length === 3) return `${parts[2]}-${parts[1]}-${parts[0]}`;
+            return '';
+        };
+
+        const formatDisplayDate = (dStr) => {
+            if (!dStr || dStr === "N/A" || dStr === "لا ينطبق") return '<span dir="ltr">لا ينطبق</span>';
+            const parts = dStr.split('-');
+            if(parts.length !== 3) return `<span dir="ltr">${dStr}</span>`;
+            const shortMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            const m = parseInt(parts[1], 10) - 1;
+            return `<span dir="ltr">${parts[0]}-${shortMonths[m]}-${parts[2]}</span>`;
+        };
+
+        const formatNumberWithCommas = (num) => {
+            if (num === 0 || num === "0") return "0.00";
+            if (!num && num !== 0 && num !== "0") return '';
+            let val = num.toString().replace(/,/g, '');
+            let parts = val.split('.');
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            return parts.join('.');
+        };
+
+        const parseFormattedNumber = (str) => {
+            if(str === "0" || str === "0.00") return "0"; 
+            if(!str || str === "لا ينطبق" || str === "N/A") return "N/A"; 
+            return parseFloat(str.toString().replace(/,/g, '')) || 0;
+        };
+
+        window.formatNumberInput = (e) => {
+            let val = e.target.value.replace(/,/g, ''); 
+            val = val.replace(/[^0-9.]/g, ''); 
+            const parts = val.split('.');
+            if(parts.length > 2) val = parts[0] + '.' + parts.slice(1).join('');
+            
+            if(val) {
+                let parts2 = val.split('.');
+                parts2[0] = parts2[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                e.target.value = parts2.join('.');
+            } else {
+                e.target.value = '';
+            }
+        };
+
+        // --- نظام الحماية بكلمة مرور ---
+        let pendingEditIndex = null;
+
+        window.openPasswordModal = (index) => {
+            pendingEditIndex = index;
+            document.getElementById('auth-password').value = '';
+            document.getElementById('password-error').classList.add('hidden');
+            
+            const pwdModal = document.getElementById('password-modal');
+            pwdModal.classList.remove('hidden');
+            pwdModal.classList.add('flex');
+            
+            setTimeout(() => document.getElementById('auth-password').focus(), 100);
+        };
+
+        window.closePasswordModal = () => {
+            const pwdModal = document.getElementById('password-modal');
+            pwdModal.classList.add('hidden');
+            pwdModal.classList.remove('flex');
+            pendingEditIndex = null;
+        };
+
+        window.verifyPassword = () => {
+            const pwd = document.getElementById('auth-password').value;
+            // كلمة المرور هنا
+            if (pwd === "Projects") {
+                closePasswordModal();
+                if (pendingEditIndex !== null) {
+                    openEditModal(pendingEditIndex);
+                }
+            } else {
+                document.getElementById('password-error').classList.remove('hidden');
+            }
+        };
+
+        document.getElementById('auth-password').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                verifyPassword();
+            }
+        });
+        // ---------------------------------
+
+        let pendingLockId = null;
+
+        window.toggleLock = (id) => {
+            const input = document.getElementById(id);
+            if (input.readOnly) {
+                pendingLockId = id;
+                document.getElementById('confirm-modal').classList.remove('hidden');
+                document.getElementById('confirm-modal').classList.add('flex');
+            } else {
+                input.readOnly = true;
+                input.value = "لا ينطبق";
+                input.classList.add('bg-gray-100', 'text-gray-500', 'cursor-not-allowed');
+                input.classList.remove('text-[var(--charcoal-900)]');
+                const icon = document.getElementById(`icon-${id}`);
+                icon.classList.remove('fa-lock-open');
+                icon.classList.add('fa-lock');
+            }
+        };
+
+        window.confirmUnlock = () => {
+            if(pendingLockId) {
+                const input = document.getElementById(pendingLockId);
+                const icon = document.getElementById(`icon-${pendingLockId}`);
+                input.readOnly = false;
+                input.value = "0.00";
+                input.classList.remove('bg-gray-100', 'text-gray-500', 'cursor-not-allowed');
+                input.classList.add('text-[var(--charcoal-900)]');
+                icon.classList.remove('fa-lock');
+                icon.classList.add('fa-lock-open');
+                pendingLockId = null;
+            }
+            closeConfirmModal();
+        };
+
+        window.closeConfirmModal = () => {
+            document.getElementById('confirm-modal').classList.add('hidden');
+            document.getElementById('confirm-modal').classList.remove('flex');
+            pendingLockId = null;
+        };
+
+        window.confirmDeleteProject = () => {
+            document.getElementById('delete-confirm-modal').classList.remove('hidden');
+            document.getElementById('delete-confirm-modal').classList.add('flex');
+        };
+
+        window.closeDeleteConfirmModal = () => {
+            document.getElementById('delete-confirm-modal').classList.add('hidden');
+            document.getElementById('delete-confirm-modal').classList.remove('flex');
+        };
+
+        window.executeDeleteProject = () => {
+            const index = document.getElementById('edit-index').value;
+            projectsData.splice(index, 1);
+            closeDeleteConfirmModal();
+            closeModal();
+            renderDashboard();
+        };
+
+        window.moveProjectUp = (index) => {
+            const type = projectsData[index].type;
+            let prevIndex = -1;
+            for (let i = index - 1; i >= 0; i--) {
+                if (projectsData[i].type === type) { prevIndex = i; break; }
+            }
+            if (prevIndex !== -1) {
+                const temp = projectsData[index];
+                projectsData[index] = projectsData[prevIndex];
+                projectsData[prevIndex] = temp;
+                renderDashboard();
+            }
+        };
+
+        window.moveProjectDown = (index) => {
+            const type = projectsData[index].type;
+            let nextIndex = -1;
+            for (let i = index + 1; i < projectsData.length; i++) {
+                if (projectsData[i].type === type) { nextIndex = i; break; }
+            }
+            if (nextIndex !== -1) {
+                const temp = projectsData[index];
+                projectsData[index] = projectsData[nextIndex];
+                projectsData[nextIndex] = temp;
+                renderDashboard();
+            }
+        };
+
+        const generateRow = (project, index, globalTotalEstCosts) => {
+            let dynamicProgStatus = getAutoProgStatus(project.actualProg, project.plannedProg, project.startDate);
+            project.progStatus = dynamicProgStatus; 
+            
+            if (dynamicProgStatus === "منتهي" || project.actualProg >= 100) {
+                project.status = "منتهي";
+            } else if (project.status === "منتهي") {
+                project.status = "تحت التنفيذ"; 
+            }
+
+            const tagStyle = getStatusTagStyle(dynamicProgStatus);
+            const approvalTextClass = project.approval.includes("معتمد") ? 'text-[var(--charcoal-700)]' : 'text-gray-500';
+            
+            const timePerc = calculateTimeProgress(project.startDate, project.endDate, project.status);
+            const durationMonths = calcProjectMonths(project.startDate, project.endDate);
+            
+            const budgetVal = parseFloat(project.budget) || 0;
+            const expVal = parseFloat(project.expenses) || 0;
+            const estCostsVal = parseFloat(project.estCosts) || 0;
+            
+            const autoWeight = globalTotalEstCosts > 0 ? ((estCostsVal / globalTotalEstCosts) * 100).toFixed(2) : 0;
+            const autoWeightNum = parseFloat(autoWeight);
+            const displayWeight = (autoWeightNum > 0 && autoWeightNum < 2) ? 2 : autoWeightNum;
+            
+            const expPerc = budgetVal > 0 ? Math.min(100, (expVal / budgetVal) * 100) : 0;
+            const displayExpPerc = expVal > 0 ? Math.max(expPerc, 2) : 0;
+            const expenseColorHex = 'var(--gold-dark)'; 
+
+            const donutChart = autoWeightNum == 0 
+                ? `<div class="flex flex-col items-center justify-center gap-[1px]"><div class="weight-donut" style="background: var(--charcoal-100);"></div><span class="text-[9.5px] font-bold text-[var(--charcoal-500)] font-numbers leading-none">0%</span></div>`
+                : `<div class="flex flex-col items-center justify-center gap-[1px]"><div class="weight-donut" style="background: conic-gradient(var(--gold-primary) 0% ${displayWeight}%, var(--charcoal-100) ${displayWeight}% 100%);"></div><span class="text-[9.5px] font-bold text-[var(--charcoal-900)] font-numbers leading-none">${autoWeight}%</span></div>`;
+
+            const rentDisplay = isNA(project.expRent) 
+                ? `<span class="text-[9px] font-bold text-gray-400">لا ينطبق</span>` 
+                : `${fVal(project.expRent)}`;
+                
+            const buaDisplay = isNA(project.bua) 
+                ? `<span class="text-[9px] font-bold text-gray-400">لا ينطبق</span>` 
+                : `${fVal(project.bua)}`;
+
+            const landValueDisplay = isNA(project.landValue) 
+                ? `<span class="text-[9px] font-bold text-gray-400">لا ينطبق</span>` 
+                : `${fVal(project.landValue)}`;
+
+            const estCostsDisplay = isNA(project.estCosts) 
+                ? `<span class="text-[9px] font-bold text-gray-400">لا ينطبق</span>` 
+                : `<span class="font-bold">${fVal(project.estCosts)}</span>`;
+
+            const pProg = parseFloat(project.plannedProg) || 0;
+            const aProg = parseFloat(project.actualProg) || 0;
+            const variance = parseFloat((aProg - pProg).toFixed(1));
+            let varianceStr = '';
+            if (variance > 0) {
+                varianceStr = `<span class="text-[#10B981] font-bold" dir="ltr">+${variance.toFixed(1)}%</span>`;
+            } else if (variance < 0) {
+                varianceStr = `<span class="text-[#EF4444] font-bold" dir="ltr">${variance.toFixed(1)}%</span>`;
+            } else {
+                varianceStr = `<span class="text-gray-400 font-bold" dir="ltr">0.0%</span>`;
+            }
+
+            return `
+            <div class="data-grid row-item relative group">
+                <div class="flex flex-col justify-center gap-1 px-4 h-full relative">
+                    <div class="flex items-center justify-between pr-1">
+                        <div class="flex items-center gap-1.5">
+                            <div class="flex flex-col gap-[2px] opacity-0 group-hover:opacity-100 transition-opacity no-print w-3">
+                                <button onclick="moveProjectUp(${index})" class="text-[8px] text-gray-400 hover:text-[var(--gold-dark)] bg-gray-100 hover:bg-gray-200 rounded px-0.5"><i class="fa-solid fa-chevron-up"></i></button>
+                                <button onclick="moveProjectDown(${index})" class="text-[8px] text-gray-400 hover:text-[var(--gold-dark)] bg-gray-100 hover:bg-gray-200 rounded px-0.5"><i class="fa-solid fa-chevron-down"></i></button>
+                            </div>
+                            <div class="editable-name font-bold text-[10.5px] text-[var(--charcoal-900)] truncate" onclick="openPasswordModal(${index})" title="انقر لتعديل بيانات المشروع">
+                                ${project.name} <i class="fa-solid fa-pen-to-square edit-icon text-[var(--gold-dark)]"></i>
+                            </div>
+                        </div>
+                        <span class="text-[8px] px-1 py-0.5 rounded font-bold" style="${getProjectStatusTag(project.status)}">${project.status}</span>
+                    </div>
+                    <div class="flex items-center gap-1 pr-4">
+                        <span class="font-bold px-1.5 py-[2px] rounded text-[8px] border flex items-center shadow-sm ${getNatureTagStyle(project.nature)}">
+                            ${getNatureIcon(project.nature)} ${project.nature}
+                        </span>
+                        <span class="text-gray-300">|</span>
+                        <span class="font-bold text-[8.5px] ${approvalTextClass}">${project.approval}</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-5 h-full border-r border-[var(--charcoal-100)] py-0.5">
+                    <div class="sub-col px-1">${fVal(project.landArea)}</div>
+                    <div class="sub-col px-1">${buaDisplay}</div>
+                    <div class="sub-col px-1">${fVal(project.sellableArea)}</div>
+                    <div class="sub-col px-1 font-numbers text-[var(--charcoal-700)]">${project.units}</div>
+                    <div class="sub-col px-1">${landValueDisplay}</div>
+                </div>
+
+                <div class="flex flex-col justify-center px-4 h-full border-r border-[var(--charcoal-100)] relative z-0 py-0.5">
+                    <div class="flex justify-between w-full mb-0.5">
+                        <span class="text-[8px] font-numbers text-gray-600 bg-white border border-gray-200 shadow-sm px-1.5 py-[1px] rounded flex items-center"><i class="fa-regular fa-calendar-check text-[7px] text-gray-500 ml-1"></i>${formatDisplayDate(project.startDate)}</span>
+                        <span class="text-[8px] font-numbers text-gray-600 bg-white border border-gray-200 shadow-sm px-1.5 py-[1px] rounded flex items-center"><i class="fa-regular fa-flag text-[7px] text-gray-500 ml-1"></i>${formatDisplayDate(project.endDate)}</span>
+                    </div>
+                    <div class="w-full h-[3px] bg-gray-200 rounded-full relative mt-[1px] mb-0.5">
+                        <div class="h-full bg-[var(--gold-dark)] absolute right-0 rounded-full" style="width: ${timePerc}%;"></div>
+                    </div>
+                    <div class="text-center w-full mt-0.5">
+                        <span class="font-numbers font-bold text-[var(--charcoal-900)] text-[9.5px] drop-shadow-sm">${durationMonths} شهر</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 h-full border-r border-[var(--charcoal-100)] py-0.5">
+                    <div class="sub-col font-numbers">${estCostsDisplay}</div>
+                    <div class="sub-col font-numbers">${fVal(project.budget)}</div>
+                    <div class="sub-col flex-col bg-gradient-to-b from-transparent to-gray-50/50 text-[var(--charcoal-700)] px-3 w-full items-stretch justify-center">
+                        <div class="flex justify-between items-end mb-0.5 w-full">
+                            <span class="font-numbers text-[10px] font-bold text-[var(--charcoal-900)]">${fVal(project.expenses)}</span>
+                        </div>
+                        <div class="w-full h-[4px] bg-gray-200 rounded-full overflow-hidden border border-gray-300/50 relative">
+                            <div class="h-full transition-all duration-500 absolute right-0 rounded-full" style="width: ${displayExpPerc}%; background-color: ${expenseColorHex};"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 h-full border-r border-[var(--charcoal-100)] py-0.5">
+                    <div class="sub-col">${fVal(project.expSales)}</div>
+                    <div class="sub-col">${rentDisplay}</div>
+                </div>
+
+                <div class="grid grid-cols-[1fr_1.6fr_1fr] h-full border-r border-[var(--charcoal-100)] py-0.5">
+                    <div class="sub-col">${donutChart}</div>
+                    <div class="flex flex-col justify-center px-2 border-l dashed border-[var(--charcoal-100)] h-full w-full">
+                        <div class="progress-track bg-gray-200 w-full"><div class="progress-fill" style="width: ${aProg}%"></div></div>
+                        <div class="flex justify-between items-center w-full mt-0.5">
+                            <span class="font-numbers font-bold text-[var(--charcoal-900)] text-[10px] leading-none">${aProg.toFixed(1)}%</span>
+                            <span class="font-numbers text-[9px] leading-none" title="الفرق عن المخطط (${pProg.toFixed(1)}%)">${varianceStr}</span>
+                        </div>
+                    </div>
+                    <div class="sub-col">
+                        <span class="text-[8px] block whitespace-nowrap min-w-[50px] text-center" style="${tagStyle}">
+                            ${dynamicProgStatus}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            `;
+        };
+
+        const renderDashboard = () => {
+            const infraContainer = document.getElementById('infra-projects');
+            const superContainer = document.getElementById('super-projects');
+            
+            infraContainer.innerHTML = '';
+            superContainer.innerHTML = '';
+
+            let totalBudget = 0, totalProjectBudget = 0, totalArea = 0, totalEstCosts = 0, totalUnits = 0;
+
+            document.getElementById('display-period').innerText = dashboardPeriod;
+            document.getElementById('display-footer-text').innerText = dashboardFooter;
+
+            projectsData.forEach(p => {
+                const bVal = parseFloat(p.budget) || 0;
+                totalBudget += bVal;
+                totalProjectBudget += bVal;
+                totalArea += (parseFloat(p.landArea) || 0);
+                totalEstCosts += (parseFloat(p.estCosts) || 0);
+                totalUnits += (parseInt(p.units, 10) || 0);
+            });
+
+            projectsData.forEach((proj, index) => {
+                if (proj.type === "بنية تحتية") {
+                    infraContainer.innerHTML += generateRow(proj, index, totalEstCosts);
+                } else {
+                    superContainer.innerHTML += generateRow(proj, index, totalEstCosts);
+                }
+            });
+
+            document.getElementById('total-area-top').innerHTML = `${(totalArea / 1000000).toFixed(2)} <span class="text-xs text-[var(--gold-primary)] font-normal ml-0.5">مليون م²</span>`;
+            document.getElementById('total-project-budget').innerHTML = `${(totalProjectBudget / 1000000000).toFixed(2)} <span class="text-xs text-[var(--gold-primary)] font-normal ml-0.5">مليار SAR</span>`;
+            document.getElementById('total-units').innerHTML = `${formatNumberWithCommas(totalUnits)} <span class="text-xs text-[var(--gold-primary)] font-normal ml-0.5">وحدة</span>`;
+        };
+
+        const modal = document.getElementById('edit-modal');
+        const periodModal = document.getElementById('period-modal');
+        const footerModal = document.getElementById('footer-modal');
+
+        window.openPeriodModal = () => {
+            document.getElementById('m-period').value = dashboardPeriod;
+            periodModal.classList.remove('hidden');
+            periodModal.classList.add('flex');
+        };
+        window.closePeriodModal = () => {
+            periodModal.classList.add('hidden');
+            periodModal.classList.remove('flex');
+        };
+        window.savePeriod = () => {
+            dashboardPeriod = document.getElementById('m-period').value || "الربع الأول 2026";
+            closePeriodModal();
+            renderDashboard();
+        };
+
+        window.openFooterModal = () => {
+            document.getElementById('m-footer').value = dashboardFooter;
+            footerModal.classList.remove('hidden');
+            footerModal.classList.add('flex');
+        };
+        window.closeFooterModal = () => {
+            footerModal.classList.add('hidden');
+            footerModal.classList.remove('flex');
+        };
+        window.saveFooter = () => {
+            dashboardFooter = document.getElementById('m-footer').value || "اجتماع مجلس الإدارة السابع عشر";
+            closeFooterModal();
+            renderDashboard();
+        };
+
+        window.calculateModalDuration = () => {
+            const sVal = document.getElementById('m-startDate').value;
+            const eVal = document.getElementById('m-endDate').value;
+            if(!sVal || !eVal) return;
+            const s = new Date(sVal);
+            const e = new Date(eVal);
+            let months = (e.getFullYear() - s.getFullYear()) * 12;
+            months -= s.getMonth();
+            months += e.getMonth();
+            document.getElementById('m-duration').value = months > 0 ? months : 0;
+        };
+
+        window.updateModalWeight = () => {
+            const currentIndex = parseInt(document.getElementById('edit-index').value);
+            const newEstCostsStr = document.getElementById('m-estCosts').value;
+            const newEstCosts = parseFormattedNumber(newEstCostsStr);
+            let otherTotal = 0;
+            projectsData.forEach((p, idx) => {
+                if(idx !== currentIndex) otherTotal += (parseFloat(p.estCosts) || 0);
+            });
+            const grandTotal = otherTotal + newEstCosts;
+            const w = grandTotal > 0 ? (newEstCosts / grandTotal) * 100 : 0;
+            document.getElementById('m-weight').value = w.toFixed(2);
+        };
+
+        window.updateModalProgStatus = () => {
+            const aStr = document.getElementById('m-actualProg').value;
+            const pStr = document.getElementById('m-plannedProg').value;
+            const a = parseFloat(aStr.toString().replace(/,/g, '')) || 0;
+            const p = parseFloat(pStr.toString().replace(/,/g, '')) || 0;
+            const sDate = document.getElementById('m-startDate').value; 
+            
+            let status = "في الوقت";
+            const phaseSelect = document.getElementById('m-status');
+
+            if (a >= 100) {
+                status = "منتهي";
+                phaseSelect.value = "منتهي"; 
+            } else {
+                if (sDate) {
+                    const s = new Date(sDate).getTime();
+                    const current = new Date(2026, 2, 15).getTime();
+                    if (current < s) {
+                        status = "مستقبلي";
+                    } else {
+                        if (a <= p - 3) status = "متأخر";
+                        else if (a < p) status = "في الوقت";
+                        else if (a === p) status = "في الوقت";
+                        else status = "متقدم";
+                    }
+                } else {
+                    if (a <= p - 3) status = "متأخر";
+                    else if (a < p) status = "في الوقت";
+                    else if (a === p) status = "في الوقت";
+                    else status = "متقدم";
+                }
+                
+                if (phaseSelect.value === "منتهي") {
+                    phaseSelect.value = "تحت التنفيذ";
+                }
+            }
+            document.getElementById('m-progStatus').value = status;
+        };
+
+        const setupLockedField = (id, val) => {
+            const input = document.getElementById(id);
+            const icon = document.getElementById(`icon-${id}`);
+            if (val === 0 || val === "0" || val === "0.00") {
+                input.value = "0.00";
+                input.readOnly = false;
+                input.classList.remove('bg-gray-100', 'text-gray-500', 'cursor-not-allowed');
+                input.classList.add('text-[var(--charcoal-900)]');
+                icon.classList.remove('fa-lock');
+                icon.classList.add('fa-lock-open');
+            } else if (isNA(val)) {
+                input.value = "لا ينطبق";
+                input.readOnly = true;
+                input.classList.add('bg-gray-100', 'text-gray-500', 'cursor-not-allowed');
+                input.classList.remove('text-[var(--charcoal-900)]');
+                icon.classList.add('fa-lock');
+                icon.classList.remove('fa-lock-open');
+            } else {
+                input.value = formatNumberWithCommas(val);
+                input.readOnly = false;
+                input.classList.remove('bg-gray-100', 'text-gray-500', 'cursor-not-allowed');
+                input.classList.add('text-[var(--charcoal-900)]');
+                icon.classList.remove('fa-lock');
+                icon.classList.add('fa-lock-open');
+            }
+        };
+
+        window.openEditModal = (index) => {
+            const proj = projectsData[index];
+            document.getElementById('edit-index').value = index;
+            document.getElementById('modal-project-name').innerText = `تعديل: ${proj.name}`;
+
+            document.getElementById('m-name').value = proj.name;
+            document.getElementById('m-nature').value = proj.nature;
+            document.getElementById('m-location').value = proj.location;
+            document.getElementById('m-approval').value = proj.approval;
+            document.getElementById('m-status').value = proj.status;
+
+            document.getElementById('m-landArea').value = formatNumberWithCommas(proj.landArea);
+            document.getElementById('m-sellArea').value = formatNumberWithCommas(proj.sellableArea);
+            document.getElementById('m-units').value = formatNumberWithCommas(proj.units);
+            document.getElementById('m-budget').value = formatNumberWithCommas(proj.budget);
+            document.getElementById('m-expenses').value = formatNumberWithCommas(proj.expenses);
+            document.getElementById('m-sales').value = formatNumberWithCommas(proj.expSales);
+            document.getElementById('m-plannedProg').value = formatNumberWithCommas(proj.plannedProg);
+            document.getElementById('m-actualProg').value = formatNumberWithCommas(proj.actualProg);
+
+            setupLockedField('m-bua', proj.bua);
+            setupLockedField('m-rent', proj.expRent);
+            setupLockedField('m-landValue', proj.landValue);
+            setupLockedField('m-estCosts', proj.estCosts);
+
+            document.getElementById('m-startDate').value = dateToInput(proj.startDate);
+            document.getElementById('m-endDate').value = dateToInput(proj.endDate);
+            
+            calculateModalDuration();
+            updateModalWeight();
+            updateModalProgStatus();
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        };
+
+        window.closeModal = () => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        };
+
+        const getSavedValue = (id) => {
+            const input = document.getElementById(id);
+            if (input.readOnly || input.value === "لا ينطبق") return "N/A"; 
+            if (input.value === "0" || input.value === "0.00" || input.value === "") return "0"; 
+            return parseFormattedNumber(input.value);
+        };
+
+        window.saveProject = () => {
+            const index = document.getElementById('edit-index').value;
+            
+            projectsData[index] = {
+                ...projectsData[index],
+                name: document.getElementById('m-name').value,
+                nature: document.getElementById('m-nature').value,
+                location: document.getElementById('m-location').value,
+                approval: document.getElementById('m-approval').value,
+                status: document.getElementById('m-status').value,
+                
+                landArea: parseFormattedNumber(document.getElementById('m-landArea').value),
+                sellableArea: parseFormattedNumber(document.getElementById('m-sellArea').value),
+                units: parseFormattedNumber(document.getElementById('m-units').value),
+                budget: parseFormattedNumber(document.getElementById('m-budget').value),
+                expenses: parseFormattedNumber(document.getElementById('m-expenses').value),
+                expSales: parseFormattedNumber(document.getElementById('m-sales').value),
+                
+                bua: getSavedValue('m-bua'),
+                landValue: getSavedValue('m-landValue'),
+                estCosts: getSavedValue('m-estCosts'),
+                expRent: getSavedValue('m-rent'),
+                
+                plannedProg: parseFormattedNumber(document.getElementById('m-plannedProg').value),
+                actualProg: parseFormattedNumber(document.getElementById('m-actualProg').value),
+                
+                startDate: inputToDate(document.getElementById('m-startDate').value),
+                endDate: inputToDate(document.getElementById('m-endDate').value),
+            };
+
+            closeModal();
+            renderDashboard(); 
+        };
+
+        window.onclick = function(event) {
+            if (event.target == modal) closeModal();
+            if (event.target == periodModal) closePeriodModal();
+            if (event.target == footerModal) closeFooterModal();
+            if (event.target == document.getElementById('password-modal')) closePasswordModal();
+            if (event.target == document.getElementById('confirm-modal')) closeConfirmModal();
+            if (event.target == document.getElementById('delete-confirm-modal')) closeDeleteConfirmModal();
+        }
+
+        document.addEventListener('DOMContentLoaded', renderDashboard);
+
+    </script>
+</body>
+</html>
