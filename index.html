@@ -1247,19 +1247,11 @@
             let dynamicProgStatus = getAutoProgStatus(project.actualProg, project.plannedProg, project.startDate);
             project.progStatus = dynamicProgStatus; 
             
-            // 🚀 تحديث مرحلة المشروع لـ "تحت التنفيذ" إذا حان تاريخ البداية أو كان ماضياً 🚀
-            const currentMs = new Date().setHours(0,0,0,0);
-            let sMs = 0;
-            if (project.startDate && project.startDate !== "N/A" && project.startDate !== "لا ينطبق") {
-                const parts = project.startDate.split('-');
-                if(parts.length === 3) sMs = new Date(parts[2], parts[1]-1, parts[0]).setHours(0,0,0,0);
-            }
-
-            if (dynamicProgStatus === "منتهي" || project.actualProg >= 100) {
+            // 🚀 احترام التعديل اليدوي للمرحلة 🚀
+            // يتم التدخل فقط إذا كان الإنجاز 100% (يصبح منتهي)، أو تم التراجع عن 100%
+            if (project.actualProg >= 100) {
                 project.status = "منتهي";
-            } else if (sMs > 0 && currentMs >= sMs && project.status !== "منتهي") {
-                project.status = "تحت التنفيذ";
-            } else if (project.status === "منتهي") {
+            } else if (project.status === "منتهي" && project.actualProg < 100) {
                 project.status = "تحت التنفيذ"; 
             }
 
@@ -1516,10 +1508,6 @@
                         if (currentMs < s) {
                             isFuture = true;
                             status = "مستقبلي";
-                        } else {
-                            if (phaseSelect.value !== "منتهي") {
-                                phaseSelect.value = "تحت التنفيذ";
-                            }
                         }
                     }
                 }
