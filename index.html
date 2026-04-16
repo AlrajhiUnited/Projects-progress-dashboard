@@ -8,6 +8,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- إضافة مكتبة التقويم الاحترافية لتوحيد عرض التاريخ -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    
     <style>
         :root {
             --gold-primary: #D4AF37;
@@ -515,12 +519,12 @@
                             </div>
                             <div class="grid grid-cols-3 gap-4 mt-4 bg-gray-50 p-3 rounded border border-gray-200">
                                 <div>
-                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">تاريخ البداية</label>
-                                    <input type="date" id="m-startDate" onchange="window.calculateModalDuration(); window.updateModalProgStatus();" class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 outline-none font-numbers text-[var(--charcoal-900)]">
+                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">تاريخ البداية (اليوم الشهر السنة)</label>
+                                    <input type="text" id="m-startDate" class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 outline-none font-numbers text-[var(--charcoal-900)] bg-white cursor-pointer" placeholder="اختر التاريخ..." dir="ltr">
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">تاريخ النهاية</label>
-                                    <input type="date" id="m-endDate" onchange="window.calculateModalDuration()" class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 outline-none font-numbers text-[var(--charcoal-900)]">
+                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">تاريخ النهاية (اليوم الشهر السنة)</label>
+                                    <input type="text" id="m-endDate" class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 outline-none font-numbers text-[var(--charcoal-900)] bg-white cursor-pointer" placeholder="اختر التاريخ..." dir="ltr">
                                 </div>
                                 <div>
                                     <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']"><i class="fa-solid fa-calculator text-[var(--gold-dark)] mr-1"></i>المدة التلقائية (شهر)</label>
@@ -615,7 +619,6 @@
         </div>
     </div>
 
-    <!-- 🚀 كود Firebase المتكامل 🚀 -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
@@ -633,11 +636,13 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // متغيرات البيانات المحلية
         let dashboardPeriod = "الربع الأول 2026";
         let dashboardFooter = "اجتماع مجلس الإدارة السابع عشر";
 
-        // المصفوفة الافتراضية للبيانات
+        // متغيرات التقويم الاحترافي
+        window.startPicker = null;
+        window.endPicker = null;
+
         let projectsData = [
           {
                     "name": "مخطط الرابية",
@@ -917,7 +922,6 @@
           }
         ];
 
-        // 🚀 جلب البيانات من Firebase
         const loadDataFromFirebase = async () => {
             try {
                 const docRef = doc(db, "dashboardData", "main");
@@ -929,13 +933,11 @@
                     dashboardFooter = data.footer || dashboardFooter;
                     projectsData = data.projects || projectsData;
                 } else {
-                    // إذا لم توجد قاعدة بيانات سابقة، ارفع البيانات الافتراضية
                     await saveDataToFirebase();
                 }
             } catch (error) {
                 console.error("عذراً، فشل الاتصال بالسحابة: ", error);
             } finally {
-                // إخفاء شاشة التحميل بعد جلب البيانات وعرض اللوحة
                 const loader = document.getElementById('cloud-loader');
                 if(loader) {
                     loader.style.opacity = '0';
@@ -945,7 +947,6 @@
             }
         };
 
-        // 🚀 حفظ البيانات في Firebase (مزامنة فورية)
         const saveDataToFirebase = async () => {
             try {
                 await setDoc(doc(db, "dashboardData", "main"), {
@@ -955,7 +956,6 @@
                 });
             } catch (error) {
                 console.error("حدث خطأ أثناء حفظ البيانات في السحابة:", error);
-                alert("تعذر حفظ التعديلات في السحابة. يرجى التحقق من اتصال الإنترنت.");
             }
         };
 
@@ -977,12 +977,12 @@
             if (!startStr || !endStr || startStr === "N/A" || endStr === "N/A") return 0;
             const parseDate = (dStr) => {
                 const parts = dStr.split('-');
-                if(parts.length === 3) return new Date(parts[2], parts[1]-1, parts[0]).getTime();
+                if(parts.length === 3) return new Date(parts[2], parts[1]-1, parts[0]).setHours(0,0,0,0);
                 return 0;
             };
             const s = parseDate(startStr);
             const e = parseDate(endStr);
-            const current = new Date(2026, 2, 15).getTime(); 
+            const current = new Date().setHours(0,0,0,0); 
             
             if (current <= s) return 0;
             if (current >= e) return 100;
@@ -996,12 +996,14 @@
 
             if (a >= 100) return "منتهي";
 
+            const currentMs = new Date().setHours(0,0,0,0);
+
             if (startDateStr && startDateStr !== "N/A" && startDateStr !== "لا ينطبق") {
                 const parts = startDateStr.split('-');
                 if(parts.length === 3) {
-                    const s = new Date(parts[2], parts[1]-1, parts[0]).getTime();
-                    const current = new Date(2026, 2, 15).getTime();
-                    if (current < s) return "مستقبلي";
+                    const s = new Date(parts[2], parts[1]-1, parts[0]).setHours(0,0,0,0);
+                    // هنا قمنا بتحديث المعادلة: إذا كان التاريخ المستقبلي لم يصل بعد سيكون "مستقبلي"
+                    if (currentMs < s) return "مستقبلي";
                 }
             }
 
@@ -1059,26 +1061,15 @@
             return '<i class="fa-solid fa-map-location-dot ml-1"></i>';
         };
 
-        const dateToInput = (dStr) => {
-            if(!dStr || dStr === "N/A" || dStr === "لا ينطبق") return '';
-            const parts = dStr.split('-');
-            if(parts.length === 3) return `${parts[2]}-${parts[1]}-${parts[0]}`;
-            return '';
-        };
-        const inputToDate = (iStr) => {
-            if(!iStr) return '';
-            const parts = iStr.split('-');
-            if(parts.length === 3) return `${parts[2]}-${parts[1]}-${parts[0]}`;
-            return '';
-        };
-
+        // تم تحديث طريقة العرض لتصبح (Day Month Year) بالكلمات المقروءة الواضحة 
         const formatDisplayDate = (dStr) => {
             if (!dStr || dStr === "N/A" || dStr === "لا ينطبق") return '<span dir="ltr">لا ينطبق</span>';
             const parts = dStr.split('-');
             if(parts.length !== 3) return `<span dir="ltr">${dStr}</span>`;
-            const shortMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            const fullMonths = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
             const m = parseInt(parts[1], 10) - 1;
-            return `<span dir="ltr">${parts[0]}-${shortMonths[m]}-${parts[2]}</span>`;
+            const d = parseInt(parts[0], 10);
+            return `<span dir="ltr">${d} ${fullMonths[m]} ${parts[2]}</span>`;
         };
 
         const formatNumberWithCommas = (num) => {
@@ -1111,11 +1102,10 @@
             }
         };
 
-        // --- نظام الحماية بكلمة مرور (محدث وقوي جداً) ---
+        // --- نظام الحماية بكلمة مرور (يحفظ الجلسة) ---
         window.pendingEditIndex = null;
 
         window.openPasswordModal = (index) => {
-            // التحقق مما إذا كانت الجلسة مسجلة الدخول مسبقاً (لن يطلب الباسورد مجدداً)
             if (sessionStorage.getItem('isAuthenticated') === 'true') {
                 window.openEditModal(index);
                 return;
@@ -1143,34 +1133,24 @@
 
         window.verifyPassword = () => {
             const pwdInput = document.getElementById('auth-password');
-            // استخدام trim للتخلص من أي مسافات زائدة قد يكتبها المستخدم بالخطأ
             const pwd = pwdInput.value.trim();
             
             if (pwd === "Projects") {
-                // 🚀 حفظ حالة الدخول في الجلسة الحالية للمتصفح 🚀
                 sessionStorage.setItem('isAuthenticated', 'true');
-
                 const indexToEdit = window.pendingEditIndex;
-                window.closePasswordModal(false); // إغلاق النافذة دون تصفير الرقم
+                window.closePasswordModal(false); 
                 
                 if (indexToEdit !== null && indexToEdit !== undefined) {
-                    try {
-                        window.openEditModal(indexToEdit);
-                    } catch (e) {
-                        console.error("Error opening edit modal: ", e);
-                        alert("حدث خطأ ما أثناء تحميل بيانات المشروع.");
-                    }
+                    try { window.openEditModal(indexToEdit); } catch (e) { console.error(e); }
                 }
-                window.pendingEditIndex = null; // تصفير الرقم بعد فتح النافذة
+                window.pendingEditIndex = null; 
             } else {
                 document.getElementById('password-error').classList.remove('hidden');
             }
         };
 
         document.getElementById('auth-password').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                window.verifyPassword();
-            }
+            if (e.key === 'Enter') window.verifyPassword();
         });
         // ---------------------------------
 
@@ -1267,8 +1247,18 @@
             let dynamicProgStatus = getAutoProgStatus(project.actualProg, project.plannedProg, project.startDate);
             project.progStatus = dynamicProgStatus; 
             
+            // 🚀 تحديث مرحلة المشروع لـ "تحت التنفيذ" إذا حان تاريخ البداية أو كان ماضياً 🚀
+            const currentMs = new Date().setHours(0,0,0,0);
+            let sMs = 0;
+            if (project.startDate && project.startDate !== "N/A" && project.startDate !== "لا ينطبق") {
+                const parts = project.startDate.split('-');
+                if(parts.length === 3) sMs = new Date(parts[2], parts[1]-1, parts[0]).setHours(0,0,0,0);
+            }
+
             if (dynamicProgStatus === "منتهي" || project.actualProg >= 100) {
                 project.status = "منتهي";
+            } else if (sMs > 0 && currentMs >= sMs && project.status !== "منتهي") {
+                project.status = "تحت التنفيذ";
             } else if (project.status === "منتهي") {
                 project.status = "تحت التنفيذ"; 
             }
@@ -1476,11 +1466,14 @@
         };
 
         window.calculateModalDuration = () => {
-            const sVal = document.getElementById('m-startDate').value;
+            const sVal = document.getElementById('m-startDate').value; // 08-09-2024
             const eVal = document.getElementById('m-endDate').value;
             if(!sVal || !eVal) return;
-            const s = new Date(sVal);
-            const e = new Date(eVal);
+            const sParts = sVal.split('-');
+            const eParts = eVal.split('-');
+            if(sParts.length !== 3 || eParts.length !== 3) return;
+            const s = new Date(sParts[2], sParts[1]-1, sParts[0]);
+            const e = new Date(eParts[2], eParts[1]-1, eParts[0]);
             let months = (e.getFullYear() - s.getFullYear()) * 12;
             months -= s.getMonth();
             months += e.getMonth();
@@ -1505,34 +1498,40 @@
             const pStr = document.getElementById('m-plannedProg').value;
             const a = parseFloat(aStr.toString().replace(/,/g, '')) || 0;
             const p = parseFloat(pStr.toString().replace(/,/g, '')) || 0;
-            const sDate = document.getElementById('m-startDate').value; 
+            const sDateStr = document.getElementById('m-startDate').value; 
             
             let status = "في الوقت";
             const phaseSelect = document.getElementById('m-status');
+            const currentMs = new Date().setHours(0,0,0,0);
 
             if (a >= 100) {
                 status = "منتهي";
                 phaseSelect.value = "منتهي"; 
             } else {
-                if (sDate) {
-                    const s = new Date(sDate).getTime();
-                    const current = new Date(2026, 2, 15).getTime();
-                    if (current < s) {
-                        status = "مستقبلي";
-                    } else {
-                        if (a <= p - 3) status = "متأخر";
-                        else if (a < p) status = "في الوقت";
-                        else if (a === p) status = "في الوقت";
-                        else status = "متقدم";
+                let isFuture = false;
+                if (sDateStr && sDateStr !== "N/A" && sDateStr !== "لا ينطبق") {
+                    const parts = sDateStr.split('-');
+                    if(parts.length === 3) {
+                        const s = new Date(parts[2], parts[1]-1, parts[0]).setHours(0,0,0,0);
+                        if (currentMs < s) {
+                            isFuture = true;
+                            status = "مستقبلي";
+                        } else {
+                            if (phaseSelect.value !== "منتهي") {
+                                phaseSelect.value = "تحت التنفيذ";
+                            }
+                        }
                     }
-                } else {
+                }
+                
+                if (!isFuture) {
                     if (a <= p - 3) status = "متأخر";
                     else if (a < p) status = "في الوقت";
                     else if (a === p) status = "في الوقت";
                     else status = "متقدم";
                 }
                 
-                if (phaseSelect.value === "منتهي") {
+                if (phaseSelect.value === "منتهي" && a < 100) {
                     phaseSelect.value = "تحت التنفيذ";
                 }
             }
@@ -1591,8 +1590,17 @@
             setupLockedField('m-landValue', proj.landValue);
             setupLockedField('m-estCosts', proj.estCosts);
 
-            document.getElementById('m-startDate').value = dateToInput(proj.startDate);
-            document.getElementById('m-endDate').value = dateToInput(proj.endDate);
+            // جلب البيانات ووضعها في التقويم بشكل منظم
+            if(proj.startDate && proj.startDate !== "N/A" && proj.startDate !== "لا ينطبق") {
+                window.startPicker.setDate(proj.startDate, false, "d-m-Y");
+            } else {
+                window.startPicker.clear();
+            }
+            if(proj.endDate && proj.endDate !== "N/A" && proj.endDate !== "لا ينطبق") {
+                window.endPicker.setDate(proj.endDate, false, "d-m-Y");
+            } else {
+                window.endPicker.clear();
+            }
             
             window.calculateModalDuration();
             window.updateModalWeight();
@@ -1642,13 +1650,14 @@
                 plannedProg: parseFormattedNumber(document.getElementById('m-plannedProg').value),
                 actualProg: parseFormattedNumber(document.getElementById('m-actualProg').value),
                 
-                startDate: inputToDate(document.getElementById('m-startDate').value),
-                endDate: inputToDate(document.getElementById('m-endDate').value),
+                // حفظ التاريخ من التقويم
+                startDate: document.getElementById('m-startDate').value || "N/A",
+                endDate: document.getElementById('m-endDate').value || "N/A",
             };
 
             window.closeModal();
             renderDashboard(); 
-            await saveDataToFirebase(); // حفظ التغيير في السحابة
+            await saveDataToFirebase(); 
         };
 
         window.onclick = function(event) {
@@ -1667,8 +1676,32 @@
             if (event.target == delModal) window.closeDeleteConfirmModal();
         }
 
-        // تشغيل دالة جلب البيانات من السحابة عند تحميل الصفحة
-        document.addEventListener('DOMContentLoaded', loadDataFromFirebase);
+        // تهيئة النظام عند التحميل وتفعيل التقويم
+        document.addEventListener('DOMContentLoaded', () => {
+            // تفعيل تقويم Flatpickr
+            window.startPicker = flatpickr("#m-startDate", {
+                dateFormat: "d-m-Y",
+                altInput: true,
+                altFormat: "j F Y",
+                disableMobile: true,
+                onChange: function() {
+                    window.calculateModalDuration();
+                    window.updateModalProgStatus();
+                }
+            });
+            
+            window.endPicker = flatpickr("#m-endDate", {
+                dateFormat: "d-m-Y",
+                altInput: true,
+                altFormat: "j F Y",
+                disableMobile: true,
+                onChange: function() {
+                    window.calculateModalDuration();
+                }
+            });
+
+            loadDataFromFirebase();
+        });
 
     </script>
 </body>
