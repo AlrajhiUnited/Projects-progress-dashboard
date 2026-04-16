@@ -1136,9 +1136,10 @@
         window.verifyPassword = () => {
             const pwd = document.getElementById('auth-password').value;
             if (pwd === "Projects") {
-                closePasswordModal();
-                if (pendingEditIndex !== null) {
-                    openEditModal(pendingEditIndex);
+                const indexToEdit = pendingEditIndex; // حفظ رقم المشروع قبل إغلاق النافذة
+                window.closePasswordModal();
+                if (indexToEdit !== null) {
+                    window.openEditModal(indexToEdit);
                 }
             } else {
                 document.getElementById('password-error').classList.remove('hidden');
@@ -1147,7 +1148,7 @@
 
         document.getElementById('auth-password').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
-                verifyPassword();
+                window.verifyPassword();
             }
         });
         // ---------------------------------
@@ -1565,9 +1566,9 @@
             document.getElementById('m-startDate').value = dateToInput(proj.startDate);
             document.getElementById('m-endDate').value = dateToInput(proj.endDate);
             
-            calculateModalDuration();
-            updateModalWeight();
-            updateModalProgStatus();
+            window.calculateModalDuration();
+            window.updateModalWeight();
+            window.updateModalProgStatus();
 
             modal.classList.remove('hidden');
             modal.classList.add('flex');
