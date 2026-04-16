@@ -197,6 +197,13 @@
 </head>
 <body>
 
+    <!-- شاشة التحميل الأولية للمزامنة مع قاعدة البيانات -->
+    <div id="cloud-loader" class="fixed inset-0 bg-white z-[200] flex flex-col items-center justify-center transition-opacity duration-500">
+        <i class="fa-solid fa-cloud-arrow-down text-5xl text-[var(--gold-dark)] mb-6 animate-bounce"></i>
+        <h2 class="text-2xl font-bold text-gray-800 font-['Tajawal']">جاري جلب البيانات من السحابة...</h2>
+        <p class="text-gray-500 mt-2 font-['Tajawal'] text-sm">لحظات وتكتمل المزامنة</p>
+    </div>
+
     <div class="dashboard-container">
         <div class="header-strip"></div>
 
@@ -215,17 +222,14 @@
             </div>
             
             <div class="flex gap-8">
-                <!-- إجمالي مساحات المشاريع -->
                 <div class="flex flex-col text-left border-l border-[var(--charcoal-100)] pl-6 pr-4 py-1 hover:bg-gray-50 rounded-r-lg transition duration-300">
                     <span class="text-[10px] text-[var(--charcoal-500)] font-bold mb-0.5">إجمالي مساحات المشاريع</span>
                     <span class="text-xl font-bold text-[var(--charcoal-900)] font-numbers leading-none" id="total-area-top">0 <span class="text-[10px] text-[var(--gold-primary)] font-normal">مليون م²</span></span>
                 </div>
-                <!-- إجمالي ميزانيات المشاريع -->
                 <div class="flex flex-col text-left border-l border-[var(--charcoal-100)] pl-6 pr-4 py-1 hover:bg-gray-50 transition duration-300">
                     <span class="text-[10px] text-[var(--charcoal-500)] font-bold mb-0.5">إجمالي ميزانيات المشاريع</span>
                     <span class="text-xl font-bold text-[var(--charcoal-900)] font-numbers leading-none" id="total-project-budget">0 <span class="text-[10px] text-[var(--gold-primary)] font-normal">مليار SAR</span></span>
                 </div>
-                <!-- إجمالي عدد الوحدات -->
                 <div class="flex flex-col text-left pl-2 pr-4 py-1 hover:bg-gray-50 rounded-l-lg transition duration-300">
                     <span class="text-[10px] text-[var(--charcoal-500)] font-bold mb-0.5">إجمالي عدد الوحدات</span>
                     <span class="text-xl font-bold text-[var(--charcoal-900)] font-numbers leading-none" id="total-units">0 <span class="text-[10px] text-[var(--gold-primary)] font-normal">وحدة</span></span>
@@ -265,7 +269,7 @@
                     <div class="h-[40%] w-full flex items-center justify-center border-b border-[rgba(255,255,255,0.2)] text-[10px] font-bold">العوائد المالية المتوقعة</div>
                     <div class="h-[60%] w-full grid grid-cols-2 text-[9px]">
                         <span class="flex items-center justify-center border-l border-[rgba(255,255,255,0.2)]">المبيعات</span>
-                        <span class="flex items-center justify-center">الإيجارات</span>
+                        <span class="flex items-center justify-center border-l border-[rgba(255,255,255,0.2)]">الإيجارات</span>
                     </div>
                 </div>
 
@@ -611,34 +615,29 @@
         </div>
     </div>
 
-    <script>
-        /* // =========================================================================
-        // 🚀 إعدادات ربط قواعد بيانات Firebase (للاستخدام لاحقاً عند الرفع على GitHub)
-        // =========================================================================
-        // لربط اللوحة بقاعدة بيانات حقيقية بدلاً من الحفظ المحلي، قم بإزالة التعليقات
-        // عن الكود أدناه واستبدال بيانات firebaseConfig ببيانات مشروعك من منصة Firebase.
-        
+    <!-- 🚀 كود Firebase المتكامل 🚀 -->
+    <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getFirestore, collection, getDocs, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        // التكوين الخاص بمشروعك في Firebase
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT_ID.appspot.com",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
+            apiKey: "AIzaSyDcEqAH_lk4qOgYGUVhu16GHw7mRmLbAWM",
+            authDomain: "projects-progress-dashboard.firebaseapp.com",
+            projectId: "projects-progress-dashboard",
+            storageBucket: "projects-progress-dashboard.firebasestorage.app",
+            messagingSenderId: "741799363441",
+            appId: "1:741799363441:web:6518fb90582ecef28e6cd0"
         };
 
-        // const app = initializeApp(firebaseConfig);
-        // const db = getFirestore(app);
-        // =========================================================================
-        */
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
+        // متغيرات البيانات المحلية
         let dashboardPeriod = "الربع الأول 2026";
         let dashboardFooter = "اجتماع مجلس الإدارة السابع عشر";
 
-        // المصفوفة الأساسية للبيانات
+        // المصفوفة الافتراضية للبيانات (ترفع أول مرة ثم تعتمد على السحابة)
         let projectsData = [
           {
                     "name": "مخطط الرابية",
@@ -918,6 +917,48 @@
           }
         ];
 
+        // 🚀 جلب البيانات من Firebase
+        const loadDataFromFirebase = async () => {
+            try {
+                const docRef = doc(db, "dashboardData", "main");
+                const docSnap = await getDoc(docRef);
+                
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    dashboardPeriod = data.period || dashboardPeriod;
+                    dashboardFooter = data.footer || dashboardFooter;
+                    projectsData = data.projects || projectsData;
+                } else {
+                    // إذا لم توجد قاعدة بيانات سابقة، ارفع البيانات الافتراضية
+                    await saveDataToFirebase();
+                }
+            } catch (error) {
+                console.error("عذراً، فشل الاتصال بالسحابة: ", error);
+            } finally {
+                // إخفاء شاشة التحميل بعد جلب البيانات وعرض اللوحة
+                const loader = document.getElementById('cloud-loader');
+                if(loader) {
+                    loader.style.opacity = '0';
+                    setTimeout(() => loader.remove(), 500);
+                }
+                renderDashboard();
+            }
+        };
+
+        // 🚀 حفظ البيانات في Firebase (مزامنة فورية)
+        const saveDataToFirebase = async () => {
+            try {
+                await setDoc(doc(db, "dashboardData", "main"), {
+                    period: dashboardPeriod,
+                    footer: dashboardFooter,
+                    projects: projectsData
+                });
+            } catch (error) {
+                console.error("حدث خطأ أثناء حفظ البيانات في السحابة:", error);
+                alert("تعذر حفظ التعديلات في السحابة. يرجى التحقق من اتصال الإنترنت.");
+            }
+        };
+
         const calcProjectMonths = (startStr, endStr) => {
             if (!startStr || !endStr || startStr === "N/A" || endStr === "N/A") return 0;
             const sParts = startStr.split('-');
@@ -1094,7 +1135,6 @@
 
         window.verifyPassword = () => {
             const pwd = document.getElementById('auth-password').value;
-            // كلمة المرور هنا
             if (pwd === "Projects") {
                 closePasswordModal();
                 if (pendingEditIndex !== null) {
@@ -1162,15 +1202,16 @@
             document.getElementById('delete-confirm-modal').classList.remove('flex');
         };
 
-        window.executeDeleteProject = () => {
+        window.executeDeleteProject = async () => {
             const index = document.getElementById('edit-index').value;
             projectsData.splice(index, 1);
             closeDeleteConfirmModal();
             closeModal();
             renderDashboard();
+            await saveDataToFirebase(); // حفظ التغيير في السحابة
         };
 
-        window.moveProjectUp = (index) => {
+        window.moveProjectUp = async (index) => {
             const type = projectsData[index].type;
             let prevIndex = -1;
             for (let i = index - 1; i >= 0; i--) {
@@ -1181,10 +1222,11 @@
                 projectsData[index] = projectsData[prevIndex];
                 projectsData[prevIndex] = temp;
                 renderDashboard();
+                await saveDataToFirebase(); // حفظ التغيير في السحابة
             }
         };
 
-        window.moveProjectDown = (index) => {
+        window.moveProjectDown = async (index) => {
             const type = projectsData[index].type;
             let nextIndex = -1;
             for (let i = index + 1; i < projectsData.length; i++) {
@@ -1195,6 +1237,7 @@
                 projectsData[index] = projectsData[nextIndex];
                 projectsData[nextIndex] = temp;
                 renderDashboard();
+                await saveDataToFirebase(); // حفظ التغيير في السحابة
             }
         };
 
@@ -1387,10 +1430,11 @@
             periodModal.classList.add('hidden');
             periodModal.classList.remove('flex');
         };
-        window.savePeriod = () => {
+        window.savePeriod = async () => {
             dashboardPeriod = document.getElementById('m-period').value || "الربع الأول 2026";
             closePeriodModal();
             renderDashboard();
+            await saveDataToFirebase(); // حفظ التغيير في السحابة
         };
 
         window.openFooterModal = () => {
@@ -1402,10 +1446,11 @@
             footerModal.classList.add('hidden');
             footerModal.classList.remove('flex');
         };
-        window.saveFooter = () => {
+        window.saveFooter = async () => {
             dashboardFooter = document.getElementById('m-footer').value || "اجتماع مجلس الإدارة السابع عشر";
             closeFooterModal();
             renderDashboard();
+            await saveDataToFirebase(); // حفظ التغيير في السحابة
         };
 
         window.calculateModalDuration = () => {
@@ -1475,14 +1520,7 @@
         const setupLockedField = (id, val) => {
             const input = document.getElementById(id);
             const icon = document.getElementById(`icon-${id}`);
-            if (val === 0 || val === "0" || val === "0.00") {
-                input.value = "0.00";
-                input.readOnly = false;
-                input.classList.remove('bg-gray-100', 'text-gray-500', 'cursor-not-allowed');
-                input.classList.add('text-[var(--charcoal-900)]');
-                icon.classList.remove('fa-lock');
-                icon.classList.add('fa-lock-open');
-            } else if (isNA(val)) {
+            if (isNA(val)) {
                 input.value = "لا ينطبق";
                 input.readOnly = true;
                 input.classList.add('bg-gray-100', 'text-gray-500', 'cursor-not-allowed');
@@ -1547,7 +1585,7 @@
             return parseFormattedNumber(input.value);
         };
 
-        window.saveProject = () => {
+        window.saveProject = async () => {
             const index = document.getElementById('edit-index').value;
             
             projectsData[index] = {
@@ -1579,6 +1617,7 @@
 
             closeModal();
             renderDashboard(); 
+            await saveDataToFirebase(); // حفظ التغيير في السحابة
         };
 
         window.onclick = function(event) {
@@ -1590,7 +1629,8 @@
             if (event.target == document.getElementById('delete-confirm-modal')) closeDeleteConfirmModal();
         }
 
-        document.addEventListener('DOMContentLoaded', renderDashboard);
+        // تشغيل دالة جلب البيانات من السحابة عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', loadDataFromFirebase);
 
     </script>
 </body>
