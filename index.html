@@ -1115,6 +1115,12 @@
         window.pendingEditIndex = null;
 
         window.openPasswordModal = (index) => {
+            // التحقق مما إذا كانت الجلسة مسجلة الدخول مسبقاً (لن يطلب الباسورد مجدداً)
+            if (sessionStorage.getItem('isAuthenticated') === 'true') {
+                window.openEditModal(index);
+                return;
+            }
+
             window.pendingEditIndex = index;
             document.getElementById('auth-password').value = '';
             document.getElementById('password-error').classList.add('hidden');
@@ -1141,6 +1147,9 @@
             const pwd = pwdInput.value.trim();
             
             if (pwd === "Projects") {
+                // 🚀 حفظ حالة الدخول في الجلسة الحالية للمتصفح 🚀
+                sessionStorage.setItem('isAuthenticated', 'true');
+
                 const indexToEdit = window.pendingEditIndex;
                 window.closePasswordModal(false); // إغلاق النافذة دون تصفير الرقم
                 
