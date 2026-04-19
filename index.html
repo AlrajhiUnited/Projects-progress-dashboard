@@ -164,7 +164,7 @@
             align-items: center;
             border-left: 1px dashed var(--charcoal-100);
             height: 100%;
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 700;
             color: var(--charcoal-900);
             text-align: center;
@@ -228,11 +228,11 @@
             <div class="flex gap-8">
                 <div class="flex flex-col text-left border-l border-[var(--charcoal-100)] pl-6 pr-4 py-1 hover:bg-gray-50 rounded-r-lg transition duration-300">
                     <span class="text-[10px] text-[var(--charcoal-500)] font-bold mb-0.5">إجمالي مساحات المشاريع</span>
-                    <span class="text-xl font-bold text-[var(--charcoal-900)] font-numbers leading-none" id="total-area-top">0 <span class="text-[10px] text-[var(--gold-primary)] font-normal">مليون م²</span></span>
+                    <span class="text-xl font-bold text-[var(--charcoal-900)] font-numbers leading-none" id="total-area-top">0 <span class="text-[10px] text-[var(--gold-primary)] font-normal">م²</span></span>
                 </div>
                 <div class="flex flex-col text-left border-l border-[var(--charcoal-100)] pl-6 pr-4 py-1 hover:bg-gray-50 transition duration-300">
                     <span class="text-[10px] text-[var(--charcoal-500)] font-bold mb-0.5">إجمالي ميزانيات المشاريع</span>
-                    <span class="text-xl font-bold text-[var(--charcoal-900)] font-numbers leading-none" id="total-project-budget">0 <span class="text-[10px] text-[var(--gold-primary)] font-normal">مليار SAR</span></span>
+                    <span class="text-xl font-bold text-[var(--charcoal-900)] font-numbers leading-none" id="total-project-budget">0 <span class="text-[10px] text-[var(--gold-primary)] font-normal">SAR</span></span>
                 </div>
                 <div class="flex flex-col text-left pl-2 pr-4 py-1 hover:bg-gray-50 rounded-l-lg transition duration-300">
                     <span class="text-[10px] text-[var(--charcoal-500)] font-bold mb-0.5">إجمالي عدد الوحدات</span>
@@ -1002,7 +1002,6 @@
                 const parts = startDateStr.split('-');
                 if(parts.length === 3) {
                     const s = new Date(parts[2], parts[1]-1, parts[0]).setHours(0,0,0,0);
-                    // هنا قمنا بتحديث المعادلة: إذا كان التاريخ المستقبلي لم يصل بعد سيكون "مستقبلي"
                     if (currentMs < s) return "مستقبلي";
                 }
             }
@@ -1016,14 +1015,13 @@
 
         const isNA = (val) => val === "N/A" || val === undefined || val === "" || val === "لا ينطبق";
 
+        // 🚀 عرض الأرقام كاملة بدون اختصارات وبدون كسور (لتقليل الحشو) 🚀
         const fVal = (num) => {
             if (isNA(num)) return '<span class="text-[var(--charcoal-300)] font-numbers">لا ينطبق</span>';
-            if (num === 0 || num === "0" || num === "0.00") return '<span class="font-numbers text-[var(--charcoal-900)]">0.00</span>';
+            if (num === 0 || num === "0" || num === "0.00") return '<span class="font-numbers text-[var(--charcoal-900)]">0</span>';
             const val = parseFloat(num);
-            if (isNaN(val)) return '<span class="text-[var(--charcoal-300)] font-numbers">0.00</span>';
-            if (val >= 1000000) return `<span class="font-numbers text-[var(--charcoal-900)]">${(val / 1000000).toFixed(2)}M</span>`;
-            if (val >= 1000) return `<span class="font-numbers text-[var(--charcoal-900)]">${(val / 1000).toFixed(2)}K</span>`;
-            return `<span class="font-numbers text-[var(--charcoal-900)]">${val.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>`;
+            if (isNaN(val)) return '<span class="text-[var(--charcoal-300)] font-numbers">0</span>';
+            return `<span class="font-numbers text-[var(--charcoal-900)]">${val.toLocaleString('en-US', {maximumFractionDigits: 0})}</span>`;
         };
 
         const getStatusTagStyle = (status) => {
@@ -1061,7 +1059,6 @@
             return '<i class="fa-solid fa-map-location-dot ml-1"></i>';
         };
 
-        // تم تحديث طريقة العرض لتصبح (Day Month Year) بالكلمات المقروءة الواضحة 
         const formatDisplayDate = (dStr) => {
             if (!dStr || dStr === "N/A" || dStr === "لا ينطبق") return '<span dir="ltr">لا ينطبق</span>';
             const parts = dStr.split('-');
@@ -1072,8 +1069,9 @@
             return `<span dir="ltr">${d} ${fullMonths[m]} ${parts[2]}</span>`;
         };
 
+        // 🚀 حفظ الكسور والقيم الدقيقة في الإدخال 🚀
         const formatNumberWithCommas = (num) => {
-            if (num === 0 || num === "0") return "0.00";
+            if (num === 0 || num === "0") return "0";
             if (!num && num !== 0 && num !== "0") return '';
             let val = num.toString().replace(/,/g, '');
             let parts = val.split('.');
@@ -1102,7 +1100,6 @@
             }
         };
 
-        // --- نظام الحماية بكلمة مرور (يحفظ الجلسة) ---
         window.pendingEditIndex = null;
 
         window.openPasswordModal = (index) => {
@@ -1152,7 +1149,6 @@
         document.getElementById('auth-password').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') window.verifyPassword();
         });
-        // ---------------------------------
 
         window.pendingLockId = null;
 
@@ -1178,7 +1174,7 @@
                 const input = document.getElementById(window.pendingLockId);
                 const icon = document.getElementById(`icon-${window.pendingLockId}`);
                 input.readOnly = false;
-                input.value = "0.00";
+                input.value = "0"; // تفريغ افتراضي بدون كسور لتقليل الحشو
                 input.classList.remove('bg-gray-100', 'text-gray-500', 'cursor-not-allowed');
                 input.classList.add('text-[var(--charcoal-900)]');
                 icon.classList.remove('fa-lock');
@@ -1247,8 +1243,6 @@
             let dynamicProgStatus = getAutoProgStatus(project.actualProg, project.plannedProg, project.startDate);
             project.progStatus = dynamicProgStatus; 
             
-            // 🚀 احترام التعديل اليدوي للمرحلة 🚀
-            // يتم التدخل فقط إذا كان الإنجاز 100% (يصبح منتهي)، أو تم التراجع عن 100%
             if (project.actualProg >= 100) {
                 project.status = "منتهي";
             } else if (project.status === "منتهي" && project.actualProg < 100) {
@@ -1355,7 +1349,7 @@
                     <div class="sub-col font-numbers">${fVal(project.budget)}</div>
                     <div class="sub-col flex-col bg-gradient-to-b from-transparent to-gray-50/50 text-[var(--charcoal-700)] px-3 w-full items-stretch justify-center">
                         <div class="flex justify-between items-end mb-0.5 w-full">
-                            <span class="font-numbers text-[10px] font-bold text-[var(--charcoal-900)]">${fVal(project.expenses)}</span>
+                            <span class="font-numbers text-[9px] font-bold text-[var(--charcoal-900)]">${fVal(project.expenses)}</span>
                         </div>
                         <div class="w-full h-[4px] bg-gray-200 rounded-full overflow-hidden border border-gray-300/50 relative">
                             <div class="h-full transition-all duration-500 absolute right-0 rounded-full" style="width: ${displayExpPerc}%; background-color: ${expenseColorHex};"></div>
@@ -1416,9 +1410,10 @@
                 }
             });
 
-            document.getElementById('total-area-top').innerHTML = `${(totalArea / 1000000).toFixed(2)} <span class="text-xs text-[var(--gold-primary)] font-normal ml-0.5">مليون م²</span>`;
-            document.getElementById('total-project-budget').innerHTML = `${(totalProjectBudget / 1000000000).toFixed(2)} <span class="text-xs text-[var(--gold-primary)] font-normal ml-0.5">مليار SAR</span>`;
-            document.getElementById('total-units').innerHTML = `${formatNumberWithCommas(totalUnits)} <span class="text-xs text-[var(--gold-primary)] font-normal ml-0.5">وحدة</span>`;
+            // 🚀 عرض المجاميع بدون كسور لتقليل الحشو البصري 🚀
+            document.getElementById('total-area-top').innerHTML = `${totalArea.toLocaleString('en-US', {maximumFractionDigits: 0})} <span class="text-[10px] text-[var(--gold-primary)] font-normal ml-0.5">م²</span>`;
+            document.getElementById('total-project-budget').innerHTML = `${totalProjectBudget.toLocaleString('en-US', {maximumFractionDigits: 0})} <span class="text-[10px] text-[var(--gold-primary)] font-normal ml-0.5">SAR</span>`;
+            document.getElementById('total-units').innerHTML = `${totalUnits.toLocaleString('en-US', {maximumFractionDigits: 0})} <span class="text-[10px] text-[var(--gold-primary)] font-normal ml-0.5">وحدة</span>`;
         };
 
         window.openPeriodModal = () => {
@@ -1458,7 +1453,7 @@
         };
 
         window.calculateModalDuration = () => {
-            const sVal = document.getElementById('m-startDate').value; // 08-09-2024
+            const sVal = document.getElementById('m-startDate').value; 
             const eVal = document.getElementById('m-endDate').value;
             if(!sVal || !eVal) return;
             const sParts = sVal.split('-');
@@ -1530,7 +1525,7 @@
             const input = document.getElementById(id);
             const icon = document.getElementById(`icon-${id}`);
             if (val === 0 || val === "0" || val === "0.00") {
-                input.value = "0.00";
+                input.value = "0";
                 input.readOnly = false;
                 input.classList.remove('bg-gray-100', 'text-gray-500', 'cursor-not-allowed');
                 input.classList.add('text-[var(--charcoal-900)]');
@@ -1578,7 +1573,6 @@
             setupLockedField('m-landValue', proj.landValue);
             setupLockedField('m-estCosts', proj.estCosts);
 
-            // جلب البيانات ووضعها في التقويم بشكل منظم
             if(proj.startDate && proj.startDate !== "N/A" && proj.startDate !== "لا ينطبق") {
                 window.startPicker.setDate(proj.startDate, false, "d-m-Y");
             } else {
@@ -1638,7 +1632,6 @@
                 plannedProg: parseFormattedNumber(document.getElementById('m-plannedProg').value),
                 actualProg: parseFormattedNumber(document.getElementById('m-actualProg').value),
                 
-                // حفظ التاريخ من التقويم
                 startDate: document.getElementById('m-startDate').value || "N/A",
                 endDate: document.getElementById('m-endDate').value || "N/A",
             };
@@ -1664,9 +1657,7 @@
             if (event.target == delModal) window.closeDeleteConfirmModal();
         }
 
-        // تهيئة النظام عند التحميل وتفعيل التقويم
         document.addEventListener('DOMContentLoaded', () => {
-            // تفعيل تقويم Flatpickr
             window.startPicker = flatpickr("#m-startDate", {
                 dateFormat: "d-m-Y",
                 altInput: true,
