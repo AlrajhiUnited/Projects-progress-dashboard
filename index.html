@@ -323,7 +323,7 @@
                     <h2 class="text-lg font-bold text-gray-900 font-['Tajawal']">المصادقة مطلوبة</h2>
                 </div>
                 <div class="p-6">
-                    <label class="block text-sm font-bold text-gray-600 mb-2 font-['Tajawal']">الرجاء إدخال كلمة المرور لتعديل المشروع</label>
+                    <label class="block text-sm font-bold text-gray-600 mb-2 font-['Tajawal']">الرجاء إدخال كلمة المرور لتأكيد التعديل</label>
                     <input type="password" id="auth-password" placeholder="كلمة المرور..." class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 focus:ring-1 focus:ring-[var(--gold-primary)] outline-none font-['Tajawal'] text-left" dir="ltr">
                     <p id="password-error" class="text-xs text-red-500 mt-2 font-bold hidden font-['Tajawal']"><i class="fa-solid fa-circle-exclamation ml-1"></i>كلمة المرور غير صحيحة، يرجى المحاولة مجدداً.</p>
                 </div>
@@ -348,8 +348,8 @@
                     <input type="text" id="m-footer" placeholder="مثال: اجتماع مجلس الإدارة..." class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 focus:ring-1 focus:ring-[var(--gold-primary)] outline-none font-['Tajawal']">
                 </div>
                 <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-3">
-                    <button onclick="window.closeFooterModal()" class="px-6 py-2 rounded-md font-bold text-gray-600 bg-white border border-gray-300 hover:bg-gray-100 transition font-['Tajawal']">إلغاء الأمر</button>
-                    <button onclick="window.saveFooter()" class="px-8 py-2 rounded-md font-bold text-white bg-[var(--gold-dark)] hover:bg-[var(--gold-primary)] shadow-md hover:shadow-lg transition font-['Tajawal']">حفظ التعديل</button>
+                    <button type="button" onclick="window.closeFooterModal()" class="px-6 py-2 rounded-md font-bold text-gray-600 bg-white border border-gray-300 hover:bg-gray-100 transition font-['Tajawal']">إلغاء الأمر</button>
+                    <button type="button" onclick="window.saveFooter()" class="px-8 py-2 rounded-md font-bold text-white bg-[var(--gold-dark)] hover:bg-[var(--gold-primary)] shadow-md hover:shadow-lg transition font-['Tajawal']">حفظ التعديل</button>
                 </div>
             </div>
         </div>
@@ -368,8 +368,8 @@
                     <input type="text" id="m-period" placeholder="مثال: الربع الأول 2026" class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 focus:ring-1 focus:ring-[var(--gold-primary)] outline-none font-['Tajawal']">
                 </div>
                 <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-3">
-                    <button onclick="window.closePeriodModal()" class="px-6 py-2 rounded-md font-bold text-gray-600 bg-white border border-gray-300 hover:bg-gray-100 transition font-['Tajawal']">إلغاء الأمر</button>
-                    <button onclick="window.savePeriod()" class="px-8 py-2 rounded-md font-bold text-white bg-[var(--gold-dark)] hover:bg-[var(--gold-primary)] shadow-md hover:shadow-lg transition font-['Tajawal']">حفظ الفترة</button>
+                    <button type="button" onclick="window.closePeriodModal()" class="px-6 py-2 rounded-md font-bold text-gray-600 bg-white border border-gray-300 hover:bg-gray-100 transition font-['Tajawal']">إلغاء الأمر</button>
+                    <button type="button" onclick="window.savePeriod()" class="px-8 py-2 rounded-md font-bold text-white bg-[var(--gold-dark)] hover:bg-[var(--gold-primary)] shadow-md hover:shadow-lg transition font-['Tajawal']">حفظ الفترة</button>
                 </div>
             </div>
         </div>
@@ -420,7 +420,7 @@
                         <h2 class="text-lg font-bold text-gray-900 font-['Tajawal']" id="modal-project-name">تعديل المشروع</h2>
                         <p class="text-xs text-emerald-600 font-['Tajawal'] mt-1 font-bold"><i class="fa-solid fa-wand-magic-sparkles"></i> يتم حساب المؤشرات العليا وحالة الإنجاز ووزن التكلفة تلقائياً</p>
                     </div>
-                    <button onclick="window.closeModal()" class="text-gray-400 hover:text-red-600 transition w-8 h-8 rounded-full hover:bg-red-50 flex items-center justify-center">
+                    <button type="button" onclick="window.closeModal()" class="text-gray-400 hover:text-red-600 transition w-8 h-8 rounded-full hover:bg-red-50 flex items-center justify-center">
                         <i class="fa-solid fa-xmark text-lg"></i>
                     </button>
                 </div>
@@ -949,10 +949,13 @@
 
         const saveDataToFirebase = async () => {
             try {
+                // إنشاء نسخة عميقة من البيانات لضمان التقاط جميع التعديلات ورفعها بشكل نقي
+                const cleanProjectsData = JSON.parse(JSON.stringify(projectsData));
+                
                 await setDoc(doc(db, "dashboardData", "main"), {
                     period: dashboardPeriod,
                     footer: dashboardFooter,
-                    projects: projectsData
+                    projects: cleanProjectsData
                 });
             } catch (error) {
                 console.error("حدث خطأ أثناء حفظ البيانات في السحابة:", error);
@@ -1015,7 +1018,6 @@
 
         const isNA = (val) => val === "N/A" || val === undefined || val === "" || val === "لا ينطبق";
 
-        // 🚀 عرض الأرقام كاملة بدون اختصارات وبدون كسور (لتقليل الحشو) 🚀
         const fVal = (num) => {
             if (isNA(num)) return '<span class="text-[var(--charcoal-300)] font-numbers">لا ينطبق</span>';
             if (num === 0 || num === "0" || num === "0.00") return '<span class="font-numbers text-[var(--charcoal-900)]">0</span>';
@@ -1069,7 +1071,6 @@
             return `<span dir="ltr">${d} ${fullMonths[m]} ${parts[2]}</span>`;
         };
 
-        // 🚀 حفظ الكسور والقيم الدقيقة في الإدخال 🚀
         const formatNumberWithCommas = (num) => {
             if (num === 0 || num === "0") return "0";
             if (!num && num !== 0 && num !== "0") return '';
@@ -1101,10 +1102,13 @@
         };
 
         window.pendingEditIndex = null;
+        window.pendingAction = null; // متغير لحفظ أمر الصعود والنزول
 
         window.openPasswordModal = (index) => {
             if (sessionStorage.getItem('isAuthenticated') === 'true') {
-                window.openEditModal(index);
+                if (index !== null && index !== undefined) {
+                    window.openEditModal(index);
+                }
                 return;
             }
 
@@ -1119,12 +1123,13 @@
             setTimeout(() => document.getElementById('auth-password').focus(), 100);
         };
 
-        window.closePasswordModal = (clearIndex = true) => {
+        window.closePasswordModal = (clearData = true) => {
             const pwdModal = document.getElementById('password-modal');
             pwdModal.classList.add('hidden');
             pwdModal.classList.remove('flex');
-            if(clearIndex) {
+            if(clearData) {
                 window.pendingEditIndex = null;
+                window.pendingAction = null;
             }
         };
 
@@ -1134,12 +1139,20 @@
             
             if (pwd === "Projects") {
                 sessionStorage.setItem('isAuthenticated', 'true');
+                
                 const indexToEdit = window.pendingEditIndex;
+                const actionToRun = window.pendingAction;
+                
                 window.closePasswordModal(false); 
                 
-                if (indexToEdit !== null && indexToEdit !== undefined) {
+                // تنفيذ الأمر المعلق (إما تعديل الترتيب، أو فتح نافذة مشروع)
+                if (actionToRun) {
+                    actionToRun();
+                    window.pendingAction = null;
+                } else if (indexToEdit !== null && indexToEdit !== undefined) {
                     try { window.openEditModal(indexToEdit); } catch (e) { console.error(e); }
                 }
+                
                 window.pendingEditIndex = null; 
             } else {
                 document.getElementById('password-error').classList.remove('hidden');
@@ -1174,7 +1187,7 @@
                 const input = document.getElementById(window.pendingLockId);
                 const icon = document.getElementById(`icon-${window.pendingLockId}`);
                 input.readOnly = false;
-                input.value = "0"; // تفريغ افتراضي بدون كسور لتقليل الحشو
+                input.value = "0"; 
                 input.classList.remove('bg-gray-100', 'text-gray-500', 'cursor-not-allowed');
                 input.classList.add('text-[var(--charcoal-900)]');
                 icon.classList.remove('fa-lock');
@@ -1203,6 +1216,8 @@
         window.executeDeleteProject = async () => {
             const index = document.getElementById('edit-index').value;
             projectsData.splice(index, 1);
+            projectsData = [...projectsData]; // فرض تحديث المصفوفة
+            
             window.closeDeleteConfirmModal();
             window.closeModal();
             renderDashboard();
@@ -1210,6 +1225,12 @@
         };
 
         window.moveProjectUp = async (index) => {
+            if (sessionStorage.getItem('isAuthenticated') !== 'true') {
+                window.pendingAction = () => window.moveProjectUp(index);
+                window.openPasswordModal(null);
+                return;
+            }
+
             const type = projectsData[index].type;
             let prevIndex = -1;
             for (let i = index - 1; i >= 0; i--) {
@@ -1219,12 +1240,21 @@
                 const temp = projectsData[index];
                 projectsData[index] = projectsData[prevIndex];
                 projectsData[prevIndex] = temp;
+                
+                projectsData = [...projectsData]; // فرض التحديث لإنشاء مرجع جديد (Deep Update)
+                
                 renderDashboard();
                 await saveDataToFirebase(); 
             }
         };
 
         window.moveProjectDown = async (index) => {
+            if (sessionStorage.getItem('isAuthenticated') !== 'true') {
+                window.pendingAction = () => window.moveProjectDown(index);
+                window.openPasswordModal(null);
+                return;
+            }
+
             const type = projectsData[index].type;
             let nextIndex = -1;
             for (let i = index + 1; i < projectsData.length; i++) {
@@ -1234,6 +1264,9 @@
                 const temp = projectsData[index];
                 projectsData[index] = projectsData[nextIndex];
                 projectsData[nextIndex] = temp;
+                
+                projectsData = [...projectsData]; // فرض التحديث لإنشاء مرجع جديد
+                
                 renderDashboard();
                 await saveDataToFirebase(); 
             }
@@ -1305,8 +1338,8 @@
                     <div class="flex items-center justify-between pr-1">
                         <div class="flex items-center gap-1.5">
                             <div class="flex flex-col gap-[2px] opacity-0 group-hover:opacity-100 transition-opacity no-print w-3">
-                                <button onclick="window.moveProjectUp(${index})" class="text-[8px] text-gray-400 hover:text-[var(--gold-dark)] bg-gray-100 hover:bg-gray-200 rounded px-0.5"><i class="fa-solid fa-chevron-up"></i></button>
-                                <button onclick="window.moveProjectDown(${index})" class="text-[8px] text-gray-400 hover:text-[var(--gold-dark)] bg-gray-100 hover:bg-gray-200 rounded px-0.5"><i class="fa-solid fa-chevron-down"></i></button>
+                                <button type="button" onclick="window.moveProjectUp(${index})" class="text-[8px] text-gray-400 hover:text-[var(--gold-dark)] bg-gray-100 hover:bg-gray-200 rounded px-0.5"><i class="fa-solid fa-chevron-up"></i></button>
+                                <button type="button" onclick="window.moveProjectDown(${index})" class="text-[8px] text-gray-400 hover:text-[var(--gold-dark)] bg-gray-100 hover:bg-gray-200 rounded px-0.5"><i class="fa-solid fa-chevron-down"></i></button>
                             </div>
                             <div class="editable-name font-bold text-[10.5px] text-[var(--charcoal-900)] truncate" onclick="window.openPasswordModal(${index})" title="انقر لتعديل بيانات المشروع">
                                 ${project.name} <i class="fa-solid fa-pen-to-square edit-icon text-[var(--gold-dark)]"></i>
@@ -1410,7 +1443,6 @@
                 }
             });
 
-            // 🚀 عرض المجاميع بدون كسور لتقليل الحشو البصري 🚀
             document.getElementById('total-area-top').innerHTML = `${totalArea.toLocaleString('en-US', {maximumFractionDigits: 0})} <span class="text-[10px] text-[var(--gold-primary)] font-normal ml-0.5">م²</span>`;
             document.getElementById('total-project-budget').innerHTML = `${totalProjectBudget.toLocaleString('en-US', {maximumFractionDigits: 0})} <span class="text-[10px] text-[var(--gold-primary)] font-normal ml-0.5">SAR</span>`;
             document.getElementById('total-units').innerHTML = `${totalUnits.toLocaleString('en-US', {maximumFractionDigits: 0})} <span class="text-[10px] text-[var(--gold-primary)] font-normal ml-0.5">وحدة</span>`;
@@ -1635,6 +1667,8 @@
                 startDate: document.getElementById('m-startDate').value || "N/A",
                 endDate: document.getElementById('m-endDate').value || "N/A",
             };
+
+            projectsData = [...projectsData]; // فرض التحديث
 
             window.closeModal();
             renderDashboard(); 
