@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة الأداء التنفيذي للمشاريع - النظام المتكامل</title>
+    <title>قائمة التدفقات النقدية المباشرة - شركة اتحاد الراجحي</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- إضافة مكتبة التقويم الاحترافية لتوحيد عرض التاريخ -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     
@@ -16,1704 +15,1296 @@
         :root {
             --gold-primary: #D4AF37;
             --gold-dark: #B49020;
-            --gold-light: #FDFBF7;
-            --gold-track: rgba(212, 175, 55, 0.25);
-            --charcoal-900: #111827;
-            --charcoal-700: #374151;
-            --charcoal-500: #6B7280;
-            --charcoal-300: #D1D5DB;
-            --charcoal-100: #F3F4F6;
-            --bg-color: #FFFFFF;
+            --charcoal-900: #0F172A;
+            --charcoal-800: #1E293B;
+            --charcoal-600: #475569;
+            --bg-body: #F1F5F9; 
+            --success: #059669;
+            --danger: #DC2626;
         }
 
         body {
             font-family: 'Tajawal', sans-serif;
-            background-color: #E5E7EB;
+            background-color: var(--bg-body);
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            overflow-y: auto;
         }
 
         .dashboard-container {
             width: 1600px;
-            height: 900px;
-            background-color: var(--bg-color);
+            height: 900px; 
+            background-color: #FFFFFF;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             display: flex;
             flex-direction: column;
             position: relative;
             overflow: hidden;
             box-sizing: border-box;
-            animation: fadeIn 0.6s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
+            border-radius: 16px; 
+            border: 1px solid #E2E8F0;
         }
 
         .header-strip {
             height: 6px;
-            background: linear-gradient(90deg, var(--gold-dark) 0%, #E5C354 50%, var(--gold-dark) 100%);
+            background: linear-gradient(90deg, var(--charcoal-900) 0%, var(--gold-primary) 50%, var(--charcoal-900) 100%);
         }
 
-        .main-header {
-            height: 72px; 
-            padding: 0 40px;
+        /* فرض الأرقام المجدولة لمحاذاة مثالية للفواصل */
+        .font-numbers { 
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
+            letter-spacing: -0.2px; 
+            font-variant-numeric: tabular-nums;
         }
 
-        .data-grid {
-            display: grid;
-            grid-template-columns: 1.8fr 2.6fr 1.6fr 2.0fr 1.1fr 2.1fr;
-            gap: 0px;
-            align-items: stretch;
-        }
-
-        .table-header {
-            background: linear-gradient(180deg, #C29B22 0%, var(--gold-dark) 100%);
-            color: #FFFFFF;
-            border-radius: 6px;
-            margin-bottom: 2px;
-            min-height: 48px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        .table-header > div {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-left: 1px solid rgba(255,255,255,0.2);
-            font-size: 11px;
-            font-weight: 800;
-        }
-
-        .row-item {
-            border-bottom: 1px solid var(--charcoal-100);
-            height: 53px;
-            transition: all 0.3s ease;
+        .executive-card {
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
             position: relative;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .executive-card:hover {
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+            transform: translateY(-2px);
+            border-color: #CBD5E1;
+        }
+
+        .icon-box {
+            width: 44px; height: 44px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.15rem;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
         }
         
-        .row-item::before {
-            content: '';
-            position: absolute;
-            top: 0; right: 0; bottom: 0;
-            width: 4px;
-            background-color: var(--gold-primary);
-            transform: scaleY(0);
-            transition: transform 0.3s ease;
-            transform-origin: center;
+        .icon-unified { 
+            background: rgba(212, 175, 55, 0.1); 
+            color: var(--gold-dark); 
+            border: 1px solid rgba(212, 175, 55, 0.2); 
         }
 
-        .row-item:hover::before {
-            transform: scaleY(1);
+        .executive-card:hover .icon-unified {
+            background: var(--gold-primary);
+            color: white;
         }
 
-        .row-item:hover { 
-            background-color: #FAFAFA; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
-            z-index: 10;
-        }
-
-        .section-title {
-            color: var(--charcoal-900);
-            font-size: 0.85rem;
-            font-weight: 800;
-            padding: 0 20px;
-            background: linear-gradient(to left, #F9FAFB, #FFFFFF);
-            border-right: 4px solid var(--gold-primary);
-            display: flex;
-            align-items: center;
-            height: 28px;
-            margin-top: 0px;
-        }
-
-        .progress-track {
-            background-color: var(--charcoal-100);
-            height: 5px;
-            width: 100%;
-            border-radius: 3px;
-            position: relative;
-        }
-        .progress-fill {
-            height: 100%;
-            border-radius: 3px;
-            position: absolute;
-            top: 0;
-            right: 0; 
-            background-color: var(--gold-primary); 
-            transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .weight-donut {
-            width: 26px; height: 26px; border-radius: 50%;
-            display: flex; justify-content: center; align-items: center;
-            position: relative;
-        }
-        .weight-donut::before {
-            content: ''; position: absolute; width: 18px; height: 18px;
-            border-radius: 50%; background-color: var(--bg-color);
-        }
-
-        .sub-col {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-left: 1px dashed var(--charcoal-100);
-            height: 100%;
-            font-size: 9px;
-            font-weight: 700;
-            color: var(--charcoal-900);
-            text-align: center;
-        }
-        .sub-col:last-child { border-left: none; }
-
-        .font-numbers { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; letter-spacing: 0.2px; }
-
-        .editable-name {
+        .clickable-row {
+            transition: all 0.2s ease;
             cursor: pointer;
             position: relative;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            transition: all 0.2s;
+            overflow: hidden;
         }
-        .editable-name:hover { color: var(--gold-dark); }
-        .editable-name .edit-icon { opacity: 0; font-size: 10px; transition: opacity 0.2s; }
-        .editable-name:hover .edit-icon { opacity: 1; }
+        .clickable-row:hover {
+            background-color: #F1F5F9;
+            transform: scale(1.01);
+            border-color: var(--gold-primary);
+        }
+        .clickable-row::after {
+            content: "\f0a6";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gold-primary);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            font-size: 14px;
+        }
+        .clickable-row:hover::after {
+            opacity: 1;
+        }
 
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .modal-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 50;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            width: 1300px;
+            max-height: 85%;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.4);
+            transform: translateY(20px) scale(0.95);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            border: 2px solid var(--gold-primary);
+        }
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+        .modal-overlay.active .modal-content {
+            transform: translateY(0) scale(1);
+        }
+
+        .custom-scroll::-webkit-scrollbar { height: 6px; width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: var(--gold-primary); }
+
+        .grid-matrix {
+            display: grid;
+            width: 100%;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .lux-input {
+            width: 100%;
+            background-color: white;
+            border: 1px solid #CBD5E1;
+            border-radius: 4px;
+            padding: 6px 4px;
+            font-size: 13px;
+            font-variant-numeric: tabular-nums;
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            text-align: right; 
+            color: var(--charcoal-900);
+            transition: all 0.3s ease;
+        }
+        .lux-input:hover, .lux-input:focus {
+            background-color: #FDFBF7;
+            color: var(--gold-dark);
+            border-color: var(--gold-primary);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .flatpickr-calendar {
+            border: 2px solid var(--gold-primary) !important;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.2) !important;
+            border-radius: 12px !important;
+            font-family: 'Tajawal', sans-serif !important;
+            padding: 5px !important;
+            background: white !important;
+        }
+        .flatpickr-months {
+            background-color: #F8FAFC !important; 
+            border-radius: 8px 8px 0 0 !important;
+            padding: 10px 0 !important;
+            border-bottom: 1px solid #E2E8F0;
+        }
+        .flatpickr-month, .flatpickr-current-month .flatpickr-monthDropdown-months, .flatpickr-current-month input.cur-year, .flatpickr-current-month .numInputWrapper {
+            color: var(--charcoal-900) !important;
+            fill: var(--charcoal-900) !important;
+            font-weight: 800 !important;
+        }
+        .flatpickr-prev-month, .flatpickr-next-month {
+            color: var(--charcoal-900) !important;
+            fill: var(--charcoal-900) !important;
+        }
+        .flatpickr-prev-month:hover svg, .flatpickr-next-month:hover svg {
+            fill: var(--gold-primary) !important;
+        }
+        .flatpickr-weekday {
+            color: var(--charcoal-600) !important;
+            font-weight: 800 !important;
+        }
+        .flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange, .flatpickr-day.selected.inRange, .flatpickr-day.startRange.inRange, .flatpickr-day.endRange.inRange, .flatpickr-day.selected:focus, .flatpickr-day.startRange:focus, .flatpickr-day.endRange:focus, .flatpickr-day.selected:hover, .flatpickr-day.startRange:hover, .flatpickr-day.endRange:hover, .flatpickr-day.selected.prevMonthDay, .flatpickr-day.startRange.prevMonthDay, .flatpickr-day.endRange.prevMonthDay, .flatpickr-day.selected.nextMonthDay, .flatpickr-day.startRange.nextMonthDay, .flatpickr-day.endRange.nextMonthDay {
+            background: var(--gold-primary) !important;
+            border-color: var(--gold-primary) !important;
+            color: white !important;
+            font-weight: bold;
+        }
+        .flatpickr-day:hover {
+            background: #FDFBF7 !important;
+            border-color: var(--gold-primary) !important;
+            color: var(--charcoal-900) !important;
+        }
 
         @media print {
-            @page { size: 1600px 900px; margin: 0; }
-            .dashboard-container { box-shadow: none; width: 100%; height: 100%; }
-            * { -webkit-print-color-adjust: exact !important; }
-            .editable-name .edit-icon { display: none !important; }
+            @page { size: 1600px 900px; margin: 0 !important; }
+            html, body {
+                width: 1600px !important; height: 900px !important; margin: 0 !important; padding: 0 !important;
+                display: block !important; background-color: white !important; overflow: hidden !important;
+            }
+            .dashboard-container { 
+                width: 1600px !important; height: 900px !important; margin: 0 !important;
+                box-shadow: none !important; border-radius: 0 !important; border: none !important; 
+                position: absolute !important; top: 0 !important; left: 0 !important;
+                transform: scale(1) !important; page-break-inside: avoid;
+            }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             .no-print { display: none !important; }
+            .executive-card { transform: none !important; box-shadow: none !important; }
+            .modal-overlay { display: none !important; }
+            .flatpickr-calendar { display: none !important; }
+
+            /* حماية الشعار من التكسير أثناء الطباعة */
+            img {
+                image-rendering: -webkit-optimize-contrast !important;
+                image-rendering: crisp-edges !important;
+                image-rendering: high-quality !important;
+                filter: none !important; 
+                -webkit-filter: none !important;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- شاشة التحميل الأولية للمزامنة مع قاعدة البيانات -->
-    <div id="cloud-loader" class="fixed inset-0 bg-white z-[200] flex flex-col items-center justify-center transition-opacity duration-500">
-        <i class="fa-solid fa-cloud-arrow-down text-5xl text-[var(--gold-dark)] mb-6 animate-bounce"></i>
-        <h2 class="text-2xl font-bold text-gray-800 font-['Tajawal']">جاري جلب البيانات من السحابة...</h2>
-        <p class="text-gray-500 mt-2 font-['Tajawal'] text-sm">لحظات وتكتمل المزامنة</p>
-    </div>
-
     <div class="dashboard-container">
-        <div class="header-strip"></div>
+        <!-- شريط علوي -->
+        <div class="header-strip shrink-0"></div>
 
-        <header class="main-header flex justify-between items-center bg-white shrink-0 border-b border-gray-100">
-            <div class="flex items-center gap-4">
-                <img src="Alrajhi Logo Presentation.png" alt="Alrajhi Logo" class="h-12 object-contain" onerror="this.src='https://via.placeholder.com/150x50?text=Alrajhi+Logo'">
-                <div>
-                    <h1 class="text-xl font-bold text-[var(--charcoal-900)] leading-tight mb-0.5">لوحة الأداء التنفيذي للمشاريع</h1>
-                    <div class="flex items-center gap-2">
-                        <p class="text-[12px] text-[var(--gold-dark)] font-bold" id="display-period"></p>
-                        <button onclick="window.openPeriodModal()" class="text-gray-400 hover:text-[var(--gold-dark)] transition no-print" title="تعديل الفترة">
-                            <i class="fa-solid fa-pen text-[10px]"></i>
-                        </button>
-                    </div>
+        <!-- الرأس (Header) -->
+        <header class="h-[95px] flex justify-between items-center bg-white shrink-0 px-10 border-b border-slate-200">
+            <div class="flex items-center gap-6">
+                <img src="Alrajhi Logo Presentation.png" alt="Alrajhi Logo" class="h-16 object-contain print:drop-shadow-none drop-shadow-sm" onerror="this.src='https://placehold.co/200x60/white/DAA520?text=ALRAJHI+Invest'">
+                <div class="border-r-2 border-slate-200 pr-6">
+                    <h1 class="text-[26px] font-black text-[var(--charcoal-900)] leading-tight mb-1 flex items-center gap-2">
+                        <span id="text_mainTitle">قائمة التدفقات النقدية المباشرة</span>
+                    </h1>
+                    <p class="text-[14px] text-[var(--charcoal-600)] font-bold flex items-center gap-2">
+                        <i class="fa-solid fa-file-invoice-dollar text-[var(--gold-dark)]"></i>
+                        <span id="text_subTitle">تقرير شهري</span>
+                    </p>
                 </div>
             </div>
             
-            <div class="flex gap-8">
-                <div class="flex flex-col text-left border-l border-[var(--charcoal-100)] pl-6 pr-4 py-1 hover:bg-gray-50 rounded-r-lg transition duration-300">
-                    <span class="text-[10px] text-[var(--charcoal-500)] font-bold mb-0.5">إجمالي مساحات المشاريع</span>
-                    <span class="text-xl font-bold text-[var(--charcoal-900)] font-numbers leading-none" id="total-area-top">0 <span class="text-[10px] text-[var(--gold-primary)] font-normal">م²</span></span>
+            <!-- المدة الزمنية للتقرير -->
+            <div class="relative bg-white px-6 py-2 rounded-xl border border-slate-200 shadow-[0_2px_10px_-3px_rgba(0,0,0,0.04)] flex flex-col items-center justify-center overflow-hidden transition-all duration-300">
+                <div class="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[var(--gold-dark)] to-[var(--gold-primary)]"></div>
+                
+                <div class="flex items-center gap-2 mb-1.5 z-10 w-full justify-center text-[var(--charcoal-600)]">
+                    <i class="fa-regular fa-calendar-check text-[14px] text-[var(--gold-dark)]"></i>
+                    <p class="text-[11px] font-black tracking-wide flex items-center gap-1">
+                        <span id="text_timeRange">النطاق الزمني للتقرير</span>
+                    </p>
                 </div>
-                <div class="flex flex-col text-left border-l border-[var(--charcoal-100)] pl-6 pr-4 py-1 hover:bg-gray-50 transition duration-300">
-                    <span class="text-[10px] text-[var(--charcoal-500)] font-bold mb-0.5">إجمالي ميزانيات المشاريع</span>
-                    <span class="text-xl font-bold text-[var(--charcoal-900)] font-numbers leading-none" id="total-project-budget">0 <span class="text-[10px] text-[var(--gold-primary)] font-normal">SAR</span></span>
-                </div>
-                <div class="flex flex-col text-left pl-2 pr-4 py-1 hover:bg-gray-50 rounded-l-lg transition duration-300">
-                    <span class="text-[10px] text-[var(--charcoal-500)] font-bold mb-0.5">إجمالي عدد الوحدات</span>
-                    <span class="text-xl font-bold text-[var(--charcoal-900)] font-numbers leading-none" id="total-units">0 <span class="text-[10px] text-[var(--gold-primary)] font-normal">وحدة</span></span>
+                
+                <div class="flex items-center justify-center gap-3 z-10">
+                    <div class="relative flex flex-col items-center bg-slate-50 px-3 py-0.5 rounded border border-slate-200 hover:border-[var(--gold-primary)] transition-colors cursor-pointer group/date shadow-sm hover:shadow">
+                        <input type="text" id="date-start-input" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20">
+                        <div class="flex items-center gap-1 z-10 pointer-events-none">
+                            <span id="ui-date-start" class="font-numbers text-[13px] font-black text-[var(--charcoal-800)] transition-colors" dir="ltr">16 Nov 2025</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-center text-[var(--gold-primary)]">
+                        <i class="fa-solid fa-arrow-left-long text-[12px]"></i>
+                    </div>
+                    
+                    <div class="relative flex flex-col items-center bg-[var(--gold-primary)]/10 px-3 py-0.5 rounded border border-[var(--gold-primary)]/30 hover:bg-[var(--gold-primary)]/20 transition-colors cursor-pointer group/date shadow-sm hover:shadow">
+                        <input type="text" id="date-end-input" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20">
+                        <div class="flex items-center gap-1 z-10 pointer-events-none">
+                            <span id="ui-date-end" class="font-numbers text-[13px] font-black text-[var(--gold-dark)] transition-colors" dir="ltr">31 Mar 2026</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </header>
 
-        <main class="flex-1 flex flex-col w-full px-6 py-2 overflow-hidden">
-            <div class="data-grid table-header shrink-0 mx-0">
-                <div class="text-right pr-4">هوية المشروع</div>
-                
-                <div class="flex flex-col p-0">
-                    <div class="h-[40%] w-full flex items-center justify-center border-b border-[rgba(255,255,255,0.2)] text-[10px] font-bold">المساحات والوحدات التفصيلية</div>
-                    <div class="h-[60%] w-full grid grid-cols-5 text-[8.5px]">
-                        <span class="flex items-center justify-center border-l border-[rgba(255,255,255,0.2)]">مساحة الأرض</span>
-                        <span class="flex items-center justify-center border-l border-[rgba(255,255,255,0.2)]">المساحة المبنية</span>
-                        <span class="flex items-center justify-center border-l border-[rgba(255,255,255,0.2)]">المساحة البيعية</span>
-                        <span class="flex items-center justify-center border-l border-[rgba(255,255,255,0.2)]">عدد الوحدات</span>
-                        <span class="flex items-center justify-center">قيمة الأرض</span>
+        <!-- المحتوى الرئيسي -->
+        <main class="flex-1 min-h-0 overflow-hidden flex flex-col w-full px-10 py-4 gap-4 bg-slate-50">
+            
+            <!-- القسم الأول: المؤشرات الخمسة الرئيسية -->
+            <div class="grid grid-cols-5 gap-5 shrink-0 min-h-[105px]">
+                <div class="executive-card p-4 border-t-4 border-t-[var(--gold-primary)] bg-white">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-[13px] font-bold text-slate-600 transition-colors flex items-center gap-1">
+                            <span id="text_card1">الرصيد الافتتاحي للنقد</span>
+                        </h3>
+                        <div class="icon-box icon-unified"><i class="fa-solid fa-door-open"></i></div>
+                    </div>
+                    <div class="flex items-baseline gap-1.5 mt-auto">
+                        <span id="ui-open-balance" class="text-[22px] font-black text-[var(--charcoal-900)] font-numbers dir-ltr tracking-tight">212,030,863.55</span>
+                        <span class="text-[12px] font-bold text-slate-400">ريال</span>
                     </div>
                 </div>
 
-                <div class="flex flex-col p-0 border-l border-[rgba(255,255,255,0.2)]">
-                    <div class="h-full w-full flex items-center justify-center text-[10px] font-bold">الجدول الزمني وعمر المشروع</div>
-                </div>
-
-                <div class="flex flex-col p-0">
-                    <div class="h-[40%] w-full flex items-center justify-center border-b border-[rgba(255,255,255,0.2)] text-[10px] font-bold">الميزانية والمصروف</div>
-                    <div class="h-[60%] w-full grid grid-cols-3 text-[9px]">
-                        <span class="flex items-center justify-center border-l border-[rgba(255,255,255,0.2)]">التكاليف التقديرية</span>
-                        <span class="flex items-center justify-center border-l border-[rgba(255,255,255,0.2)]">الميزانية</span>
-                        <span class="flex items-center justify-center">المصروف</span>
+                <div class="executive-card p-4 border-t-4 border-t-[var(--gold-primary)] bg-white">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-[13px] font-bold text-slate-600 transition-colors flex items-center gap-1">
+                            <span id="text_card2">إجمالي المقبوضات</span>
+                        </h3>
+                        <div class="icon-box icon-unified"><i class="fa-solid fa-arrow-trend-up"></i></div>
                     </div>
-                </div>
-                
-                <div class="flex flex-col p-0">
-                    <div class="h-[40%] w-full flex items-center justify-center border-b border-[rgba(255,255,255,0.2)] text-[10px] font-bold">العوائد المالية المتوقعة</div>
-                    <div class="h-[60%] w-full grid grid-cols-2 text-[9px]">
-                        <span class="flex items-center justify-center border-l border-[rgba(255,255,255,0.2)]">المبيعات</span>
-                        <span class="flex items-center justify-center">الإيجارات</span>
+                    <div class="flex items-baseline gap-1.5 mt-auto">
+                        <span id="ui-total-in" class="text-[22px] font-black text-[var(--charcoal-900)] font-numbers dir-ltr tracking-tight">0.00</span>
+                        <span class="text-[12px] font-bold text-slate-400">ريال</span>
                     </div>
                 </div>
 
-                <div class="flex flex-col p-0 border-l-0">
-                    <div class="h-[40%] w-full flex items-center justify-center border-b border-[rgba(255,255,255,0.2)] text-[10px] font-bold">مؤشرات الإنجاز</div>
-                    <div class="h-[60%] w-full grid grid-cols-[1fr_1.6fr_1fr] text-[9px]">
-                        <span class="flex items-center justify-center border-l border-[rgba(255,255,255,0.2)]">وزن المشروع</span>
-                        <span class="flex items-center justify-center border-l border-[rgba(255,255,255,0.2)]">الإنجاز</span>
-                        <span class="flex items-center justify-center">الحالة</span>
+                <div class="executive-card p-4 border-t-4 border-t-[var(--gold-primary)] bg-white">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-[13px] font-bold text-slate-600 transition-colors flex items-center gap-1">
+                            <span id="text_card3">إجمالي المدفوعات</span>
+                        </h3>
+                        <div class="icon-box icon-unified"><i class="fa-solid fa-arrow-trend-down"></i></div>
+                    </div>
+                    <div class="flex items-baseline gap-1.5 mt-auto">
+                        <span id="ui-total-out" class="text-[22px] font-black text-[var(--danger)] font-numbers tracking-tight" dir="ltr">0.00</span>
+                        <span class="text-[12px] font-bold text-slate-400">ريال</span>
+                    </div>
+                </div>
+
+                <div class="executive-card p-4 border-t-4 border-t-[var(--gold-primary)] bg-white">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-[13px] font-bold text-slate-600 transition-colors flex items-center gap-1">
+                            <span id="text_card4">صافي التغيير</span>
+                        </h3>
+                        <div class="icon-box icon-unified"><i class="fa-solid fa-scale-unbalanced"></i></div>
+                    </div>
+                    <div class="flex items-baseline gap-1.5 mt-auto">
+                        <span id="ui-net-change" class="text-[22px] font-black text-[var(--danger)] font-numbers tracking-tight" dir="ltr">0.00</span>
+                        <span class="text-[12px] font-bold text-slate-400">ريال</span>
+                    </div>
+                </div>
+
+                <div class="executive-card p-4 border-t-4 border-t-[var(--gold-primary)] bg-white">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 id="ui-final-title" class="text-[13px] font-bold text-slate-600 transition-colors flex items-center gap-1">
+                            <span id="text_card5">الرصيد النهائي</span>
+                        </h3>
+                        <div class="icon-box icon-unified"><i class="fa-solid fa-flag-checkered"></i></div>
+                    </div>
+                    <div class="flex items-baseline gap-1.5 mt-auto">
+                        <span id="ui-final-balance" class="text-[22px] font-black text-[var(--gold-dark)] font-numbers dir-ltr tracking-tight">0.00</span>
+                        <span class="text-[12px] font-bold text-slate-400">ريال</span>
                     </div>
                 </div>
             </div>
 
-            <div id="projects-container" class="flex flex-col w-full flex-1 bg-white border border-[var(--charcoal-100)] rounded-b-md overflow-hidden pb-1">
-                <div class="section-title"><i class="fa-solid fa-road text-[var(--gold-dark)] ml-2 text-xs"></i> مشاريع البنية التحتية</div>
-                <div id="infra-projects" class="flex flex-col shrink-0"></div>
+            <!-- القسم الثاني: تفصيل الأنشطة -->
+            <div class="flex flex-col gap-2 shrink-0">
+                <div class="flex items-center justify-between mb-1">
+                    <h2 class="text-[15px] font-black text-[var(--charcoal-900)] flex items-center gap-2 border-r-4 border-[var(--gold-primary)] pr-2">
+                        <span id="text_secMain">تحليل تفصيلي للحركة حسب نوع النشاط</span>
+                    </h2>
+                </div>
+                
+                <div class="grid grid-cols-3 gap-5">
+                    
+                    <!-- 1. الأنشطة التشغيلية -->
+                    <div class="executive-card p-5 bg-white border border-slate-200">
+                        <div class="flex justify-between items-start border-b border-slate-100 pb-3 mb-3">
+                            <div class="text-right">
+                                <h3 class="font-bold text-[14px] text-[var(--charcoal-900)] flex items-center gap-1">
+                                    <span id="text_secOpTitle">الأنشطة التشغيلية</span>
+                                </h3>
+                                <p class="text-[11px] text-slate-500 font-bold mt-1 flex items-center gap-1">
+                                    <span id="text_secOpSub">العمليات التشغيلية الأساسية</span>
+                                </p>
+                            </div>
+                            <div class="icon-box icon-unified w-10 h-10 shrink-0"><i class="fa-solid fa-briefcase text-lg"></i></div>
+                        </div>
+                        <div class="flex flex-col gap-2 mt-auto">
+                            <div onclick="openDetails('opRec', 'مقبوضات الأنشطة التشغيلية')" class="clickable-row flex justify-between items-center bg-slate-50 px-4 py-2.5 rounded-lg border border-slate-100">
+                                <span class="text-[12px] font-bold text-slate-600 flex items-center gap-2"><i class="fa-solid fa-plus text-[9px] text-slate-400"></i> مقبوضات</span>
+                                <span id="ui-op-rec" class="font-numbers font-black text-[var(--charcoal-900)] text-[14px] w-[140px] inline-block text-right" dir="ltr">0.00</span>
+                            </div>
+                            <div onclick="openDetails('opPay', 'مدفوعات الأنشطة التشغيلية')" class="clickable-row flex justify-between items-center bg-slate-50 px-4 py-2.5 rounded-lg border border-slate-100">
+                                <span class="text-[12px] font-bold text-slate-600 flex items-center gap-2"><i class="fa-solid fa-minus text-[9px] text-[var(--danger)]"></i> مدفوعات</span>
+                                <span id="ui-op-pay" class="font-numbers font-black text-[var(--danger)] text-[14px] w-[140px] inline-block text-right" dir="ltr">0.00</span>
+                            </div>
+                            <div class="flex justify-between items-center bg-slate-100 px-4 py-3 rounded-lg border border-slate-200 mt-1 shadow-sm">
+                                <span class="text-[13px] font-black text-[var(--charcoal-900)]">صافي النشاط التشغيلي</span>
+                                <span id="ui-op-net" class="font-numbers font-black text-[var(--danger)] text-[16px] w-[140px] inline-block text-right" dir="ltr">0.00</span>
+                            </div>
+                        </div>
+                    </div>
 
-                <div class="section-title"><i class="fa-solid fa-building text-[var(--gold-dark)] ml-2 text-xs"></i> مشاريع البنية الفوقية</div>
-                <div id="super-projects" class="flex flex-col shrink-0"></div>
+                    <!-- 2. الأنشطة الاستثمارية -->
+                    <div class="executive-card p-5 bg-white border border-slate-200">
+                        <div class="flex justify-between items-start border-b border-slate-100 pb-3 mb-3">
+                            <div class="text-right">
+                                <h3 class="font-bold text-[14px] text-[var(--charcoal-900)] flex items-center gap-1">
+                                    <span id="text_secInvTitle">الأنشطة الاستثمارية</span>
+                                </h3>
+                                <p class="text-[11px] text-slate-500 font-bold mt-1 flex items-center gap-1">
+                                    <span id="text_secInvSub">الأصول الثابتة والمشاريع</span>
+                                </p>
+                            </div>
+                            <div class="icon-box icon-unified w-10 h-10 shrink-0"><i class="fa-solid fa-chart-line text-lg"></i></div>
+                        </div>
+                        <div class="flex flex-col gap-2 mt-auto">
+                            <div onclick="openDetails('invRec', 'مقبوضات الأنشطة الاستثمارية (عوائد)')" class="clickable-row flex justify-between items-center bg-slate-50 px-4 py-2.5 rounded-lg border border-slate-100">
+                                <span class="text-[12px] font-bold text-slate-600 flex items-center gap-2"><i class="fa-solid fa-plus text-[9px] text-slate-400"></i> مقبوضات (عوائد)</span>
+                                <span id="ui-inv-rec" class="font-numbers font-black text-[var(--charcoal-900)] text-[14px] w-[140px] inline-block text-right" dir="ltr">0.00</span>
+                            </div>
+                            <div onclick="openDetails('invPay', 'مدفوعات الأنشطة الاستثمارية')" class="clickable-row flex justify-between items-center bg-slate-50 px-4 py-2.5 rounded-lg border border-slate-100">
+                                <span class="text-[12px] font-bold text-slate-600 flex items-center gap-2"><i class="fa-solid fa-minus text-[9px] text-[var(--danger)]"></i> مدفوعات (استثمار)</span>
+                                <span id="ui-inv-pay" class="font-numbers font-black text-[var(--danger)] text-[14px] w-[140px] inline-block text-right" dir="ltr">0.00</span>
+                            </div>
+                            <div class="flex justify-between items-center bg-slate-100 px-4 py-3 rounded-lg border border-slate-200 mt-1 shadow-sm">
+                                <span class="text-[13px] font-black text-[var(--charcoal-900)]">صافي النشاط الاستثماري</span>
+                                <span id="ui-inv-net" class="font-numbers font-black text-[var(--danger)] text-[16px] w-[140px] inline-block text-right" dir="ltr">0.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. الأنشطة التمويلية -->
+                    <div class="executive-card p-5 bg-white border border-slate-200">
+                        <div class="flex justify-between items-start border-b border-slate-100 pb-3 mb-3">
+                            <div class="text-right">
+                                <h3 class="font-bold text-[14px] text-[var(--charcoal-900)] flex items-center gap-1">
+                                    <span id="text_secFinTitle">الأنشطة التمويلية</span>
+                                </h3>
+                                <p class="text-[11px] text-slate-500 font-bold mt-1 flex items-center gap-1">
+                                    <span id="text_secFinSub">التمويل والقروض</span>
+                                </p>
+                            </div>
+                            <div class="icon-box icon-unified w-10 h-10 shrink-0"><i class="fa-solid fa-building-columns text-lg"></i></div>
+                        </div>
+                        <div class="flex flex-col gap-2 mt-auto">
+                            <div onclick="openDetails('finRec', 'مقبوضات الأنشطة التمويلية')" class="clickable-row flex justify-between items-center bg-slate-50 px-4 py-2.5 rounded-lg border border-slate-100">
+                                <span class="text-[12px] font-bold text-slate-600 flex items-center gap-2"><i class="fa-solid fa-plus text-[9px] text-slate-400"></i> تمويل مستلم</span>
+                                <span id="ui-fin-rec" class="font-numbers font-black text-[var(--charcoal-900)] text-[14px] w-[140px] inline-block text-right" dir="ltr">0.00</span>
+                            </div>
+                            <div onclick="openDetails('finPay', 'مدفوعات الأنشطة التمويلية')" class="clickable-row flex justify-between items-center bg-slate-50 px-4 py-2.5 rounded-lg border border-slate-100">
+                                <span class="text-[12px] font-bold text-slate-600 flex items-center gap-2"><i class="fa-solid fa-minus text-[9px] text-[var(--danger)]"></i> مدفوعات (توزيعات أرباح)</span>
+                                <span id="ui-fin-pay" class="font-numbers font-black text-[var(--danger)] text-[14px] w-[140px] inline-block text-right" dir="ltr">0.00</span>
+                            </div>
+                            <div class="flex justify-between items-center bg-slate-100 px-4 py-3 rounded-lg border border-slate-200 mt-1 shadow-sm">
+                                <span class="text-[13px] font-black text-[var(--charcoal-900)]">صافي النشاط التمويلي</span>
+                                <span id="ui-fin-net" class="font-numbers font-black text-[var(--charcoal-900)] text-[16px] w-[140px] inline-block text-right" dir="ltr">0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <!-- القسم الثالث: مسار التدفقات النقدية الزمني (التصميم الأنيق المعتمد) -->
+            <div class="flex-1 flex flex-col mt-2 mb-1 shrink-0 min-h-0">
+                <div class="flex items-center justify-between mb-2 shrink-0">
+                    <h2 class="text-[15px] font-black text-[var(--charcoal-900)] flex items-center gap-2 border-r-4 border-[var(--gold-primary)] pr-2">
+                        <span id="text_timelineTitle">التتبع الزمني لمسار السيولة والأرصدة</span>
+                    </h2>
+                </div>
+                <div class="flex-1 bg-white rounded-xl border border-slate-200 shadow-sm relative z-0 flex flex-col justify-center overflow-x-auto custom-scroll">
+                    <div id="timeline-container" class="relative w-full flex justify-between items-start px-6 min-w-max py-4">
+                        <!-- سيتم رسم خط الزمن هنا برمجياً -->
+                    </div>
+                </div>
+            </div>
+
         </main>
 
-        <footer class="px-10 flex justify-between items-center text-[11px] text-[var(--charcoal-500)] bg-white border-t border-[var(--charcoal-100)] h-[40px] shrink-0 font-bold">
-            <div class="flex items-center gap-2">
-                <span id="display-footer-text"></span>
-                <button onclick="window.openFooterModal()" class="text-gray-400 hover:text-[var(--gold-dark)] transition no-print" title="تعديل النص">
-                    <i class="fa-solid fa-pen text-[10px]"></i>
-                </button>
+        <!-- تذييل الصفحة -->
+        <footer class="w-full px-10 flex justify-between items-center text-[13px] bg-white border-t border-slate-200 h-[50px] shrink-0 font-bold text-slate-500">
+            <div class="w-1/3 text-right flex items-center gap-1">
+                <span id="text_footerText" class="text-[var(--charcoal-600)] font-bold">قائمة التدفقات النقدية المباشرة</span>
             </div>
-            
-            <button onclick="window.print()" class="no-print flex items-center gap-2 bg-[var(--gold-dark)] text-white px-4 py-1.5 rounded-md text-[10px] font-bold hover:bg-[var(--gold-primary)] transition shadow-sm hover:shadow" title="حفظ اللوحة كملف PDF للطباعة">
-                <i class="fa-solid fa-file-pdf text-[11px]"></i> حفظ كملف PDF
-            </button>
-
-            <div>
-                شركة اتحاد الراجحي
+            <div class="w-1/3 flex justify-center flex-col items-center gap-1">
+                <button onclick="window.print()" class="no-print flex items-center gap-2 bg-[var(--charcoal-900)] text-white px-6 py-2 rounded-lg text-[12px] font-bold hover:bg-[var(--charcoal-800)] transition-all shadow-md hover:shadow-lg active:transform active:scale-95">
+                    <i class="fa-solid fa-print text-[13px] text-[var(--gold-primary)]"></i> طباعة التقرير بصيغة PDF
+                </button>
+                <span id="cloud-status" class="text-[10px] text-slate-400 font-normal no-print hidden"><i class="fa-solid fa-cloud-arrow-up ml-1"></i>تمت المزامنة السحابية</span>
+            </div>
+            <div class="w-1/3 text-left flex justify-end items-center gap-2">
+                <span id="text_companyName">شركة اتحاد الراجحي</span>
             </div>
         </footer>
 
-        <!-- نافذة طلب كلمة المرور -->
-        <div id="password-modal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-[150] hidden justify-center items-center transition-all">
-            <div class="bg-white rounded-xl shadow-2xl w-[400px] flex flex-col overflow-hidden border-t-4 border-[var(--gold-primary)] font-sans" dir="rtl">
-                <div class="px-6 py-4 border-b border-gray-200 flex items-center gap-3 bg-gray-50">
-                    <div class="w-8 h-8 rounded-full bg-amber-100 text-[var(--gold-dark)] flex items-center justify-center">
-                        <i class="fa-solid fa-lock text-sm"></i>
-                    </div>
-                    <h2 class="text-lg font-bold text-gray-900 font-['Tajawal']">المصادقة مطلوبة</h2>
-                </div>
-                <div class="p-6">
-                    <label class="block text-sm font-bold text-gray-600 mb-2 font-['Tajawal']">الرجاء إدخال كلمة المرور لتأكيد التعديل</label>
-                    <input type="password" id="auth-password" placeholder="كلمة المرور..." class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 focus:ring-1 focus:ring-[var(--gold-primary)] outline-none font-['Tajawal'] text-left" dir="ltr">
-                    <p id="password-error" class="text-xs text-red-500 mt-2 font-bold hidden font-['Tajawal']"><i class="fa-solid fa-circle-exclamation ml-1"></i>كلمة المرور غير صحيحة، يرجى المحاولة مجدداً.</p>
-                </div>
-                <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-3">
-                    <button type="button" onclick="window.closePasswordModal()" class="px-6 py-2 rounded-md font-bold text-gray-600 bg-white border border-gray-300 hover:bg-gray-100 transition font-['Tajawal']">إلغاء</button>
-                    <button type="button" onclick="window.verifyPassword()" class="px-8 py-2 rounded-md font-bold text-white bg-[var(--gold-dark)] hover:bg-[var(--gold-primary)] shadow-md hover:shadow-lg transition font-['Tajawal']">دخول</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- نافذة تعديل نص التذييل -->
-        <div id="footer-modal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-[110] hidden justify-center items-center">
-            <div class="bg-white rounded-xl shadow-2xl w-[400px] flex flex-col overflow-hidden border-t-4 border-[var(--gold-primary)] font-sans" dir="rtl">
-                <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-gray-50">
-                    <h2 class="text-lg font-bold text-gray-900 font-['Tajawal']">تعديل تذييل اللوحة</h2>
-                    <button onclick="window.closeFooterModal()" class="text-gray-400 hover:text-red-600 transition w-8 h-8 rounded-full hover:bg-red-50 flex items-center justify-center">
-                        <i class="fa-solid fa-xmark text-lg"></i>
-                    </button>
-                </div>
-                <div class="p-6">
-                    <label class="block text-sm font-bold text-gray-600 mb-2 font-['Tajawal']">النص المعروض في الأسفل</label>
-                    <input type="text" id="m-footer" placeholder="مثال: اجتماع مجلس الإدارة..." class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 focus:ring-1 focus:ring-[var(--gold-primary)] outline-none font-['Tajawal']">
-                </div>
-                <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-3">
-                    <button type="button" onclick="window.closeFooterModal()" class="px-6 py-2 rounded-md font-bold text-gray-600 bg-white border border-gray-300 hover:bg-gray-100 transition font-['Tajawal']">إلغاء الأمر</button>
-                    <button type="button" onclick="window.saveFooter()" class="px-8 py-2 rounded-md font-bold text-white bg-[var(--gold-dark)] hover:bg-[var(--gold-primary)] shadow-md hover:shadow-lg transition font-['Tajawal']">حفظ التعديل</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- نافذة تعديل الفترة -->
-        <div id="period-modal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-[110] hidden justify-center items-center">
-            <div class="bg-white rounded-xl shadow-2xl w-[400px] flex flex-col overflow-hidden border-t-4 border-[var(--gold-primary)] font-sans" dir="rtl">
-                <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-gray-50">
-                    <h2 class="text-lg font-bold text-gray-900 font-['Tajawal']">تعديل فترة التقرير</h2>
-                    <button onclick="window.closePeriodModal()" class="text-gray-400 hover:text-red-600 transition w-8 h-8 rounded-full hover:bg-red-50 flex items-center justify-center">
-                        <i class="fa-solid fa-xmark text-lg"></i>
-                    </button>
-                </div>
-                <div class="p-6">
-                    <label class="block text-sm font-bold text-gray-600 mb-2 font-['Tajawal']">الفترة الزمنية للوحة</label>
-                    <input type="text" id="m-period" placeholder="مثال: الربع الأول 2026" class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 focus:ring-1 focus:ring-[var(--gold-primary)] outline-none font-['Tajawal']">
-                </div>
-                <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-3">
-                    <button type="button" onclick="window.closePeriodModal()" class="px-6 py-2 rounded-md font-bold text-gray-600 bg-white border border-gray-300 hover:bg-gray-100 transition font-['Tajawal']">إلغاء الأمر</button>
-                    <button type="button" onclick="window.savePeriod()" class="px-8 py-2 rounded-md font-bold text-white bg-[var(--gold-dark)] hover:bg-[var(--gold-primary)] shadow-md hover:shadow-lg transition font-['Tajawal']">حفظ الفترة</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- رسالة تأكيد فك القفل -->
-        <div id="confirm-modal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-[120] hidden justify-center items-center">
-            <div class="bg-white rounded-xl shadow-2xl w-[400px] flex flex-col overflow-hidden border-t-4 border-[var(--gold-primary)] font-sans" dir="rtl">
-                <div class="px-6 py-4 border-b border-gray-200 flex items-center gap-3 bg-gray-50">
-                    <div class="w-8 h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center">
-                        <i class="fa-solid fa-lock-open text-sm"></i>
-                    </div>
-                    <h2 class="text-lg font-bold text-gray-900 font-['Tajawal']">تأكيد فك القفل</h2>
-                </div>
-                <div class="p-6">
-                    <p class="text-sm font-bold text-gray-600 font-['Tajawal'] leading-relaxed">أنت على وشك فك قفل هذه الخلية لتصبح قابلة لإدخال القيم الصفرية أو الرقمية، ولن يتم عرض "لا ينطبق".<br><br>هل ترغب في المتابعة؟</p>
-                </div>
-                <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-3">
-                    <button type="button" onclick="window.closeConfirmModal()" class="px-6 py-2 rounded-md font-bold text-gray-600 bg-white border border-gray-300 hover:bg-gray-100 transition font-['Tajawal']">إلغاء الأمر</button>
-                    <button type="button" onclick="window.confirmUnlock()" class="px-8 py-2 rounded-md font-bold text-white bg-[var(--gold-dark)] hover:bg-[var(--gold-primary)] shadow-md hover:shadow-lg transition font-['Tajawal']">نعم، فك القفل</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- رسالة تأكيد حذف المشروع -->
-        <div id="delete-confirm-modal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-[130] hidden justify-center items-center">
-            <div class="bg-white rounded-xl shadow-2xl w-[400px] flex flex-col overflow-hidden border-t-4 border-red-600 font-sans" dir="rtl">
-                <div class="px-6 py-4 border-b border-gray-200 flex items-center gap-3 bg-gray-50">
-                    <div class="w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center">
-                        <i class="fa-solid fa-triangle-exclamation text-sm"></i>
-                    </div>
-                    <h2 class="text-lg font-bold text-gray-900 font-['Tajawal']">تأكيد الحذف</h2>
-                </div>
-                <div class="p-6">
-                    <p class="text-sm font-bold text-gray-600 font-['Tajawal'] leading-relaxed">أنت على وشك حذف هذا المشروع بالكامل من اللوحة. لا يمكن التراجع عن هذا الإجراء.<br><br>هل أنت متأكد من رغبتك في الحذف؟</p>
-                </div>
-                <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-3">
-                    <button type="button" onclick="window.closeDeleteConfirmModal()" class="px-6 py-2 rounded-md font-bold text-gray-600 bg-white border border-gray-300 hover:bg-gray-100 transition font-['Tajawal']">إلغاء</button>
-                    <button type="button" onclick="window.executeDeleteProject()" class="px-8 py-2 rounded-md font-bold text-white bg-red-600 hover:bg-red-700 shadow-md hover:shadow-lg transition font-['Tajawal']">نعم، احذف المشروع</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- نافذة التعديل للمشاريع (Modal) الذكية -->
-        <div id="edit-modal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-[100] hidden justify-center items-center">
-            <div class="bg-white rounded-xl shadow-2xl w-[1000px] max-h-[90vh] flex flex-col overflow-hidden border-t-4 border-[var(--gold-primary)] font-sans" dir="rtl">
-                <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-gray-50">
-                    <div>
-                        <h2 class="text-lg font-bold text-gray-900 font-['Tajawal']" id="modal-project-name">تعديل المشروع</h2>
-                        <p class="text-xs text-emerald-600 font-['Tajawal'] mt-1 font-bold"><i class="fa-solid fa-wand-magic-sparkles"></i> يتم حساب المؤشرات العليا وحالة الإنجاز ووزن التكلفة تلقائياً</p>
-                    </div>
-                    <button type="button" onclick="window.closeModal()" class="text-gray-400 hover:text-red-600 transition w-8 h-8 rounded-full hover:bg-red-50 flex items-center justify-center">
-                        <i class="fa-solid fa-xmark text-lg"></i>
-                    </button>
-                </div>
-
-                <div class="p-6 overflow-y-auto flex-1 custom-scrollbar">
-                    <form id="edit-form" class="space-y-6">
-                        <input type="hidden" id="edit-index">
+        <!-- ========================================== -->
+        <!-- نافذة عرض وتعديل التفاصيل (مصفوفة الأشهر الفخمة) -->
+        <!-- ========================================== -->
+        <div id="detailsModal" class="modal-overlay no-print">
+            <div class="modal-content">
+                <div class="flex justify-between items-center bg-slate-50 px-6 py-4 border-b border-slate-200 shrink-0">
+                    <div class="flex items-center gap-4">
+                        <h2 id="modalTitle" class="text-[18px] font-black text-[var(--charcoal-900)] border-r-4 border-[var(--gold-primary)] pr-3">تفاصيل الحركة</h2>
                         
-                        <!-- الهوية والحالة التنظيمية -->
-                        <div>
-                            <h3 class="text-sm font-bold text-gray-800 mb-3 border-b pb-1 border-[var(--gold-track)] font-['Tajawal']">الهوية والحالة التنظيمية</h3>
-                            <div class="grid grid-cols-4 gap-4">
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">اسم المشروع</label>
-                                    <input type="text" id="m-name" class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 focus:ring-1 focus:ring-[var(--gold-primary)] outline-none font-['Tajawal'] text-[var(--charcoal-900)]">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">طبيعة المشروع (قائمة)</label>
-                                    <select id="m-nature" class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 focus:ring-1 focus:ring-[var(--gold-primary)] outline-none font-['Tajawal'] text-[var(--charcoal-900)]">
-                                        <option value="أراضي سكنية وتجارية">أراضي سكنية وتجارية</option>
-                                        <option value="تجاري">تجاري</option>
-                                        <option value="مكتبي">مكتبي</option>
-                                        <option value="تعليمي">تعليمي</option>
-                                        <option value="شقق سكنية">شقق سكنية</option>
-                                        <option value="فلل سكنية">فلل سكنية</option>
-                                        <option value="ضيافة">ضيافة</option>
-                                        <option value="طبي">طبي</option>
-                                        <option value="متعدد الاستخدامات">متعدد الاستخدامات</option>
-                                        <option value="أخرى">أخرى</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">المدينة / الموقع</label>
-                                    <select id="m-location" class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 focus:ring-1 focus:ring-[var(--gold-primary)] outline-none font-['Tajawal'] text-[var(--charcoal-900)]">
-                                        <option value="أبها">أبها</option>
-                                        <option value="بريده">بريده</option>
-                                        <option value="الخبر">الخبر</option>
-                                        <option value="الدمام">الدمام</option>
-                                        <option value="الرياض">الرياض</option>
-                                        <option value="جدة">جدة</option>
-                                        <option value="المدينة المنورة">المدينة المنورة</option>
-                                        <option value="مكة المكرمة">مكة المكرمة</option>
-                                        <option value="تبوك">تبوك</option>
-                                        <option value="نيوم">نيوم</option>
-                                        <option value="أخرى">أخرى</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">حالة الاعتماد</label>
-                                    <select id="m-approval" class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 focus:ring-1 focus:ring-[var(--gold-primary)] outline-none font-['Tajawal'] text-[var(--charcoal-900)]">
-                                        <option value="معتمد">معتمد</option>
-                                        <option value="جاري الاعتماد">جاري الاعتماد</option>
-                                        <option value="قيد المراجعة">قيد المراجعة</option>
-                                    </select>
-                                </div>
-                            </div>
+                        <div id="editActionButtons" class="hidden flex items-center gap-2 border-r-2 border-slate-200 pr-4">
+                            <button onclick="addNewRow()" class="flex items-center gap-1.5 bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-[12px] font-bold hover:bg-slate-300 transition-colors">
+                                <i class="fa-solid fa-plus"></i> إضافة بند
+                            </button>
+                            <button onclick="addMonth()" class="flex items-center gap-1.5 bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-lg text-[12px] font-bold hover:bg-emerald-200 transition-colors">
+                                <i class="fa-solid fa-calendar-plus"></i> إضافة شهر
+                            </button>
                         </div>
-
-                        <!-- المساحات والجدول الزمني -->
-                        <div>
-                            <h3 class="text-sm font-bold text-gray-800 mb-3 border-b pb-1 border-[var(--gold-track)] font-['Tajawal']">المساحات والجدول الزمني</h3>
-                            <div class="grid grid-cols-5 gap-4">
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">مساحة الأرض</label>
-                                    <input type="text" id="m-landArea" oninput="window.formatNumberInput(event)" class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 outline-none font-numbers text-left text-[var(--charcoal-900)]" dir="ltr">
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">المساحة المبنية</label>
-                                    <div class="relative">
-                                        <input type="text" id="m-bua" oninput="window.formatNumberInput(event)" class="w-full text-sm rounded-md border border-gray-300 pl-8 pr-3 py-2 outline-none font-numbers text-left transition-colors text-[var(--charcoal-900)]" dir="ltr">
-                                        <button type="button" class="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-[var(--gold-dark)] transition z-10" onclick="window.toggleLock('m-bua')" title="فك/قفل الخلية">
-                                            <i class="fa-solid fa-lock-open" id="icon-m-bua"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">المساحة البيعية</label>
-                                    <input type="text" id="m-sellArea" oninput="window.formatNumberInput(event)" class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 outline-none font-numbers text-left text-[var(--charcoal-900)]" dir="ltr">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">عدد الوحدات</label>
-                                    <input type="text" id="m-units" oninput="window.formatNumberInput(event)" class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 outline-none font-numbers text-left text-[var(--charcoal-900)]" dir="ltr">
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">قيمة الأرض</label>
-                                    <div class="relative">
-                                        <input type="text" id="m-landValue" oninput="window.formatNumberInput(event)" class="w-full text-sm rounded-md border border-gray-300 pl-8 pr-3 py-2 outline-none font-numbers text-left transition-colors text-[var(--charcoal-900)]" dir="ltr">
-                                        <button type="button" class="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-[var(--gold-dark)] transition z-10" onclick="window.toggleLock('m-landValue')" title="فك/قفل الخلية">
-                                            <i class="fa-solid fa-lock-open" id="icon-m-landValue"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-3 gap-4 mt-4 bg-gray-50 p-3 rounded border border-gray-200">
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">تاريخ البداية (اليوم الشهر السنة)</label>
-                                    <input type="text" id="m-startDate" class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 outline-none font-numbers text-[var(--charcoal-900)] bg-white cursor-pointer" placeholder="اختر التاريخ..." dir="ltr">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">تاريخ النهاية (اليوم الشهر السنة)</label>
-                                    <input type="text" id="m-endDate" class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 outline-none font-numbers text-[var(--charcoal-900)] bg-white cursor-pointer" placeholder="اختر التاريخ..." dir="ltr">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']"><i class="fa-solid fa-calculator text-[var(--gold-dark)] mr-1"></i>المدة التلقائية (شهر)</label>
-                                    <input type="text" id="m-duration" readonly class="w-full text-sm rounded-md border border-gray-200 bg-gray-100 px-3 py-2 outline-none font-numbers text-center font-bold text-[var(--charcoal-900)] cursor-not-allowed">
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- البيانات المالية ومؤشرات الإنجاز -->
-                        <div>
-                            <h3 class="text-sm font-bold text-gray-800 mb-3 border-b pb-1 border-[var(--gold-track)] font-['Tajawal']">البيانات المالية ومؤشرات الإنجاز</h3>
-                            <div class="grid grid-cols-5 gap-4 mb-4">
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">التكاليف التقديرية</label>
-                                    <div class="relative">
-                                        <input type="text" id="m-estCosts" oninput="window.formatNumberInput(event); window.updateModalWeight();" class="w-full text-sm rounded-md border border-gray-300 pl-8 pr-3 py-2 outline-none font-numbers text-left transition-colors text-[var(--charcoal-900)]" dir="ltr">
-                                        <button type="button" class="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-[var(--gold-dark)] transition z-10" onclick="window.toggleLock('m-estCosts')" title="فك/قفل الخلية">
-                                            <i class="fa-solid fa-lock-open" id="icon-m-estCosts"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">الميزانية</label>
-                                    <input type="text" id="m-budget" oninput="window.formatNumberInput(event);" class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 outline-none font-numbers text-left text-[var(--charcoal-900)]" dir="ltr">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-[var(--gold-dark)] mb-1 font-['Tajawal']"><i class="fa-solid fa-pen-to-square mr-1"></i>المصروف الفعلي</label>
-                                    <input type="text" id="m-expenses" oninput="window.formatNumberInput(event)" class="w-full text-sm rounded-md border border-[var(--gold-primary)] px-3 py-2 outline-none font-numbers text-left text-[var(--charcoal-900)] shadow-sm focus:ring-1 focus:ring-[var(--gold-primary)]" dir="ltr">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">المبيعات المتوقعة</label>
-                                    <input type="text" id="m-sales" oninput="window.formatNumberInput(event)" class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 outline-none font-numbers text-left text-[var(--charcoal-900)]" dir="ltr">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">الإيجارات المتوقعة</label>
-                                    <div class="relative">
-                                        <input type="text" id="m-rent" oninput="window.formatNumberInput(event)" class="w-full text-sm rounded-md border border-gray-300 pl-8 pr-3 py-2 outline-none font-numbers text-left transition-colors bg-gray-100 text-gray-500 cursor-not-allowed" dir="ltr" readonly>
-                                        <button type="button" class="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-[var(--gold-dark)] transition z-10" onclick="window.toggleLock('m-rent')" title="فك/قفل الخلية">
-                                            <i class="fa-solid fa-lock" id="icon-m-rent"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="grid grid-cols-6 gap-3 bg-gray-50 p-4 rounded-lg border border-gray-200 items-end">
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']"><i class="fa-solid fa-calculator text-[var(--gold-dark)] mr-1"></i>الوزن (%)</label>
-                                    <input type="text" id="m-weight" readonly class="w-full text-sm rounded-md border border-gray-200 bg-gray-100 px-2 py-2 outline-none font-numbers text-center font-bold text-[var(--charcoal-900)] cursor-not-allowed">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-[var(--gold-dark)] mb-1 font-['Tajawal']"><i class="fa-solid fa-pen-to-square mr-1"></i>المخطط (%)</label>
-                                    <input type="text" id="m-plannedProg" oninput="window.formatNumberInput(event); window.updateModalProgStatus();" class="w-full text-sm rounded-md border border-[var(--gold-primary)] px-2 py-2 outline-none font-numbers text-center text-[var(--charcoal-900)] font-bold shadow-sm focus:ring-1 focus:ring-[var(--gold-primary)]" dir="ltr">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-[var(--gold-dark)] mb-1 font-['Tajawal']"><i class="fa-solid fa-pen-to-square mr-1"></i>الفعلي (%)</label>
-                                    <input type="text" id="m-actualProg" oninput="window.formatNumberInput(event); window.updateModalProgStatus();" class="w-full text-sm rounded-md border border-[var(--gold-primary)] px-2 py-2 outline-none font-numbers text-center text-[var(--charcoal-900)] font-bold shadow-sm focus:ring-1 focus:ring-[var(--gold-primary)]" dir="ltr">
-                                </div>
-                                <div class="col-span-2">
-                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']"><i class="fa-solid fa-calculator text-[var(--gold-dark)] mr-1"></i>الحالة (تلقائي)</label>
-                                    <select id="m-progStatus" disabled class="w-full text-sm rounded-md border border-gray-200 bg-gray-100 px-2 py-2 outline-none font-['Tajawal'] font-bold text-[var(--charcoal-900)] cursor-not-allowed">
-                                        <option value="متقدم">متقدم (Ahead)</option>
-                                        <option value="في الوقت">في الوقت (On Track)</option>
-                                        <option value="متأخر">متأخر (Delayed)</option>
-                                        <option value="منتهي">منتهي (Finished)</option>
-                                        <option value="مستقبلي">مستقبلي (Future)</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-[var(--gold-dark)] mb-1 font-['Tajawal']"><i class="fa-solid fa-pen-to-square mr-1"></i>المرحلة</label>
-                                    <select id="m-status" class="w-full text-sm rounded-md border border-[var(--gold-primary)] px-2 py-2 outline-none font-['Tajawal'] text-[var(--charcoal-900)] shadow-sm focus:ring-1 focus:ring-[var(--gold-primary)]">
-                                        <option value="تحت التنفيذ">تحت التنفيذ</option>
-                                        <option value="مرحلة التصميم">مرحلة التصميم</option>
-                                        <option value="تحت الدراسة">تحت الدراسة</option>
-                                        <option value="منتهي">منتهي</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
+                    </div>
+                    
+                    <div class="flex items-center gap-3">
+                        <button id="editBtn" onclick="requestEditMode()" class="flex items-center gap-2 bg-white border border-slate-300 text-slate-700 px-4 py-1.5 rounded-lg text-[12px] font-bold hover:bg-slate-100 transition-colors shadow-sm">
+                            <i class="fa-solid fa-lock text-[var(--gold-dark)]"></i> تفعيل التعديل
+                        </button>
+                        <button onclick="closeDetails()" class="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:text-red-500 hover:bg-red-50 transition-colors shadow-sm" title="إغلاق (Esc)">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
                 </div>
+                
+                <div class="flex-1 overflow-x-auto overflow-y-auto custom-scroll px-6 py-4 bg-white min-h-0">
+                    <div id="gridWrapper" class="w-full flex flex-col transition-all duration-300 pb-2">
+                        <div id="gridHeader" class="grid-matrix bg-slate-100 border border-slate-200 rounded-lg p-3 mb-3 text-center sticky top-0 z-10 shadow-sm w-full">
+                            <!-- Content Injected via JS -->
+                        </div>
 
-                <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-between gap-3">
-                    <button type="button" onclick="window.confirmDeleteProject()" class="px-4 py-2 rounded-md font-bold text-red-600 bg-red-50 border border-red-200 hover:bg-red-100 transition font-['Tajawal'] flex items-center gap-1.5">
-                        <i class="fa-solid fa-trash-can"></i> حذف المشروع
-                    </button>
-                    <div class="flex gap-3">
-                        <button type="button" onclick="window.closeModal()" class="px-6 py-2 rounded-md font-bold text-gray-600 bg-white border border-gray-300 hover:bg-gray-100 transition font-['Tajawal']">إلغاء الأمر</button>
-                        <button type="button" onclick="window.saveProject()" class="px-8 py-2 rounded-md font-bold text-white bg-[var(--gold-dark)] hover:bg-[var(--gold-primary)] shadow-md hover:shadow-lg transition font-['Tajawal']">تحديث البيانات</button>
+                        <div class="flex flex-col gap-2 w-full" id="detailsList">
+                            <!-- يتم حقن الصفوف هنا برمجياً -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ذيل المودال -->
+                <div class="bg-slate-50 px-6 py-4 border-t border-slate-200 shrink-0 flex justify-between items-center min-w-max">
+                    <div class="flex items-center">
+                        <h2 class="text-[18px] font-black text-[var(--charcoal-900)] border-r-4 border-[var(--gold-primary)] pr-3 flex items-center gap-2">
+                            الإجمالي النهائي: 
+                            <span id="modalTotal" class="font-numbers text-[var(--gold-dark)] mr-1 text-right" dir="ltr">0.00</span> 
+                            <span class="text-[14px] text-slate-500 mr-1">ريال</span>
+                        </h2>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <button id="saveBtn" onclick="saveChanges()" class="hidden flex items-center gap-2 bg-[var(--success)] text-white px-6 py-2 rounded-lg text-[13px] font-bold hover:bg-green-700 transition-colors shadow-md">
+                            <i class="fa-solid fa-check"></i> حفظ واعتماد التحديثات
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- نافذة كلمة المرور المصغرة -->
+        <div id="passwordModal" class="modal-overlay no-print" style="z-index: 60;">
+            <div class="bg-white rounded-xl shadow-2xl border border-slate-200 w-[350px] overflow-hidden transform scale-100">
+                <div class="bg-[var(--charcoal-900)] text-white px-5 py-3 flex items-center gap-2">
+                    <i class="fa-solid fa-shield-halved text-[var(--gold-primary)]"></i>
+                    <h3 class="font-bold text-[14px]">صلاحية الوصول للإدارة المالية</h3>
+                </div>
+                <div class="p-5 flex flex-col gap-4">
+                    <p class="text-[12px] text-slate-600 font-bold">يرجى إدخال كلمة المرور لتفعيل وضع التحرير وعكس التحديثات على اللوحة الرئيسية (السحابة).</p>
+                    <input type="password" id="passInput" placeholder="كلمة المرور..." class="w-full px-4 py-2 border border-slate-300 rounded-lg text-left focus:outline-none focus:border-[var(--gold-primary)] font-numbers text-lg" dir="ltr">
+                    <div id="passError" class="text-red-500 text-[11px] font-bold hidden">كلمة المرور غير صحيحة!</div>
+                    <div class="flex gap-2 mt-2">
+                        <button onclick="verifyPassword()" class="flex-1 bg-[var(--gold-primary)] text-white py-2 rounded-lg text-[13px] font-bold hover:bg-[var(--gold-dark)] transition-colors">تأكيد ومتابعة</button>
+                        <button onclick="closePasswordModal()" class="flex-1 bg-slate-100 text-slate-600 py-2 rounded-lg text-[13px] font-bold hover:bg-slate-200 transition-colors">إلغاء</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
+    <!-- ========================================== -->
+    <!-- البرمجة وإدارة قواعد البيانات السحابية (Firebase) -->
+    <!-- ========================================== -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // التكوين الخاص بمشروعك في Firebase
+        // إعدادات فايربيس
         const firebaseConfig = {
-            apiKey: "AIzaSyDcEqAH_lk4qOgYGUVhu16GHw7mRmLbAWM",
-            authDomain: "projects-progress-dashboard.firebaseapp.com",
-            projectId: "projects-progress-dashboard",
-            storageBucket: "projects-progress-dashboard.firebasestorage.app",
-            messagingSenderId: "741799363441",
-            appId: "1:741799363441:web:6518fb90582ecef28e6cd0"
+            apiKey: "AIzaSyA5nZZDcgoqEz20tsw4-ib4vaBhWe9XWj4",
+            authDomain: "cash-flows-458ac.firebaseapp.com",
+            projectId: "cash-flows-458ac",
+            storageBucket: "cash-flows-458ac.firebasestorage.app",
+            messagingSenderId: "361093626255",
+            appId: "1:361093626255:web:6d98d0cb6c416741f973fa"
         };
 
         const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
         const db = getFirestore(app);
 
-        let dashboardPeriod = "الربع الأول 2026";
-        let dashboardFooter = "اجتماع مجلس الإدارة السابع عشر";
-
-        // متغيرات التقويم الاحترافي
-        window.startPicker = null;
-        window.endPicker = null;
-
-        let projectsData = [
-          {
-                    "name": "مخطط الرابية",
-                    "type": "بنية تحتية",
-                    "nature": "أراضي سكنية وتجارية",
-                    "location": "أبها",
-                    "status": "منتهي",
-                    "approval": "معتمد",
-                    "units": 171,
-                    "startDate": "08-09-2024",
-                    "endDate": "04-08-2025",
-                    "landArea": 124234,
-                    "sellableArea": 75556,
-                    "bua": "N/A",
-                    "landValue": 50525000,
-                    "budget": 12423400,
-                    "estCosts": 13294376,
-                    "expenses": 10831220.932,
-                    "expRent": "N/A",
-                    "expSales": 81978260,
-                    "plannedProg": 100,
-                    "actualProg": 100,
-                    "progStatus": "منتهي"
-          },
-          {
-                    "name": "مخطط النوايف",
-                    "type": "بنية تحتية",
-                    "nature": "أراضي سكنية وتجارية",
-                    "location": "بريده",
-                    "status": "تحت التنفيذ",
-                    "approval": "معتمد",
-                    "units": 2179,
-                    "startDate": "01-01-2025",
-                    "endDate": "01-04-2027",
-                    "landArea": 2519020.94,
-                    "sellableArea": 1183360,
-                    "bua": "N/A",
-                    "landValue": 224192864,
-                    "budget": 188926500,
-                    "estCosts": 186426500,
-                    "expenses": 34627495.012,
-                    "expRent": "N/A",
-                    "expSales": 616620600,
-                    "plannedProg": 9.3,
-                    "actualProg": 16.17,
-                    "progStatus": "متقدم"
-          },
-          {
-                    "name": "مشروع مسار",
-                    "type": "بنية فوقية",
-                    "nature": "ضيافة",
-                    "location": "مكة المكرمة",
-                    "status": "مرحلة التصميم",
-                    "approval": "جاري الاعتماد",
-                    "units": 1082,
-                    "startDate": "01-01-2026",
-                    "endDate": "26-01-2027",
-                    "landArea": 6215,
-                    "sellableArea": 62410,
-                    "bua": 120000,
-                    "landValue": 276711377,
-                    "budget": 1450068377,
-                    "estCosts": 1173357000,
-                    "expenses": 2555076.73,
-                    "expRent": 102664400,
-                    "expSales": 1561694000,
-                    "plannedProg": 15,
-                    "actualProg": 10,
-                    "progStatus": "متأخر"
-          },
-          {
-                    "name": "بساتين الغروب",
-                    "type": "بنية فوقية",
-                    "nature": "فلل سكنية",
-                    "location": "المدينة المنورة",
-                    "status": "مرحلة التصميم",
-                    "approval": "جاري الاعتماد",
-                    "units": 1085,
-                    "startDate": "01-09-2025",
-                    "endDate": "25-12-2025",
-                    "landArea": 278877,
-                    "sellableArea": 273607.83,
-                    "bua": 252533,
-                    "landValue": "N/A",
-                    "budget": 18935225,
-                    "estCosts": 807615324.92,
-                    "expenses": 17973765.58,
-                    "expRent": "N/A",
-                    "expSales": 878192193,
-                    "plannedProg": 100,
-                    "actualProg": 99,
-                    "progStatus": "في الوقت"
-          },
-          {
-                    "name": "مساكن الروضة (6)",
-                    "type": "بنية فوقية",
-                    "nature": "شقق سكنية",
-                    "location": "المدينة المنورة",
-                    "status": "منتهي",
-                    "approval": "معتمد",
-                    "units": 48,
-                    "startDate": "06-01-2022",
-                    "endDate": "02-06-2025",
-                    "landArea": 2464,
-                    "sellableArea": 9048,
-                    "bua": 11566,
-                    "landValue": 6413818,
-                    "budget": 18935225,
-                    "estCosts": 19069233,
-                    "expenses": 17973765.58,
-                    "expRent": "N/A",
-                    "expSales": 30763200,
-                    "plannedProg": 100,
-                    "actualProg": 100,
-                    "progStatus": "منتهي"
-          },
-          {
-                    "name": "مساكن الروضة (7)",
-                    "type": "بنية فوقية",
-                    "nature": "شقق سكنية",
-                    "location": "المدينة المنورة",
-                    "status": "تحت التنفيذ",
-                    "approval": "معتمد",
-                    "units": 64,
-                    "startDate": "04-02-2024",
-                    "endDate": "31-03-2026",
-                    "landArea": 3031,
-                    "sellableArea": 12450,
-                    "bua": 16057,
-                    "landValue": 8305652,
-                    "budget": 29375042,
-                    "estCosts": 25669233,
-                    "expenses": 22097182.473,
-                    "expRent": "N/A",
-                    "expSales": 45195797,
-                    "plannedProg": 97.04,
-                    "actualProg": 95.17,
-                    "progStatus": "في الوقت"
-          },
-          {
-                    "name": "مساكن الروضة (18)",
-                    "type": "بنية فوقية",
-                    "nature": "شقق سكنية",
-                    "location": "المدينة المنورة",
-                    "status": "مرحلة التصميم",
-                    "approval": "جاري الاعتماد",
-                    "units": 46,
-                    "startDate": "01-06-2026",
-                    "endDate": "02-01-2028",
-                    "landArea": 2146,
-                    "sellableArea": 8134,
-                    "bua": 10224,
-                    "landValue": 7275844,
-                    "budget": 24090492,
-                    "estCosts": 24085205,
-                    "expenses": 0,
-                    "expRent": "N/A",
-                    "expSales": 36920139,
-                    "plannedProg": "0",
-                    "actualProg": "0",
-                    "progStatus": "مستقبلي"
-          },
-          {
-                    "name": "مساكن الروضة (10)",
-                    "type": "بنية فوقية",
-                    "nature": "شقق سكنية",
-                    "location": "المدينة المنورة",
-                    "status": "مرحلة التصميم",
-                    "approval": "جاري الاعتماد",
-                    "units": 34,
-                    "startDate": "01-06-2026",
-                    "endDate": "01-02-2028",
-                    "landArea": 1425,
-                    "sellableArea": 5503,
-                    "bua": 6891,
-                    "landValue": 4902860,
-                    "budget": 16233485,
-                    "estCosts": 16233485,
-                    "expenses": "0",
-                    "expRent": "N/A",
-                    "expSales": 24878800,
-                    "plannedProg": "0",
-                    "actualProg": "0",
-                    "progStatus": "مستقبلي"
-          },
-          {
-                    "name": "مجمع ورف التجاري",
-                    "type": "بنية فوقية",
-                    "nature": "تجاري",
-                    "location": "الخبر",
-                    "status": "منتهي",
-                    "approval": "معتمد",
-                    "units": 15,
-                    "startDate": "05-01-2024",
-                    "endDate": "14-07-2025",
-                    "landArea": 4921,
-                    "sellableArea": "N/A",
-                    "bua": 3189.54,
-                    "landValue": 18911200,
-                    "budget": 12436760,
-                    "estCosts": 11771853,
-                    "expenses": 10337358.82,
-                    "expRent": 10266440,
-                    "expSales": 69804536,
-                    "plannedProg": 100,
-                    "actualProg": 100,
-                    "progStatus": "منتهي"
-          },
-          {
-                    "name": "مجمع جاديت المكتبي",
-                    "type": "بنية فوقية",
-                    "nature": "مكتبي",
-                    "location": "الخبر",
-                    "status": "تحت التنفيذ",
-                    "approval": "معتمد",
-                    "units": 89,
-                    "startDate": "01-01-2025",
-                    "endDate": "25-08-2026",
-                    "landArea": 22531,
-                    "sellableArea": 16740,
-                    "bua": 38954,
-                    "landValue": 49568200,
-                    "budget": 112411778,
-                    "estCosts": 112411778,
-                    "expenses": 58843974,
-                    "expRent": "N/A",
-                    "expSales": 331800583,
-                    "plannedProg": 68.37,
-                    "actualProg": 61.18,
-                    "progStatus": "متأخر"
-          },
-          {
-                    "name": "مدارس الروضة (البنين)",
-                    "type": "بنية فوقية",
-                    "nature": "تعليمي",
-                    "location": "المدينة المنورة",
-                    "status": "تحت التنفيذ",
-                    "approval": "معتمد",
-                    "units": 50,
-                    "startDate": "01-08-2024",
-                    "endDate": "04-03-2026",
-                    "landArea": 5854,
-                    "sellableArea": "N/A",
-                    "bua": 19052,
-                    "landValue": 29375042,
-                    "budget": 43060004,
-                    "estCosts": 42177101,
-                    "expenses": 23752820,
-                    "expRent": 5041226,
-                    "expSales": 63015327,
-                    "plannedProg": 85.06,
-                    "actualProg": 83.66,
-                    "progStatus": "في الوقت"
-          },
-          {
-                    "name": "مدارس الروضة (البنات)",
-                    "type": "بنية فوقية",
-                    "nature": "تعليمي",
-                    "location": "المدينة المنورة",
-                    "status": "تحت التنفيذ",
-                    "approval": "معتمد",
-                    "units": 55,
-                    "startDate": "01-07-2024",
-                    "endDate": "30-04-2026",
-                    "landArea": 6189,
-                    "sellableArea": "N/A",
-                    "bua": 19802,
-                    "landValue": 9031995,
-                    "budget": 43869158,
-                    "estCosts": 42177101,
-                    "expenses": 26373255,
-                    "expRent": 5189027,
-                    "expSales": 64862838,
-                    "plannedProg": 96.61,
-                    "actualProg": 39.21,
-                    "progStatus": "متأخر"
-          }
-        ];
-
-        const loadDataFromFirebase = async () => {
-            try {
-                const docRef = doc(db, "dashboardData", "main");
-                const docSnap = await getDoc(docRef);
-                
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    dashboardPeriod = data.period || dashboardPeriod;
-                    dashboardFooter = data.footer || dashboardFooter;
-                    projectsData = data.projects || projectsData;
-                } else {
-                    await saveDataToFirebase();
-                }
-            } catch (error) {
-                console.error("عذراً، فشل الاتصال بالسحابة: ", error);
-            } finally {
-                const loader = document.getElementById('cloud-loader');
-                if(loader) {
-                    loader.style.opacity = '0';
-                    setTimeout(() => loader.remove(), 500);
-                }
-                renderDashboard();
+        // تفعيل زر الهروب (Esc)
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                const passwordModal = document.getElementById('passwordModal');
+                const detailsModal = document.getElementById('detailsModal');
+                if (passwordModal.classList.contains('active')) window.closePasswordModal();
+                else if (detailsModal.classList.contains('active')) window.closeDetails();
             }
-        };
-
-        const saveDataToFirebase = async () => {
-            try {
-                // إنشاء نسخة عميقة من البيانات لضمان التقاط جميع التعديلات ورفعها بشكل نقي
-                const cleanProjectsData = JSON.parse(JSON.stringify(projectsData));
-                
-                await setDoc(doc(db, "dashboardData", "main"), {
-                    period: dashboardPeriod,
-                    footer: dashboardFooter,
-                    projects: cleanProjectsData
-                });
-            } catch (error) {
-                console.error("حدث خطأ أثناء حفظ البيانات في السحابة:", error);
-            }
-        };
-
-        const calcProjectMonths = (startStr, endStr) => {
-            if (!startStr || !endStr || startStr === "N/A" || endStr === "N/A") return 0;
-            const sParts = startStr.split('-');
-            const eParts = endStr.split('-');
-            if(sParts.length !== 3 || eParts.length !== 3) return 0;
-            const s = new Date(sParts[2], sParts[1]-1, sParts[0]);
-            const e = new Date(eParts[2], eParts[1]-1, eParts[0]);
-            let months = (e.getFullYear() - s.getFullYear()) * 12;
-            months -= s.getMonth();
-            months += e.getMonth();
-            return months <= 0 ? 0 : months;
-        };
-
-        const calculateTimeProgress = (startStr, endStr, status) => {
-            if (status.includes("منتهي") || status.includes("مكتمل")) return 100;
-            if (!startStr || !endStr || startStr === "N/A" || endStr === "N/A") return 0;
-            const parseDate = (dStr) => {
-                const parts = dStr.split('-');
-                if(parts.length === 3) return new Date(parts[2], parts[1]-1, parts[0]).setHours(0,0,0,0);
-                return 0;
-            };
-            const s = parseDate(startStr);
-            const e = parseDate(endStr);
-            const current = new Date().setHours(0,0,0,0); 
-            
-            if (current <= s) return 0;
-            if (current >= e) return 100;
-            let perc = ((current - s) / (e - s)) * 100;
-            return Math.max(0, Math.min(100, perc));
-        };
-
-        const getAutoProgStatus = (actualProg, plannedProg, startDateStr) => {
-            const a = parseFloat(actualProg) || 0;
-            const p = parseFloat(plannedProg) || 0;
-
-            if (a >= 100) return "منتهي";
-
-            const currentMs = new Date().setHours(0,0,0,0);
-
-            if (startDateStr && startDateStr !== "N/A" && startDateStr !== "لا ينطبق") {
-                const parts = startDateStr.split('-');
-                if(parts.length === 3) {
-                    const s = new Date(parts[2], parts[1]-1, parts[0]).setHours(0,0,0,0);
-                    if (currentMs < s) return "مستقبلي";
-                }
-            }
-
-            const diff = a - p;
-            if (diff <= -3) return "متأخر";
-            if (diff < 0) return "في الوقت";
-            if (diff === 0) return "في الوقت";
-            return "متقدم";
-        };
-
-        const isNA = (val) => val === "N/A" || val === undefined || val === "" || val === "لا ينطبق";
-
-        const fVal = (num) => {
-            if (isNA(num)) return '<span class="text-[var(--charcoal-300)] font-numbers">لا ينطبق</span>';
-            if (num === 0 || num === "0" || num === "0.00") return '<span class="font-numbers text-[var(--charcoal-900)]">0</span>';
-            const val = parseFloat(num);
-            if (isNaN(val)) return '<span class="text-[var(--charcoal-300)] font-numbers">0</span>';
-            return `<span class="font-numbers text-[var(--charcoal-900)]">${val.toLocaleString('en-US', {maximumFractionDigits: 0})}</span>`;
-        };
-
-        const getStatusTagStyle = (status) => {
-            let base = "color: white; border-radius: 4px; padding: 3px 6px; font-weight: bold; border: 1px solid transparent;";
-            if (status === "متقدم") return base + "background-color: #047857; border-color: #064E3B;"; 
-            if (status === "في الوقت") return base + "background-color: #65A30D; border-color: #4D7C0F;"; 
-            if (status === "منتهي") return base + "background-color: #0284C7; border-color: #0369A1;"; 
-            if (status === "متأخر") return base + "background-color: #DC2626; border-color: #991B1B;"; 
-            return base + "background-color: #64748B; border-color: #475569;"; 
-        };
-
-        const getProjectStatusTag = (status) => {
-            if (status.includes("تحت التنفيذ")) return `background-color: #E0F2FE; color: #0369A1; border: 1px solid #BAE6FD;`;
-            if (status.includes("تصميم")) return `background-color: #F3F4F6; color: #4B5563; border: 1px solid #D1D5DB;`;
-            if (status.includes("دراسة")) return `background-color: #FEF3C7; color: #B45309; border: 1px solid #FDE68A;`;
-            if (status.includes("منتهي")) return `background-color: #DCFCE7; color: #15803D; border: 1px solid #BBF7D0;`;
-            return `background-color: #F3F4F6; color: #374151; border: 1px solid #E5E7EB;`;
-        };
-
-        const getNatureTagStyle = (nature) => {
-            if(nature.includes("تجاري")) return 'bg-[#EFF6FF] text-[#1D4ED8] border-[#BFDBFE]'; 
-            if(nature.includes("مكتبي")) return 'bg-[#F5F3FF] text-[#6D28D9] border-[#DDD6FE]'; 
-            if(nature.includes("تعليمي")) return 'bg-[#FFF7ED] text-[#C2410C] border-[#FED7AA]'; 
-            if(nature.includes("سكني") || nature.includes("فلل") || nature.includes("شقق")) return 'bg-[#F0FDF4] text-[#15803D] border-[#BBF7D0]'; 
-            if(nature.includes("ضيافة")) return 'bg-[#FFF1F2] text-[#BE123C] border-[#FECDD3]'; 
-            return 'bg-[#F3F4F6] text-[#374151] border-[#E5E7EB]'; 
-        };
-
-        const getNatureIcon = (nature) => {
-            if(nature.includes("تجاري")) return '<i class="fa-solid fa-store ml-1"></i>';
-            if(nature.includes("مكتبي")) return '<i class="fa-solid fa-briefcase ml-1"></i>';
-            if(nature.includes("تعليمي")) return '<i class="fa-solid fa-graduation-cap ml-1"></i>';
-            if(nature.includes("سكني") || nature.includes("فلل") || nature.includes("شقق")) return '<i class="fa-solid fa-house ml-1"></i>';
-            if(nature.includes("ضيافة")) return '<i class="fa-solid fa-hotel ml-1"></i>';
-            return '<i class="fa-solid fa-map-location-dot ml-1"></i>';
-        };
-
-        const formatDisplayDate = (dStr) => {
-            if (!dStr || dStr === "N/A" || dStr === "لا ينطبق") return '<span dir="ltr">لا ينطبق</span>';
-            const parts = dStr.split('-');
-            if(parts.length !== 3) return `<span dir="ltr">${dStr}</span>`;
-            const fullMonths = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            const m = parseInt(parts[1], 10) - 1;
-            const d = parseInt(parts[0], 10);
-            return `<span dir="ltr">${d} ${fullMonths[m]} ${parts[2]}</span>`;
-        };
-
-        const formatNumberWithCommas = (num) => {
-            if (num === 0 || num === "0") return "0";
-            if (!num && num !== 0 && num !== "0") return '';
-            let val = num.toString().replace(/,/g, '');
-            let parts = val.split('.');
-            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            return parts.join('.');
-        };
-
-        const parseFormattedNumber = (str) => {
-            if(str === "0" || str === "0.00") return "0"; 
-            if(!str || str === "لا ينطبق" || str === "N/A") return "N/A"; 
-            return parseFloat(str.toString().replace(/,/g, '')) || 0;
-        };
-
-        window.formatNumberInput = (e) => {
-            let val = e.target.value.replace(/,/g, ''); 
-            val = val.replace(/[^0-9.]/g, ''); 
-            const parts = val.split('.');
-            if(parts.length > 2) val = parts[0] + '.' + parts.slice(1).join('');
-            
-            if(val) {
-                let parts2 = val.split('.');
-                parts2[0] = parts2[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                e.target.value = parts2.join('.');
-            } else {
-                e.target.value = '';
-            }
-        };
-
-        window.pendingEditIndex = null;
-        window.pendingAction = null; // متغير لحفظ أمر الصعود والنزول
-
-        window.openPasswordModal = (index) => {
-            if (sessionStorage.getItem('isAuthenticated') === 'true') {
-                if (index !== null && index !== undefined) {
-                    window.openEditModal(index);
-                }
-                return;
-            }
-
-            window.pendingEditIndex = index;
-            document.getElementById('auth-password').value = '';
-            document.getElementById('password-error').classList.add('hidden');
-            
-            const pwdModal = document.getElementById('password-modal');
-            pwdModal.classList.remove('hidden');
-            pwdModal.classList.add('flex');
-            
-            setTimeout(() => document.getElementById('auth-password').focus(), 100);
-        };
-
-        window.closePasswordModal = (clearData = true) => {
-            const pwdModal = document.getElementById('password-modal');
-            pwdModal.classList.add('hidden');
-            pwdModal.classList.remove('flex');
-            if(clearData) {
-                window.pendingEditIndex = null;
-                window.pendingAction = null;
-            }
-        };
-
-        window.verifyPassword = () => {
-            const pwdInput = document.getElementById('auth-password');
-            const pwd = pwdInput.value.trim();
-            
-            if (pwd === "Projects") {
-                sessionStorage.setItem('isAuthenticated', 'true');
-                
-                const indexToEdit = window.pendingEditIndex;
-                const actionToRun = window.pendingAction;
-                
-                window.closePasswordModal(false); 
-                
-                // تنفيذ الأمر المعلق (إما تعديل الترتيب، أو فتح نافذة مشروع)
-                if (actionToRun) {
-                    actionToRun();
-                    window.pendingAction = null;
-                } else if (indexToEdit !== null && indexToEdit !== undefined) {
-                    try { window.openEditModal(indexToEdit); } catch (e) { console.error(e); }
-                }
-                
-                window.pendingEditIndex = null; 
-            } else {
-                document.getElementById('password-error').classList.remove('hidden');
-            }
-        };
-
-        document.getElementById('auth-password').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') window.verifyPassword();
         });
 
-        window.pendingLockId = null;
-
-        window.toggleLock = (id) => {
-            const input = document.getElementById(id);
-            if (input.readOnly) {
-                window.pendingLockId = id;
-                document.getElementById('confirm-modal').classList.remove('hidden');
-                document.getElementById('confirm-modal').classList.add('flex');
-            } else {
-                input.readOnly = true;
-                input.value = "لا ينطبق";
-                input.classList.add('bg-gray-100', 'text-gray-500', 'cursor-not-allowed');
-                input.classList.remove('text-[var(--charcoal-900)]');
-                const icon = document.getElementById(`icon-${id}`);
-                icon.classList.remove('fa-lock-open');
-                icon.classList.add('fa-lock');
-            }
+        // قاعدة البيانات الموزونة رياضياً 100% للتطابق مع طلبات الإدارة التنفيذية بالهللة
+        window.appState = {
+            version: 4, // تحديث آلي للسحابة لفرض الأرقام الدقيقة (النسخة الرابعة)
+            openBalance: 212030863.55,
+            dateStartStr: "16 Nov 2025",
+            dateEndStr: "31 Mar 2026",
+            titles: {
+                mainTitle: "قائمة التدفقات النقدية المباشرة",
+                subTitle: "تقرير شهري",
+                timeRange: "النطاق الزمني للتقرير",
+                card1: "الرصيد الافتتاحي للنقد",
+                card2: "إجمالي المقبوضات",
+                card3: "إجمالي المدفوعات",
+                card4: "صافي التغيير",
+                card5: "الرصيد النهائي",
+                secMain: "تحليل تفصيلي للحركة حسب نوع النشاط",
+                secOpTitle: "الأنشطة التشغيلية",
+                secOpSub: "العمليات التشغيلية الأساسية",
+                secInvTitle: "الأنشطة الاستثمارية",
+                secInvSub: "الأصول الثابتة والمشاريع",
+                secFinTitle: "الأنشطة التمويلية",
+                secFinSub: "التمويل والقروض",
+                timelineTitle: "التتبع الزمني لمسار السيولة والأرصدة",
+                footerText: "قائمة التدفقات النقدية المباشرة",
+                companyName: "شركة اتحاد الراجحي"
+            },
+            months: [
+                { key: 'nov', label: 'نوفمبر 25', name: 'نوفمبر', year: '2025' },
+                { key: 'dec', label: 'ديسمبر 25', name: 'ديسمبر', year: '2025' },
+                { key: 'jan', label: 'يناير 26', name: 'يناير', year: '2026' },
+                { key: 'feb', label: 'فبراير 26', name: 'فبراير', year: '2026' },
+                { key: 'mar', label: 'مارس 26', name: 'مارس', year: '2026' }
+            ],
+            opRec: [
+                { id: 'or1', name: "تحصيلات من ايجارفندق الششة", nov: 0, dec: 0, jan: 0, feb: 2500000, mar: 0 },
+                { id: 'or2', name: "تحصيلات من ايجار مبنى الادارة", nov: 0, dec: 0, jan: 1037030, feb: 0, mar: 257400 },
+                { id: 'or3', name: "مدارس البنات", nov: 0, dec: 3891770, jan: 0, feb: 0, mar: 0 },
+                { id: 'or4', name: "مدارس البنين", nov: 0, dec: 1310954, jan: 0, feb: 0, mar: 0 },
+                { id: 'or5', name: "تحصيلات معارض عمائر البساتين بريدة", nov: 17500, dec: 0, jan: 232250, feb: 116500, mar: 84500 },
+                { id: 'or6', name: "تحصيلات من ايجارعمارة السلام", nov: 0, dec: 0, jan: 641198, feb: 0, mar: 59000 },
+                { id: 'or7', name: "تحصيلات من ايجار ارض الملقا", nov: 0, dec: 0, jan: 0, feb: 2375667.50, mar: 0 },
+                { id: 'or8', name: "تحصيلات من ايجار ارض المزروعية", nov: 0, dec: 1244548, jan: 0, feb: 0, mar: 0 },
+                { id: 'or9', name: "تحصيلات من ايجار ارض حائل", nov: 2011529, dec: 0, jan: 0, feb: 0, mar: 0 }
+            ],
+            // التوزيع الموزون للمدفوعات لضمان تحقيق (يناير:-14M) (فبراير:134M) (مارس:-28M) بدقة 100%
+            opPay: [
+                { id: 'op1', name: "الرواتب", nov: 900000, dec: 900000, jan: 900000, feb: 900000, mar: 900000 },
+                { id: 'op2', name: "مصروفات التشغيل", nov: 623870.83, dec: 338870.83, jan: 637620.83, feb: 745120.84, mar: 873870.83 }, 
+                { id: 'op3', name: "مكافاة العاملين", nov: 0, dec: 0, jan: 0, feb: 0, mar: 3900000 },
+                { id: 'op4', name: "مكافاة أعضاء مجلس الإدارة", nov: 0, dec: 0, jan: 0, feb: 0, mar: 2500000 },
+                { id: 'op5', name: "التامين الطبي", nov: 0, dec: 0, jan: 1500000, feb: 0, mar: 0 },
+                { id: 'op6', name: "اتعاب تدقيق القوائم والمستشار الزكوى", nov: 0, dec: 150000, jan: 0, feb: 0, mar: 150000 },
+                { id: 'op7', name: "رحلات عمل وانتدابات", nov: 15000, dec: 15000, jan: 15000, feb: 15000, mar: 15000 },
+                { id: 'op8', name: "تدريب العاملين", nov: 60000, dec: 0, jan: 50000, feb: 0, mar: 0 },
+                { id: 'op9', name: "تامينات اجتماعية وتجديد اقامات", nov: 190000, dec: 190000, jan: 190000, feb: 190000, mar: 190000 },
+                { id: 'op10', name: "تذاكر العاملين", nov: 0, dec: 285000, jan: 0, feb: 0, mar: 0 },
+                { id: 'op11', name: "مكافاة المسوقين", nov: 20000, dec: 20000, jan: 20000, feb: 20000, mar: 20000 },
+                { id: 'op12', name: "عمولات وسعى البيع", nov: 0, dec: 350000, jan: 0, feb: 0, mar: 250000 },
+                { id: 'op13', name: "اتعاب استشارات", nov: 0, dec: 100000, jan: 0, feb: 0, mar: 0 },
+                { id: 'op14', name: "ضريبة قيمة مضافة", nov: 0, dec: 0, jan: 985350, feb: 0, mar: 832000 },
+                { id: 'op15', name: "ضريبة تطوير", nov: 0, dec: 0, jan: 3010000, feb: 0, mar: 3580000 },
+                { id: 'op16', name: "زكاة", nov: 0, dec: 0, jan: 0, feb: 0, mar: 4000000 },
+                { id: 'op17', name: "الزامل والخراشى", nov: 0, dec: 0, jan: 0, feb: 86250, mar: 0 },
+                { id: 'op18', name: "ERP الاتصال التالى", nov: 40000, dec: 0, jan: 0, feb: 0, mar: 0 },
+                { id: 'op19', name: "معارض ودعاية وإعلان", nov: 0, dec: 250000, jan: 0, feb: 0, mar: 0 }
+            ],
+            invRec: [
+                { id: 'ir1', name: "مبيعات حائل", nov: 5695908, dec: 5695908, jan: 2531514.6, feb: 2531514.6, mar: 2531514.6 },
+                { id: 'ir2', name: "مبيعات مساكن الروضة مجمع 4", nov: 1948838.4, dec: 1948838.4, jan: 1299225.6, feb: 1299225.6, mar: 1299225.6 },
+                { id: 'ir3', name: "مبيعات مساكن الروضة مجمع 7", nov: 2516135.4, dec: 2516135.4, jan: 1677423.6, feb: 1677423.6, mar: 1677423.6 },
+                { id: 'ir4', name: "مبيعات بساتين القصيم", nov: 655012.2, dec: 655012.2, jan: 655012.2, feb: 655012.2, mar: 655012.2 },
+                { id: 'ir5', name: "تحويلات من صندوق ارتال", nov: 0, dec: 3645315, jan: 4374379, feb: 3936941, mar: 3543246 }
+            ],
+            invPay: [
+                { id: 'ip1', name: "مشروع مساكن الروضة", nov: 1890000, dec: 1984500, jan: 1885275, feb: 1602483.75, mar: 1362111.19 },
+                { id: 'ip2', name: "النوايف", nov: 2340000, dec: 3042000, jan: 4258800, feb: 5536440, mar: 8304660 },
+                { id: 'ip3', name: "مسجد النوايف", nov: 275000, dec: 100000, jan: 0, feb: 0, mar: 250000 },
+                { id: 'ip4', name: "مدارس الروضة", nov: 3912066.09, dec: 4498876, jan: 4948763.6, feb: 5691078.14, mar: 3983754.7 },
+                { id: 'ip5', name: "مسار", nov: 229999, dec: 2700437.5, jan: 137812.5, feb: 154687.5, mar: 2582498.5 },
+                { id: 'ip6', name: "جاديت (استعاضة أرتال)", nov: 3375292.9, dec: 4050351.48, jan: 3645316.33, feb: 3280784.69, mar: 2952706.23 },
+                { id: 'ip7', name: "مخطط الغروب", nov: 142600, dec: 142600, jan: 4397654.33, feb: 1978944.45, mar: 2374733.34 },
+                { id: 'ip8', name: "مخطط الرابيه", nov: 247224.13, dec: 0, jan: 0, feb: 0, mar: 0 },
+                // تم نقل كليات الغد لنوفمبر لضبط صافي النقد بدقة كما هو بميزانيتك الأصلية
+                { id: 'ip9', name: "سداد باقى ارض كليات الغد", nov: 50000000, dec: 0, jan: 0, feb: 0, mar: 0 }
+            ],
+            finRec: [
+                { id: 'fr1', name: "تمويل مستلم", nov: 0, dec: 0, jan: 0, feb: 140000000.00, mar: 0 }
+            ],
+            finPay: [
+                { id: 'fp1', name: "مدفوعات (توزيعات أرباح)", nov: 0, dec: 140000000.00, jan: 0, feb: 0, mar: 0 }
+            ]
         };
 
-        window.confirmUnlock = () => {
-            if(window.pendingLockId) {
-                const input = document.getElementById(window.pendingLockId);
-                const icon = document.getElementById(`icon-${window.pendingLockId}`);
-                input.readOnly = false;
-                input.value = "0"; 
-                input.classList.remove('bg-gray-100', 'text-gray-500', 'cursor-not-allowed');
-                input.classList.add('text-[var(--charcoal-900)]');
-                icon.classList.remove('fa-lock');
-                icon.classList.add('fa-lock-open');
-                window.pendingLockId = null;
-            }
-            window.closeConfirmModal();
-        };
+        window.currentActiveCategory = null;
+        window.isEditMode = false;
+        window.pendingAuthCallback = null;
 
-        window.closeConfirmModal = () => {
-            document.getElementById('confirm-modal').classList.add('hidden');
-            document.getElementById('confirm-modal').classList.remove('flex');
-            window.pendingLockId = null;
-        };
-
-        window.confirmDeleteProject = () => {
-            document.getElementById('delete-confirm-modal').classList.remove('hidden');
-            document.getElementById('delete-confirm-modal').classList.add('flex');
-        };
-
-        window.closeDeleteConfirmModal = () => {
-            document.getElementById('delete-confirm-modal').classList.add('hidden');
-            document.getElementById('delete-confirm-modal').classList.remove('flex');
-        };
-
-        window.executeDeleteProject = async () => {
-            const index = document.getElementById('edit-index').value;
-            projectsData.splice(index, 1);
-            projectsData = [...projectsData]; // فرض تحديث المصفوفة
-            
-            window.closeDeleteConfirmModal();
-            window.closeModal();
-            renderDashboard();
-            await saveDataToFirebase(); 
-        };
-
-        window.moveProjectUp = async (index) => {
-            if (sessionStorage.getItem('isAuthenticated') !== 'true') {
-                window.pendingAction = () => window.moveProjectUp(index);
-                window.openPasswordModal(null);
-                return;
-            }
-
-            const type = projectsData[index].type;
-            let prevIndex = -1;
-            for (let i = index - 1; i >= 0; i--) {
-                if (projectsData[i].type === type) { prevIndex = i; break; }
-            }
-            if (prevIndex !== -1) {
-                const temp = projectsData[index];
-                projectsData[index] = projectsData[prevIndex];
-                projectsData[prevIndex] = temp;
+        window.saveToFirebase = async function() {
+            try {
+                const cloudStatus = document.getElementById('cloud-status');
+                if(cloudStatus) { cloudStatus.classList.remove('hidden'); cloudStatus.innerHTML = '<i class="fa-solid fa-spinner fa-spin ml-1"></i>جاري المزامنة...'; }
                 
-                projectsData = [...projectsData]; // فرض التحديث لإنشاء مرجع جديد (Deep Update)
+                await setDoc(doc(db, "reports", "executive_dashboard"), window.appState);
                 
-                renderDashboard();
-                await saveDataToFirebase(); 
+                if(cloudStatus) {
+                    cloudStatus.innerHTML = '<i class="fa-solid fa-cloud-arrow-up ml-1 text-[var(--success)]"></i>مزامنة ناجحة';
+                    setTimeout(() => cloudStatus.classList.add('hidden'), 3000);
+                }
+            } catch (e) {
+                console.error("Firebase save error:", e);
             }
         };
 
-        window.moveProjectDown = async (index) => {
-            if (sessionStorage.getItem('isAuthenticated') !== 'true') {
-                window.pendingAction = () => window.moveProjectDown(index);
-                window.openPasswordModal(null);
-                return;
-            }
-
-            const type = projectsData[index].type;
-            let nextIndex = -1;
-            for (let i = index + 1; i < projectsData.length; i++) {
-                if (projectsData[i].type === type) { nextIndex = i; break; }
-            }
-            if (nextIndex !== -1) {
-                const temp = projectsData[index];
-                projectsData[index] = projectsData[nextIndex];
-                projectsData[nextIndex] = temp;
-                
-                projectsData = [...projectsData]; // فرض التحديث لإنشاء مرجع جديد
-                
-                renderDashboard();
-                await saveDataToFirebase(); 
-            }
-        };
-
-        const generateRow = (project, index, globalTotalEstCosts) => {
-            let dynamicProgStatus = getAutoProgStatus(project.actualProg, project.plannedProg, project.startDate);
-            project.progStatus = dynamicProgStatus; 
-            
-            if (project.actualProg >= 100) {
-                project.status = "منتهي";
-            } else if (project.status === "منتهي" && project.actualProg < 100) {
-                project.status = "تحت التنفيذ"; 
-            }
-
-            const tagStyle = getStatusTagStyle(dynamicProgStatus);
-            const approvalTextClass = project.approval.includes("معتمد") ? 'text-[var(--charcoal-700)]' : 'text-gray-500';
-            
-            const timePerc = calculateTimeProgress(project.startDate, project.endDate, project.status);
-            const durationMonths = calcProjectMonths(project.startDate, project.endDate);
-            
-            const budgetVal = parseFloat(project.budget) || 0;
-            const expVal = parseFloat(project.expenses) || 0;
-            const estCostsVal = parseFloat(project.estCosts) || 0;
-            
-            const autoWeight = globalTotalEstCosts > 0 ? ((estCostsVal / globalTotalEstCosts) * 100).toFixed(2) : 0;
-            const autoWeightNum = parseFloat(autoWeight);
-            const displayWeight = (autoWeightNum > 0 && autoWeightNum < 2) ? 2 : autoWeightNum;
-            
-            const expPerc = budgetVal > 0 ? Math.min(100, (expVal / budgetVal) * 100) : 0;
-            const displayExpPerc = expVal > 0 ? Math.max(expPerc, 2) : 0;
-            const expenseColorHex = 'var(--gold-dark)'; 
-
-            const donutChart = autoWeightNum == 0 
-                ? `<div class="flex flex-col items-center justify-center gap-[1px]"><div class="weight-donut" style="background: var(--charcoal-100);"></div><span class="text-[9.5px] font-bold text-[var(--charcoal-500)] font-numbers leading-none">0%</span></div>`
-                : `<div class="flex flex-col items-center justify-center gap-[1px]"><div class="weight-donut" style="background: conic-gradient(var(--gold-primary) 0% ${displayWeight}%, var(--charcoal-100) ${displayWeight}% 100%);"></div><span class="text-[9.5px] font-bold text-[var(--charcoal-900)] font-numbers leading-none">${autoWeight}%</span></div>`;
-
-            const rentDisplay = isNA(project.expRent) 
-                ? `<span class="text-[9px] font-bold text-gray-400">لا ينطبق</span>` 
-                : `${fVal(project.expRent)}`;
-                
-            const buaDisplay = isNA(project.bua) 
-                ? `<span class="text-[9px] font-bold text-gray-400">لا ينطبق</span>` 
-                : `${fVal(project.bua)}`;
-
-            const landValueDisplay = isNA(project.landValue) 
-                ? `<span class="text-[9px] font-bold text-gray-400">لا ينطبق</span>` 
-                : `${fVal(project.landValue)}`;
-
-            const estCostsDisplay = isNA(project.estCosts) 
-                ? `<span class="text-[9px] font-bold text-gray-400">لا ينطبق</span>` 
-                : `<span class="font-bold">${fVal(project.estCosts)}</span>`;
-
-            const pProg = parseFloat(project.plannedProg) || 0;
-            const aProg = parseFloat(project.actualProg) || 0;
-            const variance = parseFloat((aProg - pProg).toFixed(1));
-            let varianceStr = '';
-            if (variance > 0) {
-                varianceStr = `<span class="text-[#10B981] font-bold" dir="ltr">+${variance.toFixed(1)}%</span>`;
-            } else if (variance < 0) {
-                varianceStr = `<span class="text-[#EF4444] font-bold" dir="ltr">${variance.toFixed(1)}%</span>`;
-            } else {
-                varianceStr = `<span class="text-gray-400 font-bold" dir="ltr">0.0%</span>`;
-            }
-
-            return `
-            <div class="data-grid row-item relative group">
-                <div class="flex flex-col justify-center gap-1 px-4 h-full relative">
-                    <div class="flex items-center justify-between pr-1">
-                        <div class="flex items-center gap-1.5">
-                            <div class="flex flex-col gap-[2px] opacity-0 group-hover:opacity-100 transition-opacity no-print w-3">
-                                <button type="button" onclick="window.moveProjectUp(${index})" class="text-[8px] text-gray-400 hover:text-[var(--gold-dark)] bg-gray-100 hover:bg-gray-200 rounded px-0.5"><i class="fa-solid fa-chevron-up"></i></button>
-                                <button type="button" onclick="window.moveProjectDown(${index})" class="text-[8px] text-gray-400 hover:text-[var(--gold-dark)] bg-gray-100 hover:bg-gray-200 rounded px-0.5"><i class="fa-solid fa-chevron-down"></i></button>
-                            </div>
-                            <div class="editable-name font-bold text-[10.5px] text-[var(--charcoal-900)] truncate" onclick="window.openPasswordModal(${index})" title="انقر لتعديل بيانات المشروع">
-                                ${project.name} <i class="fa-solid fa-pen-to-square edit-icon text-[var(--gold-dark)]"></i>
-                            </div>
-                        </div>
-                        <span class="text-[8px] px-1 py-0.5 rounded font-bold" style="${getProjectStatusTag(project.status)}">${project.status}</span>
-                    </div>
-                    <div class="flex items-center gap-1 pr-4">
-                        <span class="font-bold px-1.5 py-[2px] rounded text-[8px] border flex items-center shadow-sm ${getNatureTagStyle(project.nature)}">
-                            ${getNatureIcon(project.nature)} ${project.nature}
-                        </span>
-                        <span class="text-gray-300">|</span>
-                        <span class="font-bold text-[8.5px] ${approvalTextClass}">${project.approval}</span>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-5 h-full border-r border-[var(--charcoal-100)] py-0.5">
-                    <div class="sub-col px-1">${fVal(project.landArea)}</div>
-                    <div class="sub-col px-1">${buaDisplay}</div>
-                    <div class="sub-col px-1">${fVal(project.sellableArea)}</div>
-                    <div class="sub-col px-1 font-numbers text-[var(--charcoal-700)]">${project.units}</div>
-                    <div class="sub-col px-1">${landValueDisplay}</div>
-                </div>
-
-                <div class="flex flex-col justify-center px-4 h-full border-r border-[var(--charcoal-100)] relative z-0 py-0.5">
-                    <div class="flex justify-between w-full mb-0.5">
-                        <span class="text-[8px] font-numbers text-gray-600 bg-white border border-gray-200 shadow-sm px-1.5 py-[1px] rounded flex items-center"><i class="fa-regular fa-calendar-check text-[7px] text-gray-500 ml-1"></i>${formatDisplayDate(project.startDate)}</span>
-                        <span class="text-[8px] font-numbers text-gray-600 bg-white border border-gray-200 shadow-sm px-1.5 py-[1px] rounded flex items-center"><i class="fa-regular fa-flag text-[7px] text-gray-500 ml-1"></i>${formatDisplayDate(project.endDate)}</span>
-                    </div>
-                    <div class="w-full h-[3px] bg-gray-200 rounded-full relative mt-[1px] mb-0.5">
-                        <div class="h-full bg-[var(--gold-dark)] absolute right-0 rounded-full" style="width: ${timePerc}%;"></div>
-                    </div>
-                    <div class="text-center w-full mt-0.5">
-                        <span class="font-numbers font-bold text-[var(--charcoal-900)] text-[9.5px] drop-shadow-sm">${durationMonths} شهر</span>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-3 h-full border-r border-[var(--charcoal-100)] py-0.5">
-                    <div class="sub-col font-numbers">${estCostsDisplay}</div>
-                    <div class="sub-col font-numbers">${fVal(project.budget)}</div>
-                    <div class="sub-col flex-col bg-gradient-to-b from-transparent to-gray-50/50 text-[var(--charcoal-700)] px-3 w-full items-stretch justify-center">
-                        <div class="flex justify-between items-end mb-0.5 w-full">
-                            <span class="font-numbers text-[9px] font-bold text-[var(--charcoal-900)]">${fVal(project.expenses)}</span>
-                        </div>
-                        <div class="w-full h-[4px] bg-gray-200 rounded-full overflow-hidden border border-gray-300/50 relative">
-                            <div class="h-full transition-all duration-500 absolute right-0 rounded-full" style="width: ${displayExpPerc}%; background-color: ${expenseColorHex};"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 h-full border-r border-[var(--charcoal-100)] py-0.5">
-                    <div class="sub-col">${fVal(project.expSales)}</div>
-                    <div class="sub-col">${rentDisplay}</div>
-                </div>
-
-                <div class="grid grid-cols-[1fr_1.6fr_1fr] h-full border-r border-[var(--charcoal-100)] py-0.5">
-                    <div class="sub-col">${donutChart}</div>
-                    <div class="flex flex-col justify-center px-2 border-l dashed border-[var(--charcoal-100)] h-full w-full">
-                        <div class="progress-track bg-gray-200 w-full"><div class="progress-fill" style="width: ${aProg}%"></div></div>
-                        <div class="flex justify-between items-center w-full mt-0.5">
-                            <span class="font-numbers font-bold text-[var(--charcoal-900)] text-[10px] leading-none">${aProg.toFixed(1)}%</span>
-                            <span class="font-numbers text-[9px] leading-none" title="الفرق عن المخطط (${pProg.toFixed(1)}%)">${varianceStr}</span>
-                        </div>
-                    </div>
-                    <div class="sub-col">
-                        <span class="text-[8px] block whitespace-nowrap min-w-[50px] text-center" style="${tagStyle}">
-                            ${dynamicProgStatus}
-                        </span>
-                    </div>
-                </div>
-            </div>
-            `;
-        };
-
-        const renderDashboard = () => {
-            const infraContainer = document.getElementById('infra-projects');
-            const superContainer = document.getElementById('super-projects');
-            
-            infraContainer.innerHTML = '';
-            superContainer.innerHTML = '';
-
-            let totalBudget = 0, totalProjectBudget = 0, totalArea = 0, totalEstCosts = 0, totalUnits = 0;
-
-            document.getElementById('display-period').innerText = dashboardPeriod;
-            document.getElementById('display-footer-text').innerText = dashboardFooter;
-
-            projectsData.forEach(p => {
-                const bVal = parseFloat(p.budget) || 0;
-                totalBudget += bVal;
-                totalProjectBudget += bVal;
-                totalArea += (parseFloat(p.landArea) || 0);
-                totalEstCosts += (parseFloat(p.estCosts) || 0);
-                totalUnits += (parseInt(p.units, 10) || 0); 
-            });
-
-            projectsData.forEach((proj, index) => {
-                if (proj.type === "بنية تحتية") {
-                    infraContainer.innerHTML += generateRow(proj, index, totalEstCosts);
+        window.loadFromFirebase = async function() {
+            try {
+                const docSnap = await getDoc(doc(db, "reports", "executive_dashboard"));
+                // نعتمد النسخة الرابعة فوراً لضمان الأرقام الدقيقة التي تطلبها
+                if (docSnap.exists() && docSnap.data().version === 4) {
+                    window.appState = docSnap.data();
                 } else {
-                    superContainer.innerHTML += generateRow(proj, index, totalEstCosts);
+                    await window.saveToFirebase(); 
                 }
-            });
-
-            document.getElementById('total-area-top').innerHTML = `${totalArea.toLocaleString('en-US', {maximumFractionDigits: 0})} <span class="text-[10px] text-[var(--gold-primary)] font-normal ml-0.5">م²</span>`;
-            document.getElementById('total-project-budget').innerHTML = `${totalProjectBudget.toLocaleString('en-US', {maximumFractionDigits: 0})} <span class="text-[10px] text-[var(--gold-primary)] font-normal ml-0.5">SAR</span>`;
-            document.getElementById('total-units').innerHTML = `${totalUnits.toLocaleString('en-US', {maximumFractionDigits: 0})} <span class="text-[10px] text-[var(--gold-primary)] font-normal ml-0.5">وحدة</span>`;
+                
+                if(window.fpStart) window.fpStart.setDate(window.appState.dateStartStr);
+                if(window.fpEnd) window.fpEnd.setDate(window.appState.dateEndStr);
+                document.getElementById('ui-date-start').innerText = window.appState.dateStartStr;
+                document.getElementById('ui-date-end').innerText = window.appState.dateEndStr;
+                
+                window.updateTitlesUI();
+                window.updateDashboard();
+            } catch (e) {
+                console.error("Firebase load error:", e);
+                window.updateTitlesUI();
+                window.updateDashboard();
+            }
         };
 
-        window.openPeriodModal = () => {
-            document.getElementById('m-period').value = dashboardPeriod;
-            const periodModal = document.getElementById('period-modal');
-            periodModal.classList.remove('hidden');
-            periodModal.classList.add('flex');
-        };
-        window.closePeriodModal = () => {
-            const periodModal = document.getElementById('period-modal');
-            periodModal.classList.add('hidden');
-            periodModal.classList.remove('flex');
-        };
-        window.savePeriod = async () => {
-            dashboardPeriod = document.getElementById('m-period').value || "الربع الأول 2026";
-            window.closePeriodModal();
-            renderDashboard();
-            await saveDataToFirebase();
-        };
+        window.addEventListener('DOMContentLoaded', async () => {
+            try { await signInAnonymously(auth); } catch(e) { console.warn("Anon auth failed", e); }
 
-        window.openFooterModal = () => {
-            document.getElementById('m-footer').value = dashboardFooter;
-            const footerModal = document.getElementById('footer-modal');
-            footerModal.classList.remove('hidden');
-            footerModal.classList.add('flex');
-        };
-        window.closeFooterModal = () => {
-            const footerModal = document.getElementById('footer-modal');
-            footerModal.classList.add('hidden');
-            footerModal.classList.remove('flex');
-        };
-        window.saveFooter = async () => {
-            dashboardFooter = document.getElementById('m-footer').value || "اجتماع مجلس الإدارة السابع عشر";
-            window.closeFooterModal();
-            renderDashboard();
-            await saveDataToFirebase(); 
-        };
+            window.updateTitlesUI();
+            window.updateDashboard();
 
-        window.calculateModalDuration = () => {
-            const sVal = document.getElementById('m-startDate').value; 
-            const eVal = document.getElementById('m-endDate').value;
-            if(!sVal || !eVal) return;
-            const sParts = sVal.split('-');
-            const eParts = eVal.split('-');
-            if(sParts.length !== 3 || eParts.length !== 3) return;
-            const s = new Date(sParts[2], sParts[1]-1, sParts[0]);
-            const e = new Date(eParts[2], eParts[1]-1, eParts[0]);
-            let months = (e.getFullYear() - s.getFullYear()) * 12;
-            months -= s.getMonth();
-            months += e.getMonth();
-            document.getElementById('m-duration').value = months > 0 ? months : 0;
-        };
-
-        window.updateModalWeight = () => {
-            const currentIndex = parseInt(document.getElementById('edit-index').value);
-            const newEstCostsStr = document.getElementById('m-estCosts').value;
-            const newEstCosts = parseFormattedNumber(newEstCostsStr);
-            let otherTotal = 0;
-            projectsData.forEach((p, idx) => {
-                if(idx !== currentIndex) otherTotal += (parseFloat(p.estCosts) || 0);
-            });
-            const grandTotal = otherTotal + newEstCosts;
-            const w = grandTotal > 0 ? (newEstCosts / grandTotal) * 100 : 0;
-            document.getElementById('m-weight').value = w.toFixed(2);
-        };
-
-        window.updateModalProgStatus = () => {
-            const aStr = document.getElementById('m-actualProg').value;
-            const pStr = document.getElementById('m-plannedProg').value;
-            const a = parseFloat(aStr.toString().replace(/,/g, '')) || 0;
-            const p = parseFloat(pStr.toString().replace(/,/g, '')) || 0;
-            const sDateStr = document.getElementById('m-startDate').value; 
-            
-            let status = "في الوقت";
-            const phaseSelect = document.getElementById('m-status');
-            const currentMs = new Date().setHours(0,0,0,0);
-
-            if (a >= 100) {
-                status = "منتهي";
-                phaseSelect.value = "منتهي"; 
-            } else {
-                let isFuture = false;
-                if (sDateStr && sDateStr !== "N/A" && sDateStr !== "لا ينطبق") {
-                    const parts = sDateStr.split('-');
-                    if(parts.length === 3) {
-                        const s = new Date(parts[2], parts[1]-1, parts[0]).setHours(0,0,0,0);
-                        if (currentMs < s) {
-                            isFuture = true;
-                            status = "مستقبلي";
-                        }
+            window.fpStart = flatpickr("#date-start-input", {
+                dateFormat: "d M Y",
+                defaultDate: window.appState.dateStartStr,
+                disableMobile: true,
+                onOpen: function(selectedDates, dateStr, instance) {
+                    if (sessionStorage.getItem('isAuth') !== 'true') {
+                        instance.close();
+                        window.requestAuth(() => { instance.open(); });
                     }
+                },
+                onChange: function(selectedDates, dateStr) {
+                    window.appState.dateStartStr = dateStr;
+                    document.getElementById('ui-date-start').innerText = dateStr;
+                    window.saveToFirebase();
                 }
-                
-                if (!isFuture) {
-                    if (a <= p - 3) status = "متأخر";
-                    else if (a < p) status = "في الوقت";
-                    else if (a === p) status = "في الوقت";
-                    else status = "متقدم";
-                }
-                
-                if (phaseSelect.value === "منتهي" && a < 100) {
-                    phaseSelect.value = "تحت التنفيذ";
-                }
-            }
-            document.getElementById('m-progStatus').value = status;
-        };
-
-        const setupLockedField = (id, val) => {
-            const input = document.getElementById(id);
-            const icon = document.getElementById(`icon-${id}`);
-            if (val === 0 || val === "0" || val === "0.00") {
-                input.value = "0";
-                input.readOnly = false;
-                input.classList.remove('bg-gray-100', 'text-gray-500', 'cursor-not-allowed');
-                input.classList.add('text-[var(--charcoal-900)]');
-                icon.classList.remove('fa-lock');
-                icon.classList.add('fa-lock-open');
-            } else if (isNA(val)) {
-                input.value = "لا ينطبق";
-                input.readOnly = true;
-                input.classList.add('bg-gray-100', 'text-gray-500', 'cursor-not-allowed');
-                input.classList.remove('text-[var(--charcoal-900)]');
-                icon.classList.add('fa-lock');
-                icon.classList.remove('fa-lock-open');
-            } else {
-                input.value = formatNumberWithCommas(val);
-                input.readOnly = false;
-                input.classList.remove('bg-gray-100', 'text-gray-500', 'cursor-not-allowed');
-                input.classList.add('text-[var(--charcoal-900)]');
-                icon.classList.remove('fa-lock');
-                icon.classList.add('fa-lock-open');
-            }
-        };
-
-        window.openEditModal = (index) => {
-            const proj = projectsData[index];
-            document.getElementById('edit-index').value = index;
-            document.getElementById('modal-project-name').innerText = `تعديل: ${proj.name}`;
-
-            document.getElementById('m-name').value = proj.name;
-            document.getElementById('m-nature').value = proj.nature;
-            document.getElementById('m-location').value = proj.location;
-            document.getElementById('m-approval').value = proj.approval;
-            document.getElementById('m-status').value = proj.status;
-
-            document.getElementById('m-landArea').value = formatNumberWithCommas(proj.landArea);
-            document.getElementById('m-sellArea').value = formatNumberWithCommas(proj.sellableArea);
-            document.getElementById('m-units').value = formatNumberWithCommas(proj.units);
-            document.getElementById('m-budget').value = formatNumberWithCommas(proj.budget);
-            document.getElementById('m-expenses').value = formatNumberWithCommas(proj.expenses);
-            document.getElementById('m-sales').value = formatNumberWithCommas(proj.expSales);
-            document.getElementById('m-plannedProg').value = formatNumberWithCommas(proj.plannedProg);
-            document.getElementById('m-actualProg').value = formatNumberWithCommas(proj.actualProg);
-
-            setupLockedField('m-bua', proj.bua);
-            setupLockedField('m-rent', proj.expRent);
-            setupLockedField('m-landValue', proj.landValue);
-            setupLockedField('m-estCosts', proj.estCosts);
-
-            if(proj.startDate && proj.startDate !== "N/A" && proj.startDate !== "لا ينطبق") {
-                window.startPicker.setDate(proj.startDate, false, "d-m-Y");
-            } else {
-                window.startPicker.clear();
-            }
-            if(proj.endDate && proj.endDate !== "N/A" && proj.endDate !== "لا ينطبق") {
-                window.endPicker.setDate(proj.endDate, false, "d-m-Y");
-            } else {
-                window.endPicker.clear();
-            }
+            });
             
-            window.calculateModalDuration();
-            window.updateModalWeight();
-            window.updateModalProgStatus();
+            window.fpEnd = flatpickr("#date-end-input", {
+                dateFormat: "d M Y",
+                defaultDate: window.appState.dateEndStr,
+                disableMobile: true,
+                onOpen: function(selectedDates, dateStr, instance) {
+                    if (sessionStorage.getItem('isAuth') !== 'true') {
+                        instance.close();
+                        window.requestAuth(() => { instance.open(); });
+                    }
+                },
+                onChange: function(selectedDates, dateStr) {
+                    window.appState.dateEndStr = dateStr;
+                    document.getElementById('ui-date-end').innerText = dateStr;
+                    window.saveToFirebase();
+                }
+            });
 
-            const modal = document.getElementById('edit-modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        };
+            await window.loadFromFirebase();
+        });
 
-        window.closeModal = () => {
-            const modal = document.getElementById('edit-modal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        };
-
-        const getSavedValue = (id) => {
-            const input = document.getElementById(id);
-            if (input.readOnly || input.value === "لا ينطبق") return "N/A"; 
-            if (input.value === "0" || input.value === "0.00" || input.value === "") return "0"; 
-            return parseFormattedNumber(input.value);
-        };
-
-        window.saveProject = async () => {
-            const index = document.getElementById('edit-index').value;
-            
-            projectsData[index] = {
-                ...projectsData[index],
-                name: document.getElementById('m-name').value,
-                nature: document.getElementById('m-nature').value,
-                location: document.getElementById('m-location').value,
-                approval: document.getElementById('m-approval').value,
-                status: document.getElementById('m-status').value,
-                
-                landArea: parseFormattedNumber(document.getElementById('m-landArea').value),
-                sellableArea: parseFormattedNumber(document.getElementById('m-sellArea').value),
-                units: parseFormattedNumber(document.getElementById('m-units').value),
-                budget: parseFormattedNumber(document.getElementById('m-budget').value),
-                expenses: parseFormattedNumber(document.getElementById('m-expenses').value),
-                expSales: parseFormattedNumber(document.getElementById('m-sales').value),
-                
-                bua: getSavedValue('m-bua'),
-                landValue: getSavedValue('m-landValue'),
-                estCosts: getSavedValue('m-estCosts'),
-                expRent: getSavedValue('m-rent'),
-                
-                plannedProg: parseFormattedNumber(document.getElementById('m-plannedProg').value),
-                actualProg: parseFormattedNumber(document.getElementById('m-actualProg').value),
-                
-                startDate: document.getElementById('m-startDate').value || "N/A",
-                endDate: document.getElementById('m-endDate').value || "N/A",
-            };
-
-            projectsData = [...projectsData]; // فرض التحديث
-
-            window.closeModal();
-            renderDashboard(); 
-            await saveDataToFirebase(); 
-        };
-
-        window.onclick = function(event) {
-            const editModal = document.getElementById('edit-modal');
-            const periodModal = document.getElementById('period-modal');
-            const footerModal = document.getElementById('footer-modal');
-            const passModal = document.getElementById('password-modal');
-            const confModal = document.getElementById('confirm-modal');
-            const delModal = document.getElementById('delete-confirm-modal');
-
-            if (event.target == editModal) window.closeModal();
-            if (event.target == periodModal) window.closePeriodModal();
-            if (event.target == footerModal) window.closeFooterModal();
-            if (event.target == passModal) window.closePasswordModal();
-            if (event.target == confModal) window.closeConfirmModal();
-            if (event.target == delModal) window.closeDeleteConfirmModal();
+        // دوال مساعدة لضمان التنسيق المحاسبي الدقيق مع الأقواس للقيم السالبة
+        window.formatCurr = function(num) {
+            const formatted = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Math.abs(num));
+            return num < 0 ? `-${formatted}` : formatted;
+        }
+        window.parseFormatted = function(val) {
+            if(typeof val === 'number') return val;
+            let str = val.toString().trim();
+            let isNegative = str.startsWith('-') || (str.startsWith('(') && str.endsWith(')'));
+            let num = parseFloat(str.replace(/[^0-9.]/g, '')) || 0;
+            return isNegative ? -num : num;
+        }
+        window.getItemTotal = function(item) {
+            return window.appState.months.reduce((sum, m) => sum + (parseFloat(item[m.key]) || 0), 0);
+        }
+        window.sumArray = function(arr) {
+            return arr.reduce((acc, curr) => acc + window.getItemTotal(curr), 0);
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            window.startPicker = flatpickr("#m-startDate", {
-                dateFormat: "d-m-Y",
-                altInput: true,
-                altFormat: "j F Y",
-                disableMobile: true,
-                onChange: function() {
-                    window.calculateModalDuration();
-                    window.updateModalProgStatus();
+        window.updateTitlesUI = function() {
+            for (const key in window.appState.titles) {
+                const el = document.getElementById('text_' + key);
+                if (el) el.innerText = window.appState.titles[key];
+            }
+            if(window.appState.months.length > 0) {
+                const finalTitleEl = document.getElementById('ui-final-title');
+                if (finalTitleEl) {
+                    finalTitleEl.innerHTML = `<span id="text_card5">${window.appState.titles.card5}</span>`;
                 }
+            }
+        }
+
+        window.updateColor = function(id, val, defaultClass) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.innerText = window.formatCurr(val);
+            el.classList.remove('text-[var(--danger)]', 'text-[var(--charcoal-900)]', 'text-[var(--gold-dark)]');
+            el.classList.add(val < 0 ? 'text-[var(--danger)]' : defaultClass);
+        }
+
+        window.updateDashboard = function() {
+            const sumOpRec = window.sumArray(window.appState.opRec);
+            const sumOpPay = window.sumArray(window.appState.opPay);
+            const sumInvRec = window.sumArray(window.appState.invRec);
+            const sumInvPay = window.sumArray(window.appState.invPay);
+            const sumFinRec = window.sumArray(window.appState.finRec);
+            const sumFinPay = window.sumArray(window.appState.finPay);
+
+            document.getElementById('ui-op-rec').innerText = window.formatCurr(sumOpRec);
+            document.getElementById('ui-op-pay').innerText = window.formatCurr(sumOpPay === 0 ? 0 : -sumOpPay);
+            window.updateColor('ui-op-net', sumOpRec - sumOpPay, 'text-[var(--charcoal-900)]');
+
+            document.getElementById('ui-inv-rec').innerText = window.formatCurr(sumInvRec);
+            document.getElementById('ui-inv-pay').innerText = window.formatCurr(sumInvPay === 0 ? 0 : -sumInvPay);
+            window.updateColor('ui-inv-net', sumInvRec - sumInvPay, 'text-[var(--charcoal-900)]');
+
+            document.getElementById('ui-fin-rec').innerText = window.formatCurr(sumFinRec);
+            document.getElementById('ui-fin-pay').innerText = window.formatCurr(sumFinPay === 0 ? 0 : -sumFinPay);
+            window.updateColor('ui-fin-net', sumFinRec - sumFinPay, 'text-[var(--charcoal-900)]');
+
+            // تجميع كل الأنشطة في النقد الداخل والخارج
+            const totalIn = sumOpRec + sumInvRec + sumFinRec;
+            const totalOut = sumOpPay + sumInvPay + sumFinPay;
+            const netChange = totalIn - totalOut; 
+            const finalBalance = window.appState.openBalance + netChange;
+
+            document.getElementById('ui-open-balance').innerText = window.formatCurr(window.appState.openBalance);
+            document.getElementById('ui-total-in').innerText = window.formatCurr(totalIn);
+            document.getElementById('ui-total-out').innerText = window.formatCurr(totalOut === 0 ? 0 : -totalOut);
+            window.updateColor('ui-net-change', netChange, 'text-[var(--charcoal-900)]');
+            document.getElementById('ui-final-balance').innerText = window.formatCurr(finalBalance);
+
+            window.renderTimeline();
+        }
+
+        // رسم خط التتبع الزمني السفلي بشكله الأنيق والمبسط
+        window.renderTimeline = function() {
+            const tlContainer = document.getElementById('timeline-container');
+            tlContainer.innerHTML = '';
+            
+            if(window.appState.months.length === 0) return;
+
+            tlContainer.innerHTML += `<div class="absolute top-[31px] left-[40px] right-[40px] border-t-[3px] border-dashed border-slate-300 -z-10"></div>`;
+
+            let currentBalance = window.appState.openBalance;
+
+            window.appState.months.forEach((m, idx) => {
+                const isLast = idx === window.appState.months.length - 1;
+                
+                let netCash = 0;
+                ['opRec', 'invRec', 'finRec'].forEach(cat => {
+                    netCash += window.appState[cat].reduce((sum, item) => sum + (parseFloat(item[m.key]) || 0), 0);
+                });
+                ['opPay', 'invPay', 'finPay'].forEach(cat => {
+                    netCash -= window.appState[cat].reduce((sum, item) => sum + (parseFloat(item[m.key]) || 0), 0);
+                });
+
+                currentBalance += netCash;
+                const netColor = netCash < 0 ? 'text-[var(--danger)]' : 'text-[var(--charcoal-900)]';
+
+                tlContainer.innerHTML += `
+                    <div class="flex flex-col items-center relative group min-w-[170px] flex-1">
+                        <div class="w-[64px] h-[64px] ${isLast ? 'bg-[var(--gold-primary)] border-[3px] border-white outline outline-2 outline-[var(--gold-primary)]' : 'bg-white rounded-full border-[3px] border-slate-200 hover:border-[var(--gold-primary)]'} shadow-sm flex flex-col items-center justify-center mb-3 transition-all duration-300 z-10 ${isLast ? 'rounded-full' : ''} group-hover:scale-105">
+                            <span class="text-[12px] font-black ${isLast ? 'text-white' : 'text-slate-800'} leading-tight">${m.name}</span>
+                            <span class="text-[9px] font-bold ${isLast ? 'text-[#FEF08A]' : 'text-slate-400'} font-numbers">${m.year}</span>
+                        </div>
+                        <div class="bg-white border ${isLast ? 'border-[var(--gold-primary)] shadow-md' : 'border-slate-100 shadow-[0_2px_10px_-3px_rgba(0,0,0,0.05)]'} rounded-xl p-2.5 w-[150px] transition-all duration-300 relative group-hover:-translate-y-1 group-hover:shadow-lg">
+                            <div class="absolute top-0 left-0 right-0 ${isLast ? 'h-1.5 bg-[var(--gold-primary)]' : 'h-1 bg-slate-200 group-hover:bg-[var(--gold-primary)] transition-colors'} rounded-t-xl"></div>
+                            <div class="flex flex-col gap-1.5 mt-1">
+                                <div class="flex flex-col items-center bg-slate-50 py-1.5 px-1 rounded-lg border border-slate-100">
+                                    <span class="text-[10px] text-slate-500 font-bold mb-0.5">صافي النقد</span>
+                                    <span class="font-numbers font-black text-[12px] ${netColor} tracking-tighter" dir="ltr">${window.formatCurr(netCash)}</span>
+                                </div>
+                                <div class="flex flex-col items-center ${isLast ? 'bg-[var(--gold-primary)]/10 py-1.5 px-1 rounded-lg border border-[var(--gold-primary)]/30' : 'bg-slate-50 py-1.5 px-1 rounded-lg border border-slate-100'}">
+                                    <span class="text-[10px] ${isLast ? 'text-[var(--gold-dark)]' : 'text-slate-500'} font-bold mb-0.5">الرصيد النهائي</span>
+                                    <span class="font-numbers font-black text-[12px] ${isLast ? 'text-[var(--gold-dark)]' : 'text-[var(--charcoal-900)]'}" dir="ltr">${window.formatCurr(currentBalance)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        window.openDetails = function(categoryKey, title) {
+            window.currentActiveCategory = categoryKey;
+            window.isEditMode = false;
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('editBtn').classList.remove('hidden');
+            document.getElementById('saveBtn').classList.add('hidden');
+            document.getElementById('editActionButtons').classList.add('hidden');
+            
+            window.renderGridHeader();
+            window.renderDetailsList();
+            document.getElementById('detailsModal').classList.add('active');
+        }
+
+        window.closeDetails = function() {
+            document.getElementById('detailsModal').classList.remove('active');
+            if (window.isEditMode) window.updateDashboard(); 
+        }
+
+        window.renderGridHeader = function() {
+            const header = document.getElementById('gridHeader');
+            const wrapper = document.getElementById('gridWrapper');
+            const colCount = window.appState.months.length;
+            
+            const minWidth = window.isEditMode ? 400 + (colCount * 130) : 350 + (colCount * 110);
+            wrapper.style.minWidth = `${Math.max(minWidth, 1000)}px`;
+
+            const gridCols = window.isEditMode
+                ? `40px 3fr repeat(${colCount}, 1.5fr) 1.5fr 40px`
+                : `3fr repeat(${colCount}, 1.5fr) 1.5fr`;
+
+            header.className = `grid-matrix bg-slate-100 border border-slate-200 rounded-lg p-3 mb-3 text-center sticky top-0 z-10 shadow-sm w-full ${window.isEditMode ? 'edit-mode' : ''}`;
+            header.style.gridTemplateColumns = gridCols;
+
+            let html = '';
+            if (window.isEditMode) html += `<div class="min-w-0 shrink-0"></div>`; 
+            html += `<div class="text-[13px] font-black text-slate-700 text-right pr-2 min-w-0 truncate">البيان</div>`;
+            
+            window.appState.months.forEach(m => {
+                html += `
+                    <div class="text-[12px] font-black text-slate-600 relative group flex justify-center items-center gap-1.5 min-w-0">
+                        <span class="truncate">${m.name} ${m.year.slice(-2)}</span>
+                        ${window.isEditMode ? `<button onclick="deleteMonth('${m.key}')" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 rounded w-5 h-5 flex items-center justify-center shrink-0 transition-colors" title="حذف الشهر"><i class="fa-solid fa-trash-can text-[10px]"></i></button>` : ''}
+                    </div>
+                `;
             });
             
-            window.endPicker = flatpickr("#m-endDate", {
-                dateFormat: "d-m-Y",
-                altInput: true,
-                altFormat: "j F Y",
-                disableMobile: true,
-                onChange: function() {
-                    window.calculateModalDuration();
+            html += `<div class="text-[13px] font-black text-[var(--gold-dark)] bg-[var(--gold-primary)]/10 py-1 rounded min-w-0 truncate">الإجمالي للبنــد</div>`;
+            if (window.isEditMode) html += `<div class="min-w-0 shrink-0"></div>`; 
+
+            header.innerHTML = html;
+        }
+
+        // محاذاة الأرقام اليمنى (Right-Aligned in LTR) بدقة صارمة في القوائم باستخدام حاويات ثابتة
+        window.renderDetailsList = function() {
+            const listContainer = document.getElementById('detailsList');
+            listContainer.innerHTML = '';
+            
+            let total = 0;
+            let monthTotals = {};
+            window.appState.months.forEach(m => monthTotals[m.key] = 0);
+
+            const isExpense = ['opPay', 'invPay', 'finPay'].includes(window.currentActiveCategory);
+            const arr = window.appState[window.currentActiveCategory];
+            const colCount = window.appState.months.length;
+
+            const gridCols = window.isEditMode
+                ? `40px 3fr repeat(${colCount}, 1.5fr) 1.5fr 40px`
+                : `3fr repeat(${colCount}, 1.5fr) 1.5fr`;
+
+            arr.forEach((item, index) => {
+                const itemTotal = window.getItemTotal(item);
+                total += itemTotal;
+                
+                window.appState.months.forEach(m => {
+                    monthTotals[m.key] += (parseFloat(item[m.key]) || 0);
+                });
+
+                const row = document.createElement('div');
+                row.className = `grid-matrix w-full bg-slate-50 border border-slate-200 rounded-lg p-2 transition-colors items-center ${window.isEditMode ? 'hover:border-[var(--gold-primary)]' : ''}`;
+                row.style.gridTemplateColumns = gridCols;
+                
+                let innerHTML = '';
+                if (!window.isEditMode) {
+                    innerHTML += `<div class="text-[13px] font-bold text-slate-700 text-right pr-2 truncate min-w-0" title="${item.name}">${item.name}</div>`;
+                    window.appState.months.forEach(m => {
+                        let val = item[m.key] || 0;
+                        let displayVal = (isExpense && val !== 0) ? -Math.abs(val) : val;
+                        let colorClass = displayVal < 0 ? 'text-[var(--danger)]' : 'text-slate-600';
+                        innerHTML += `
+                        <div class="flex justify-center min-w-0 w-full px-2">
+                            <div class="font-numbers text-[13px] ${colorClass} text-right w-full max-w-[100px]" dir="ltr">
+                                ${window.formatCurr(displayVal)}
+                            </div>
+                        </div>`;
+                    });
+                    
+                    let displayTotal = (isExpense && itemTotal !== 0) ? -Math.abs(itemTotal) : itemTotal;
+                    let totalColorClass = displayTotal < 0 ? 'text-[var(--danger)]' : 'text-[var(--charcoal-900)]';
+                    innerHTML += `
+                    <div class="flex justify-center min-w-0 w-full px-2">
+                        <div class="font-numbers font-black text-[14px] ${totalColorClass} bg-white py-1 px-2 rounded border border-slate-200 text-right w-full max-w-[110px]" dir="ltr">
+                            ${window.formatCurr(displayTotal)}
+                        </div>
+                    </div>`;
+                } else {
+                    innerHTML += `
+                        <div class="flex flex-col gap-1 shrink-0 items-center justify-center min-w-0">
+                            ${index > 0 ? `<button onclick="moveRow(${index}, -1)" class="text-slate-400 hover:text-[var(--gold-dark)]"><i class="fa-solid fa-chevron-up text-[11px]"></i></button>` : '<div class="h-[16px]"></div>'}
+                            ${index < arr.length - 1 ? `<button onclick="moveRow(${index}, 1)" class="text-slate-400 hover:text-[var(--gold-dark)]"><i class="fa-solid fa-chevron-down text-[11px]"></i></button>` : '<div class="h-[16px]"></div>'}
+                        </div>
+                        <div class="min-w-0 w-full">
+                            <input type="text" value="${item.name}" onchange="updateRowField(${index}, 'name', this.value)" class="lux-input text-right font-bold w-full" style="padding-right: 8px;">
+                        </div>
+                    `;
+                    
+                    window.appState.months.forEach(m => {
+                        let val = item[m.key] || 0;
+                        let displayVal = (isExpense && val !== 0) ? -Math.abs(val) : val;
+                        innerHTML += `
+                        <div class="min-w-0 w-full flex justify-center">
+                            <input type="text" value="${window.formatCurr(displayVal)}" 
+                                onfocus="this.value = window.parseFormatted(this.value); this.select();" 
+                                oninput="handleInputAmount(${index}, '${m.key}', this.value)"
+                                onblur="let isExp = ['opPay', 'invPay', 'finPay'].includes(window.currentActiveCategory); let v = window.parseFormatted(this.value); if(isExp && v !== 0) v = -Math.abs(v); this.value = window.formatCurr(v); this.style.color = v < 0 ? 'var(--danger)' : 'var(--charcoal-900)';"
+                                onkeyup="if(event.key === 'Enter') this.blur();"
+                                class="lux-input font-black w-full max-w-[100px] text-right" dir="ltr" style="color: ${displayVal < 0 ? 'var(--danger)' : 'var(--charcoal-900)'}">
+                        </div>
+                        `;
+                    });
+                    
+                    let displayTotal = (isExpense && itemTotal !== 0) ? -Math.abs(itemTotal) : itemTotal;
+                    let totalColorClass = displayTotal < 0 ? 'text-[var(--danger)]' : 'text-[var(--charcoal-900)]';
+                    innerHTML += `
+                        <div class="flex justify-center min-w-0 w-full">
+                            <div id="row-total-${index}" class="font-numbers font-black text-[13px] ${totalColorClass} bg-slate-100 py-1.5 px-2 rounded text-right w-full max-w-[100px]" dir="ltr">
+                                ${window.formatCurr(displayTotal)}
+                            </div>
+                        </div>
+                        <div class="min-w-0 flex justify-center w-full">
+                            <button onclick="deleteRow(${index})" class="text-red-400 hover:text-red-600 bg-red-50 hover:bg-red-100 w-8 h-8 rounded flex items-center justify-center transition-colors shrink-0">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    `;
                 }
+                row.innerHTML = innerHTML;
+                listContainer.appendChild(row);
             });
 
-            loadDataFromFirebase();
+            // صف المجاميع الشهرية مع المحاذاة اليمنى الصارمة
+            const totalRow = document.createElement('div');
+            totalRow.className = `grid-matrix w-full bg-[var(--gold-primary)]/10 border border-[var(--gold-primary)]/30 rounded-lg p-2 mt-2 items-center`;
+            totalRow.style.gridTemplateColumns = gridCols;
+            
+            let totalHtml = '';
+            if (!window.isEditMode) {
+                totalHtml += `<div class="text-[13px] font-black text-[var(--gold-dark)] text-right pr-2 min-w-0">الإجمالي الشهري</div>`;
+                window.appState.months.forEach(m => {
+                    let mTotal = monthTotals[m.key];
+                    let displayMTotal = (isExpense && mTotal !== 0) ? -Math.abs(mTotal) : mTotal;
+                    let colorClass = displayMTotal < 0 ? 'text-[var(--danger)]' : 'text-[var(--charcoal-900)]';
+                    totalHtml += `
+                    <div class="flex justify-center min-w-0 w-full px-2">
+                        <div id="month-total-${m.key}" class="font-numbers font-black text-[13px] ${colorClass} text-right w-full max-w-[100px]" dir="ltr">
+                            ${window.formatCurr(displayMTotal)}
+                        </div>
+                    </div>`;
+                });
+                
+                let displayGrandTotal = (isExpense && total !== 0) ? -Math.abs(total) : total;
+                let grandColor = displayGrandTotal < 0 ? 'text-[var(--danger)]' : 'text-[var(--gold-dark)]';
+                totalHtml += `
+                <div class="flex justify-center min-w-0 w-full px-2">
+                    <div id="row-grand-total" class="font-numbers font-black text-[14px] ${grandColor} text-right w-full max-w-[110px]" dir="ltr">
+                        ${window.formatCurr(displayGrandTotal)}
+                    </div>
+                </div>`;
+            } else {
+                totalHtml += `
+                    <div class="min-w-0 shrink-0"></div>
+                    <div class="text-[13px] font-black text-[var(--gold-dark)] text-right pr-2 min-w-0 w-full" style="padding-right: 8px;">الإجمالي الشهري</div>
+                `;
+                window.appState.months.forEach(m => {
+                    let mTotal = monthTotals[m.key];
+                    let displayMTotal = (isExpense && mTotal !== 0) ? -Math.abs(mTotal) : mTotal;
+                    let colorClass = displayMTotal < 0 ? 'text-[var(--danger)]' : 'text-[var(--charcoal-900)]';
+                    totalHtml += `
+                    <div class="flex justify-center min-w-0 w-full">
+                        <div id="month-total-${m.key}" class="font-numbers font-black text-[13px] ${colorClass} text-right w-full max-w-[100px]" dir="ltr">
+                            ${window.formatCurr(displayMTotal)}
+                        </div>
+                    </div>`;
+                });
+                
+                let displayGrandTotal = (isExpense && total !== 0) ? -Math.abs(total) : total;
+                let grandColor = displayGrandTotal < 0 ? 'text-[var(--danger)]' : 'text-[var(--gold-dark)]';
+                totalHtml += `
+                    <div class="flex justify-center min-w-0 w-full">
+                        <div id="row-grand-total" class="font-numbers font-black text-[13px] ${grandColor} text-right w-full max-w-[100px] px-2" dir="ltr">
+                            ${window.formatCurr(displayGrandTotal)}
+                        </div>
+                    </div>
+                    <div class="min-w-0 flex justify-center w-full shrink-0"></div>
+                `;
+            }
+            totalRow.innerHTML = totalHtml;
+            listContainer.appendChild(totalRow);
+
+            let displayModalTotal = (isExpense && total !== 0) ? -Math.abs(total) : total;
+            document.getElementById('modalTotal').innerText = window.formatCurr(displayModalTotal);
+            document.getElementById('modalTotal').style.color = displayModalTotal < 0 ? 'var(--danger)' : 'var(--gold-dark)';
+        }
+
+        window.handleInputAmount = function(index, monthKey, valString) {
+            let parsed = window.parseFormatted(valString);
+            const isExpense = ['opPay', 'invPay', 'finPay'].includes(window.currentActiveCategory);
+            if (isExpense) parsed = Math.abs(parsed); // Always store as positive
+            
+            window.appState[window.currentActiveCategory][index][monthKey] = parsed;
+            
+            const rowTotal = window.getItemTotal(window.appState[window.currentActiveCategory][index]);
+            let displayRowTotal = (isExpense && rowTotal !== 0) ? -Math.abs(rowTotal) : rowTotal;
+            const rowTotalElem = document.getElementById(`row-total-${index}`);
+            if(rowTotalElem) {
+                rowTotalElem.innerText = window.formatCurr(displayRowTotal);
+                rowTotalElem.classList.remove('text-[var(--danger)]', 'text-[var(--charcoal-900)]');
+                rowTotalElem.classList.add(displayRowTotal < 0 ? 'text-[var(--danger)]' : 'text-[var(--charcoal-900)]');
+            }
+
+            let newMonthTotal = 0;
+            window.appState[window.currentActiveCategory].forEach(item => {
+                newMonthTotal += (parseFloat(item[monthKey]) || 0);
+            });
+            let displayMTotal = (isExpense && newMonthTotal !== 0) ? -Math.abs(newMonthTotal) : newMonthTotal;
+            const monthTotalElem = document.getElementById(`month-total-${monthKey}`);
+            if(monthTotalElem) {
+                monthTotalElem.innerText = window.formatCurr(displayMTotal);
+                monthTotalElem.classList.remove('text-[var(--danger)]', 'text-[var(--charcoal-900)]');
+                monthTotalElem.classList.add(displayMTotal < 0 ? 'text-[var(--danger)]' : 'text-[var(--charcoal-900)]');
+            }
+
+            const modalTotal = window.sumArray(window.appState[window.currentActiveCategory]);
+            let displayModalTotal = (isExpense && modalTotal !== 0) ? -Math.abs(modalTotal) : modalTotal;
+            
+            const modalTotalElem = document.getElementById('modalTotal');
+            if(modalTotalElem) {
+                modalTotalElem.innerText = window.formatCurr(displayModalTotal);
+                modalTotalElem.style.color = displayModalTotal < 0 ? 'var(--danger)' : 'var(--gold-dark)';
+            }
+            
+            const rowGrandTotalElem = document.getElementById(`row-grand-total`);
+            if(rowGrandTotalElem) {
+                rowGrandTotalElem.innerText = window.formatCurr(displayModalTotal);
+                rowGrandTotalElem.classList.remove('text-[var(--danger)]', 'text-[var(--gold-dark)]');
+                rowGrandTotalElem.classList.add(displayModalTotal < 0 ? 'text-[var(--danger)]' : 'text-[var(--gold-dark)]');
+            }
+        }
+
+        window.updateRowField = function(index, field, val) {
+            if (field === 'name') window.appState[window.currentActiveCategory][index][field] = val;
+        }
+
+        window.moveRow = function(index, direction) {
+            const arr = window.appState[window.currentActiveCategory];
+            const temp = arr[index];
+            arr[index] = arr[index + direction];
+            arr[index + direction] = temp;
+            window.renderDetailsList();
+        }
+
+        window.deleteRow = function(index) {
+            window.appState[window.currentActiveCategory].splice(index, 1);
+            window.renderDetailsList();
+        }
+
+        window.addNewRow = function() {
+            const newItem = { id: 'new_' + Math.random().toString(36).substr(2, 9), name: "بند إضافي جديد" };
+            window.appState.months.forEach(m => newItem[m.key] = 0);
+            window.appState[window.currentActiveCategory].push(newItem);
+            window.renderDetailsList();
+            const container = document.getElementById('detailsList').parentElement;
+            setTimeout(() => container.scrollTop = container.scrollHeight, 100);
+        }
+
+        window.addMonth = function() {
+            const mName = prompt("أدخل اسم الشهر (مثال: أبريل):");
+            if (!mName || mName.trim() === '') return;
+            const mYear = prompt("أدخل السنة (مثال: 2026):");
+            if (!mYear || mYear.trim() === '') return;
+
+            const mKey = 'm_' + Math.random().toString(36).substr(2, 5);
+            window.appState.months.push({ key: mKey, label: `${mName} ${mYear.slice(-2)}`, name: mName, year: mYear });
+
+            ['opRec', 'opPay', 'invRec', 'invPay', 'finRec', 'finPay'].forEach(cat => {
+                window.appState[cat].forEach(item => { item[mKey] = 0; });
+            });
+
+            window.renderGridHeader();
+            window.renderDetailsList();
+            
+            const container = document.getElementById('gridWrapper').parentElement;
+            setTimeout(() => container.scrollLeft = -container.scrollWidth, 100);
+            window.updateTitlesUI();
+        }
+
+        window.deleteMonth = function(mKey) {
+            if(window.appState.months.length <= 1) { alert("لا يمكنك حذف جميع الأشهر!"); return; }
+            if(!confirm("هل أنت متأكد من حذف هذا الشهر بالكامل ومسح جميع بياناته من الميزانية؟")) return;
+
+            window.appState.months = window.appState.months.filter(m => m.key !== mKey);
+            ['opRec', 'opPay', 'invRec', 'invPay', 'finRec', 'finPay'].forEach(cat => {
+                window.appState[cat].forEach(item => { delete item[mKey]; });
+            });
+
+            window.renderGridHeader();
+            window.renderDetailsList();
+            window.updateTitlesUI();
+        }
+
+        window.requestAuth = function(callback) {
+            if (sessionStorage.getItem('isAuth') === 'true') {
+                if(callback) callback();
+            } else {
+                window.pendingAuthCallback = callback;
+                document.getElementById('passInput').value = '';
+                document.getElementById('passError').classList.add('hidden');
+                document.getElementById('passwordModal').classList.add('active');
+                setTimeout(() => document.getElementById('passInput').focus(), 100);
+            }
+        }
+
+        window.requestEditMode = function() {
+            window.requestAuth(() => { window.enableEditMode(); });
+        }
+
+        window.closePasswordModal = function() {
+            document.getElementById('passwordModal').classList.remove('active');
+        }
+
+        window.verifyPassword = function() {
+            const pass = document.getElementById('passInput').value;
+            if (pass === 'Finance') {
+                sessionStorage.setItem('isAuth', 'true');
+                const cb = window.pendingAuthCallback;
+                window.closePasswordModal();
+                if(cb) cb();
+            } else {
+                document.getElementById('passError').classList.remove('hidden');
+            }
+        }
+
+        window.enableEditMode = function() {
+            window.isEditMode = true;
+            document.getElementById('editBtn').classList.add('hidden');
+            document.getElementById('saveBtn').classList.remove('hidden');
+            document.getElementById('editActionButtons').classList.remove('hidden');
+            window.renderGridHeader();
+            window.renderDetailsList();
+        }
+
+        window.saveChanges = function() {
+            window.updateDashboard();
+            window.closeDetails();
+            window.saveToFirebase(); 
+        }
+
+        document.getElementById('passInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') window.verifyPassword();
         });
 
     </script>
