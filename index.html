@@ -651,7 +651,8 @@
         };
 
         // استخدام متغيرات البيئة الآمنة (متطلب أساسي لحفظ البيانات في النظام)
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : fallbackConfig;
+        const isCanvasEnv = typeof __firebase_config !== 'undefined';
+        const firebaseConfig = isCanvasEnv ? JSON.parse(__firebase_config) : fallbackConfig;
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'projects-dashboard';
 
         const app = initializeApp(firebaseConfig);
@@ -659,9 +660,13 @@
         const db = getFirestore(app);
         let currentUser = null;
 
-        // مسار الحفظ الآمن والمسموح به في النظام
+        // مسار الحفظ الآمن (يتكيف مع بيئة السحابة الحالية أو بيئتك الخاصة)
         const getDocRef = () => {
-            return doc(db, 'artifacts', appId, 'public', 'data', 'dashboardData', 'main');
+            if (isCanvasEnv) {
+                return doc(db, 'artifacts', appId, 'public', 'data', 'dashboardData', 'main');
+            } else {
+                return doc(db, 'dashboardData', 'main');
+            }
         };
 
         let dashboardPeriod = "الربع الأول 2026";
@@ -966,7 +971,7 @@
         };
 
         const loadDataFromFirebase = async () => {
-            if (!currentUser) return; 
+            if (isCanvasEnv && !currentUser) return; 
             try {
                 const docRef = getDocRef();
                 const docSnap = await getDoc(docRef);
@@ -983,7 +988,7 @@
                 }
             } catch (error) {
                 console.error("عذراً، فشل الاتصال بالسحابة: ", error);
-                showToast("عذراً، فشل جلب البيانات من السحابة", true);
+                showToast("تنبيه: تعمل اللوحة ببيانات محلية (لم يتم جلب السحابة)", true);
             } finally {
                 const loader = document.getElementById('cloud-loader');
                 if(loader) {
@@ -995,7 +1000,7 @@
         };
 
         const saveDataToFirebase = async (isInitial = false) => {
-            if (!currentUser) {
+            if (isCanvasEnv && !currentUser) {
                 showToast("غير متصل بالسحابة، التعديلات محلية فقط ولن تحفظ!", true);
                 return;
             }
@@ -1743,7 +1748,7 @@
             if (event.target == delModal) window.closeDeleteConfirmModal();
         }
 
-        // دالة بدء تشغيل النظام مع المصادقة (محدثة لضمان التسلسل الصحيح)
+        // دالة بدء تشغيل النظام مع المصادقة (محدثة لتعمل في كلتا البيئتين)
         const initializeDashboard = async () => {
             try {
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
@@ -1751,22 +1756,14 @@
                 } else {
                     await signInAnonymously(auth);
                 }
-
-                // ننتظر حتى تكتمل المصادقة بشكل قاطع ثم نجلب البيانات لتفادي فقدانها عند التحديث
                 currentUser = auth.currentUser;
-                await loadDataFromFirebase();
-                
             } catch (e) {
-                console.error("حدث خطأ أثناء المصادقة: ", e);
-                showToast("فشل الاتصال الآمن بقاعدة البيانات", true);
-                // عرض البيانات الافتراضية في حال فشل الاتصال
-                renderDashboard();
-                const loader = document.getElementById('cloud-loader');
-                if(loader) {
-                    loader.style.opacity = '0';
-                    setTimeout(() => loader.remove(), 500);
-                }
+                console.warn("تنبيه المصادقة: ", e.message);
+                // لا نوقف النظام هنا ليعمل على استضافتك الخاصة إذا كانت قواعدك مفتوحة
             }
+
+            // نحاول جلب البيانات سواء نجحت المصادقة أو كنت تستخدم إعداداتك الخاصة
+            await loadDataFromFirebase();
         };
 
         document.addEventListener('DOMContentLoaded', () => {
