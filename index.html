@@ -273,7 +273,7 @@
                 </div>
 
                 <div class="flex flex-col p-0 border-l border-[rgba(255,255,255,0.2)]">
-                    <div class="h-full w-full flex items-center justify-center text-[10px] font-bold">الجدول الزمني وعمر المشروع</div>
+                    <div class="h-full w-full flex items-center justify-center text-[10px] font-bold">مدة المشروع</div>
                 </div>
 
                 <div class="flex flex-col p-0">
@@ -294,10 +294,10 @@
                 </div>
 
                 <div class="flex flex-col p-0 border-l-0">
-                    <div class="h-[40%] w-full flex items-center justify-center border-b border-[rgba(255,255,255,0.2)] text-[10px] font-bold">مؤشرات الإنجاز</div>
+                    <div class="h-[40%] w-full flex items-center justify-center border-b border-[rgba(255,255,255,0.2)] text-[10px] font-bold">مؤشرات الإنجاز حسب المرحلة</div>
                     <div class="h-[60%] w-full grid grid-cols-[1fr_1.6fr_1fr] text-[9px]">
                         <span class="flex items-center justify-center border-l border-[rgba(255,255,255,0.2)]">وزن المشروع</span>
-                        <span class="flex items-center justify-center border-l border-[rgba(255,255,255,0.2)]">الإنجاز</span>
+                        <span class="flex items-center justify-center border-l border-[rgba(255,255,255,0.2)]">الانجاز(المرحلي)</span>
                         <span class="flex items-center justify-center">الحالة</span>
                     </div>
                 </div>
@@ -637,10 +637,11 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // التكوين الخاص بمشروعك في Firebase
-        const firebaseConfig = {
+        // إعدادات افتراضية في حال عدم توفر متغيرات البيئة 
+        const fallbackConfig = {
             apiKey: "AIzaSyDcEqAH_lk4qOgYGUVhu16GHw7mRmLbAWM",
             authDomain: "projects-progress-dashboard.firebaseapp.com",
             projectId: "projects-progress-dashboard",
@@ -649,8 +650,19 @@
             appId: "1:741799363441:web:6518fb90582ecef28e6cd0"
         };
 
+        // استخدام متغيرات البيئة الآمنة (متطلب أساسي لحفظ البيانات في النظام)
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : fallbackConfig;
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'projects-dashboard';
+
         const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
         const db = getFirestore(app);
+        let currentUser = null;
+
+        // مسار الحفظ الآمن والمسموح به في النظام
+        const getDocRef = () => {
+            return doc(db, 'artifacts', appId, 'public', 'data', 'dashboardData', 'main');
+        };
 
         let dashboardPeriod = "الربع الأول 2026";
         let dashboardFooter = "اجتماع مجلس الإدارة السابع عشر";
@@ -939,8 +951,9 @@
         ];
 
         const loadDataFromFirebase = async () => {
+            if (!currentUser) return; // حماية الاستعلام
             try {
-                const docRef = doc(db, "dashboardData", "main");
+                const docRef = getDocRef();
                 const docSnap = await getDoc(docRef);
                 
                 if (docSnap.exists()) {
@@ -964,11 +977,14 @@
         };
 
         const saveDataToFirebase = async () => {
+            if (!currentUser) {
+                console.warn("المستخدم غير مصادق عليه، لا يمكن الحفظ");
+                return;
+            }
             try {
-                // إنشاء نسخة عميقة من البيانات لضمان التقاط جميع التعديلات ورفعها بشكل نقي
                 const cleanProjectsData = JSON.parse(JSON.stringify(projectsData));
-                
-                await setDoc(doc(db, "dashboardData", "main"), {
+                const docRef = getDocRef();
+                await setDoc(docRef, {
                     period: dashboardPeriod,
                     footer: dashboardFooter,
                     projects: cleanProjectsData
@@ -1118,7 +1134,7 @@
         };
 
         window.pendingEditIndex = null;
-        window.pendingAction = null; // متغير لحفظ أمر الصعود والنزول
+        window.pendingAction = null; 
 
         window.openPasswordModal = (index) => {
             if (sessionStorage.getItem('isAuthenticated') === 'true') {
@@ -1161,7 +1177,6 @@
                 
                 window.closePasswordModal(false); 
                 
-                // تنفيذ الأمر المعلق (إما تعديل الترتيب، أو فتح نافذة مشروع)
                 if (actionToRun) {
                     actionToRun();
                     window.pendingAction = null;
@@ -1232,7 +1247,7 @@
         window.executeDeleteProject = async () => {
             const index = document.getElementById('edit-index').value;
             projectsData.splice(index, 1);
-            projectsData = [...projectsData]; // فرض تحديث المصفوفة
+            projectsData = [...projectsData]; 
             
             window.closeDeleteConfirmModal();
             window.closeModal();
@@ -1257,7 +1272,7 @@
                 projectsData[index] = projectsData[prevIndex];
                 projectsData[prevIndex] = temp;
                 
-                projectsData = [...projectsData]; // فرض التحديث لإنشاء مرجع جديد (Deep Update)
+                projectsData = [...projectsData]; 
                 
                 renderDashboard();
                 await saveDataToFirebase(); 
@@ -1281,7 +1296,7 @@
                 projectsData[index] = projectsData[nextIndex];
                 projectsData[nextIndex] = temp;
                 
-                projectsData = [...projectsData]; // فرض التحديث لإنشاء مرجع جديد
+                projectsData = [...projectsData]; 
                 
                 renderDashboard();
                 await saveDataToFirebase(); 
@@ -1684,7 +1699,7 @@
                 endDate: document.getElementById('m-endDate').value || "N/A",
             };
 
-            projectsData = [...projectsData]; // فرض التحديث
+            projectsData = [...projectsData]; 
 
             window.closeModal();
             renderDashboard(); 
@@ -1706,6 +1721,33 @@
             if (event.target == confModal) window.closeConfirmModal();
             if (event.target == delModal) window.closeDeleteConfirmModal();
         }
+
+        // دالة بدء تشغيل النظام مع المصادقة (التعديل الأساسي لحل مشكلة الحفظ)
+        const initializeDashboard = async () => {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                onAuthStateChanged(auth, async (user) => {
+                    currentUser = user;
+                    if (user) {
+                        await loadDataFromFirebase();
+                    }
+                });
+            } catch (e) {
+                console.error("حدث خطأ أثناء المصادقة: ", e);
+                // عرض البيانات الافتراضية في حال فشل الاتصال
+                renderDashboard();
+                const loader = document.getElementById('cloud-loader');
+                if(loader) {
+                    loader.style.opacity = '0';
+                    setTimeout(() => loader.remove(), 500);
+                }
+            }
+        };
 
         document.addEventListener('DOMContentLoaded', () => {
             window.startPicker = flatpickr("#m-startDate", {
@@ -1729,7 +1771,8 @@
                 }
             });
 
-            loadDataFromFirebase();
+            // بدء النظام
+            initializeDashboard();
         });
 
     </script>
