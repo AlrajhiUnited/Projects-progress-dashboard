@@ -950,8 +950,23 @@
           }
         ];
 
+        // --- إضافة نظام إشعارات مرئي لمعرفة حالة الحفظ والمزامنة السحابية ---
+        const showToast = (msg, isError = false) => {
+            let toast = document.getElementById('sys-toast');
+            if(!toast) {
+                toast = document.createElement('div');
+                toast.id = 'sys-toast';
+                toast.className = 'fixed bottom-6 left-1/2 transform -translate-x-1/2 px-6 py-2 rounded-full text-white font-bold text-sm z-[999] transition-opacity duration-300 shadow-xl font-["Tajawal"] text-center min-w-[250px] pointer-events-none flex items-center justify-center gap-2';
+                document.body.appendChild(toast);
+            }
+            toast.innerHTML = isError ? `<i class="fa-solid fa-triangle-exclamation"></i> ${msg}` : `<i class="fa-solid fa-cloud-check"></i> ${msg}`;
+            toast.style.backgroundColor = isError ? '#EF4444' : '#10B981';
+            toast.style.opacity = '1';
+            setTimeout(() => { toast.style.opacity = '0'; }, 3500);
+        };
+
         const loadDataFromFirebase = async () => {
-            if (!currentUser) return; // حماية الاستعلام
+            if (!currentUser) return; 
             try {
                 const docRef = getDocRef();
                 const docSnap = await getDoc(docRef);
@@ -961,11 +976,14 @@
                     dashboardPeriod = data.period || dashboardPeriod;
                     dashboardFooter = data.footer || dashboardFooter;
                     projectsData = data.projects || projectsData;
+                    showToast("تم جلب أحدث البيانات من السحابة بنجاح");
                 } else {
-                    await saveDataToFirebase();
+                    // إذا لم تكن هناك بيانات سابقة، نحفظ البيانات الافتراضية كبداية
+                    await saveDataToFirebase(true); 
                 }
             } catch (error) {
                 console.error("عذراً، فشل الاتصال بالسحابة: ", error);
+                showToast("عذراً، فشل جلب البيانات من السحابة", true);
             } finally {
                 const loader = document.getElementById('cloud-loader');
                 if(loader) {
@@ -976,12 +994,13 @@
             }
         };
 
-        const saveDataToFirebase = async () => {
+        const saveDataToFirebase = async (isInitial = false) => {
             if (!currentUser) {
-                console.warn("المستخدم غير مصادق عليه، لا يمكن الحفظ");
+                showToast("غير متصل بالسحابة، التعديلات محلية فقط ولن تحفظ!", true);
                 return;
             }
             try {
+                if(!isInitial) showToast("جاري المزامنة مع قاعدة البيانات...");
                 const cleanProjectsData = JSON.parse(JSON.stringify(projectsData));
                 const docRef = getDocRef();
                 await setDoc(docRef, {
@@ -989,8 +1008,10 @@
                     footer: dashboardFooter,
                     projects: cleanProjectsData
                 });
+                if(!isInitial) showToast("تم الحفظ في قاعدة البيانات بنجاح");
             } catch (error) {
                 console.error("حدث خطأ أثناء حفظ البيانات في السحابة:", error);
+                showToast("عذراً، فشل الحفظ السحابي!", true);
             }
         };
 
@@ -1722,7 +1743,7 @@
             if (event.target == delModal) window.closeDeleteConfirmModal();
         }
 
-        // دالة بدء تشغيل النظام مع المصادقة (التعديل الأساسي لحل مشكلة الحفظ)
+        // دالة بدء تشغيل النظام مع المصادقة (محدثة لضمان التسلسل الصحيح)
         const initializeDashboard = async () => {
             try {
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
@@ -1731,14 +1752,13 @@
                     await signInAnonymously(auth);
                 }
 
-                onAuthStateChanged(auth, async (user) => {
-                    currentUser = user;
-                    if (user) {
-                        await loadDataFromFirebase();
-                    }
-                });
+                // ننتظر حتى تكتمل المصادقة بشكل قاطع ثم نجلب البيانات لتفادي فقدانها عند التحديث
+                currentUser = auth.currentUser;
+                await loadDataFromFirebase();
+                
             } catch (e) {
                 console.error("حدث خطأ أثناء المصادقة: ", e);
+                showToast("فشل الاتصال الآمن بقاعدة البيانات", true);
                 // عرض البيانات الافتراضية في حال فشل الاتصال
                 renderDashboard();
                 const loader = document.getElementById('cloud-loader');
