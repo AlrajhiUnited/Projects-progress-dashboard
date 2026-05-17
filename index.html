@@ -279,8 +279,8 @@
                 <div class="flex flex-col p-0">
                     <div class="h-[40%] w-full flex items-center justify-center border-b border-[rgba(255,255,255,0.2)] text-[10px] font-bold">الميزانية والمصروف</div>
                     <div class="h-[60%] w-full grid grid-cols-3 text-[9px]">
-                        <span class="flex items-center justify-center border-l border-[rgba(255,255,255,0.2)]">التكاليف التقديرية</span>
                         <span class="flex items-center justify-center border-l border-[rgba(255,255,255,0.2)]">الميزانية</span>
+                        <span class="flex items-center justify-center border-l border-[rgba(255,255,255,0.2)]">التكاليف المحدثة</span>
                         <span class="flex items-center justify-center">المصروف</span>
                     </div>
                 </div>
@@ -554,17 +554,17 @@
                             <h3 class="text-sm font-bold text-gray-800 mb-3 border-b pb-1 border-[var(--gold-track)] font-['Tajawal']">البيانات المالية ومؤشرات الإنجاز</h3>
                             <div class="grid grid-cols-5 gap-4 mb-4">
                                 <div>
-                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">التكاليف التقديرية</label>
+                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">الميزانية</label>
+                                    <input type="text" id="m-budget" oninput="window.formatNumberInput(event);" class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 outline-none font-numbers text-left text-[var(--charcoal-900)]" dir="ltr">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">التكاليف المحدثة</label>
                                     <div class="relative">
                                         <input type="text" id="m-estCosts" oninput="window.formatNumberInput(event); window.updateModalWeight();" class="w-full text-sm rounded-md border border-gray-300 pl-8 pr-3 py-2 outline-none font-numbers text-left transition-colors text-[var(--charcoal-900)]" dir="ltr">
                                         <button type="button" class="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-[var(--gold-dark)] transition z-10" onclick="window.toggleLock('m-estCosts')" title="فك/قفل الخلية">
                                             <i class="fa-solid fa-lock-open" id="icon-m-estCosts"></i>
                                         </button>
                                     </div>
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-600 mb-1 font-['Tajawal']">الميزانية</label>
-                                    <input type="text" id="m-budget" oninput="window.formatNumberInput(event);" class="w-full text-sm rounded-md border border-gray-300 px-3 py-2 outline-none font-numbers text-left text-[var(--charcoal-900)]" dir="ltr">
                                 </div>
                                 <div>
                                     <label class="block text-xs font-bold text-[var(--gold-dark)] mb-1 font-['Tajawal']"><i class="fa-solid fa-pen-to-square mr-1"></i>المصروف الفعلي</label>
@@ -1440,8 +1440,8 @@
                 </div>
 
                 <div class="grid grid-cols-3 h-full border-r border-[var(--charcoal-100)] py-0.5">
-                    <div class="sub-col font-numbers">${estCostsDisplay}</div>
                     <div class="sub-col font-numbers">${fVal(project.budget)}</div>
+                    <div class="sub-col font-numbers">${estCostsDisplay}</div>
                     <div class="sub-col flex-col bg-gradient-to-b from-transparent to-gray-50/50 text-[var(--charcoal-700)] px-3 w-full items-stretch justify-center">
                         <div class="flex justify-between items-end mb-0.5 w-full">
                             <span class="font-numbers text-[9px] font-bold text-[var(--charcoal-900)]">${fVal(project.expenses)}</span>
