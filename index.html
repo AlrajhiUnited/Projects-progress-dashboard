@@ -971,7 +971,7 @@
         };
 
         const loadDataFromFirebase = async () => {
-            if (isCanvasEnv && !currentUser) return; 
+            // نلغي شرط الإيقاف المبكر لنجعل Firebase يرد بنوع الخطأ الحقيقي
             try {
                 const docRef = getDocRef();
                 const docSnap = await getDoc(docRef);
@@ -988,7 +988,12 @@
                 }
             } catch (error) {
                 console.error("عذراً، فشل الاتصال بالسحابة: ", error);
-                showToast("تنبيه: تعمل اللوحة ببيانات محلية (لم يتم جلب السحابة)", true);
+                // تحديد نوع الخطأ لإخبارك بالسبب الدقيق
+                if (error.code === 'permission-denied') {
+                    showToast("مرفوض: قواعد حماية Firebase تمنع الوصول!", true);
+                } else {
+                    showToast("تنبيه: تعمل اللوحة ببيانات محلية (لم يتم جلب السحابة)", true);
+                }
             } finally {
                 const loader = document.getElementById('cloud-loader');
                 if(loader) {
@@ -1000,10 +1005,6 @@
         };
 
         const saveDataToFirebase = async (isInitial = false) => {
-            if (isCanvasEnv && !currentUser) {
-                showToast("غير متصل بالسحابة، التعديلات محلية فقط ولن تحفظ!", true);
-                return;
-            }
             try {
                 if(!isInitial) showToast("جاري المزامنة مع قاعدة البيانات...");
                 const cleanProjectsData = JSON.parse(JSON.stringify(projectsData));
@@ -1016,7 +1017,11 @@
                 if(!isInitial) showToast("تم الحفظ في قاعدة البيانات بنجاح");
             } catch (error) {
                 console.error("حدث خطأ أثناء حفظ البيانات في السحابة:", error);
-                showToast("عذراً، فشل الحفظ السحابي!", true);
+                if (error.code === 'permission-denied') {
+                    showToast("خطأ: يرجى تفعيل صلاحيات الكتابة في Firebase!", true);
+                } else {
+                    showToast("عذراً، فشل الحفظ السحابي!", true);
+                }
             }
         };
 
@@ -1748,21 +1753,23 @@
             if (event.target == delModal) window.closeDeleteConfirmModal();
         }
 
-        // دالة بدء تشغيل النظام مع المصادقة (محدثة لتعمل في كلتا البيئتين)
+        // دالة بدء تشغيل النظام مع المصادقة (محدثة لتعمل بانتظار صارم)
         const initializeDashboard = async () => {
             try {
+                let userCred;
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
+                    userCred = await signInWithCustomToken(auth, __initial_auth_token);
                 } else {
-                    await signInAnonymously(auth);
+                    userCred = await signInAnonymously(auth);
                 }
-                currentUser = auth.currentUser;
+                // تعيين المستخدم مباشرة بعد نجاح المصادقة
+                currentUser = userCred.user;
             } catch (e) {
                 console.warn("تنبيه المصادقة: ", e.message);
-                // لا نوقف النظام هنا ليعمل على استضافتك الخاصة إذا كانت قواعدك مفتوحة
+                // لا نوقف النظام، سيحاول الجلب محلياً إذا كنت تستخدم قاعدة بيانات مفتوحة
             }
 
-            // نحاول جلب البيانات سواء نجحت المصادقة أو كنت تستخدم إعداداتك الخاصة
+            // محاولة جلب البيانات الآن بعد ضمان تجاوز خطوة المصادقة
             await loadDataFromFirebase();
         };
 
